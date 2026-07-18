@@ -10,9 +10,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@fluppy/browser": "workspace:*",
-    "@fluppy/core": "workspace:*",
-    "@fluppy/react": "workspace:*",
+    "@flupy/browser": "workspace:*",
+    "@flupy/core": "workspace:*",
+    "@flupy/react": "workspace:*",
     "@noble/hashes": "1.8.0",
     "@sentry/nextjs": "^10.53.1",
     "@stellar/freighter-api": "^6.0.1",

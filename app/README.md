@@ -1,6 +1,6 @@
-# 💻 Fluppy — Frontend Application (`/app`)
+# 💻 Flupy — Frontend Application (`/app`)
 
-This directory contains the Next.js web interface for the Fluppy Protocol.
+This directory contains the Next.js web interface for the Flupy Protocol.
 
 The app handles browser-side ZK proof generation, Freighter wallet integration,
 Merkle proof retrieval, contract root synchronization, Soroban transaction submission,
@@ -9,7 +9,7 @@ progress UX, error mapping, telemetry, and local transaction history.
 > ⚠️ **Testnet Notice**
 >
 > This application currently connects to Stellar Testnet only.
-> Fluppy is a production-candidate Testnet implementation, not a mainnet financial product.
+> Flupy is a production-candidate Testnet implementation, not a mainnet financial product.
 >
 > The current on-chain verifier uses a demo-mode backend while browser-side
 > `snarkjs.groth16.verify()` is enforced before every contract submission.
@@ -56,7 +56,7 @@ The deployed Vercel frontend successfully:
 Live app:
 
 ```text
-https://fluppy.vercel.app/app
+https://flupy.vercel.app/app
 ```
 
 Latest verified Stellar Testnet transaction:
@@ -91,7 +91,7 @@ app/
 │   │   └── TxHistoryPanel.tsx       # Local transaction history UI
 │   │
 │   ├── hooks/
-│   │   └── useFluppy.ts             # Stable app payment orchestration hook
+│   │   └── useFlupy.ts             # Stable app payment orchestration hook
 │   │
 │   └── lib/
 │       ├── errorMapper.ts           # Raw errors → user-friendly messages
@@ -106,7 +106,7 @@ app/
 ├── public/
 │   └── circuit/
 │       └── v3/
-│           ├── fluppy_payment.wasm
+│           ├── flupy_payment.wasm
 │           ├── circuit_final.zkey.bin
 │           └── verification_key.json
 │
@@ -147,7 +147,7 @@ Root sync guard:
         │
         ▼
 Browser SDK loads circuit artifacts:
-  /circuit/v3/fluppy_payment.wasm
+  /circuit/v3/flupy_payment.wasm
   /circuit/v3/circuit_final.zkey.bin
   /circuit/v3/verification_key.json
         │
@@ -195,9 +195,9 @@ Local transaction history updated
 | Curve | BN254 |
 | ZK Hashing | Poseidon-based Merkle tree |
 | Circuit Artifacts | WASM + ZKey + verification key |
-| Browser SDK | `@fluppy/browser` |
-| React SDK | `@fluppy/react` |
-| Core SDK | `@fluppy/core` |
+| Browser SDK | `@flupy/browser` |
+| React SDK | `@flupy/react` |
+| Core SDK | `@flupy/core` |
 | Identity Storage | IndexedDB + PBKDF2 + AES-GCM |
 | Blockchain SDK | `@stellar/stellar-sdk` |
 | Wallet | `@stellar/freighter-api` |
@@ -290,7 +290,7 @@ npm start
 
 ## 🔑 Key Source Files
 
-### `src/hooks/useFluppy.ts`
+### `src/hooks/useFlupy.ts`
 
 Stable app-level orchestration hook.
 
@@ -310,7 +310,7 @@ Responsibilities:
 - history update
 - user-facing logs
 
-This hook intentionally remains the stable app path while `@fluppy/react` adoption happens incrementally.
+This hook intentionally remains the stable app path while `@flupy/react` adoption happens incrementally.
 
 ---
 
@@ -438,7 +438,7 @@ Security rules:
 Production circuit artifacts are served from:
 
 ```text
-/circuit/v3/fluppy_payment.wasm
+/circuit/v3/flupy_payment.wasm
 /circuit/v3/circuit_final.zkey.bin
 /circuit/v3/verification_key.json
 ```
@@ -460,7 +460,7 @@ for Vercel static deployment compatibility.
 ### Required Local Files
 
 ```text
-app/public/circuit/v3/fluppy_payment.wasm
+app/public/circuit/v3/flupy_payment.wasm
 app/public/circuit/v3/circuit_final.zkey.bin
 app/public/circuit/v3/verification_key.json
 ```
@@ -468,7 +468,7 @@ app/public/circuit/v3/verification_key.json
 ### Local Artifact Check
 
 ```bash
-curl -I http://localhost:3000/circuit/v3/fluppy_payment.wasm
+curl -I http://localhost:3000/circuit/v3/flupy_payment.wasm
 curl -I http://localhost:3000/circuit/v3/circuit_final.zkey.bin
 curl -I http://localhost:3000/circuit/v3/verification_key.json
 ```
@@ -482,9 +482,9 @@ HTTP/1.1 200 OK
 ### Production Artifact Check
 
 ```bash
-curl -I https://fluppy.vercel.app/circuit/v3/fluppy_payment.wasm
-curl -I https://fluppy.vercel.app/circuit/v3/circuit_final.zkey.bin
-curl -I https://fluppy.vercel.app/circuit/v3/verification_key.json
+curl -I https://flupy.vercel.app/circuit/v3/flupy_payment.wasm
+curl -I https://flupy.vercel.app/circuit/v3/circuit_final.zkey.bin
+curl -I https://flupy.vercel.app/circuit/v3/verification_key.json
 ```
 
 Expected:
@@ -496,7 +496,7 @@ HTTP/2 200
 Observed production artifact sizes:
 
 ```text
-fluppy_payment.wasm       = 2,243,297 bytes
+flupy_payment.wasm       = 2,243,297 bytes
 circuit_final.zkey.bin    = 5,913,232 bytes
 verification_key.json     = 4,028 bytes
 ```
@@ -653,11 +653,11 @@ Raw stack traces are retained only in developer console for debugging.
 
 | Item | Value |
 |---|---|
-| Live App | `https://fluppy.vercel.app/app` |
+| Live App | `https://flupy.vercel.app/app` |
 | Contract ID | `CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS` |
 | Latest Transaction | `ca6227fd5c426cc2ab1dbd9c2ee2fb6a4fce16fb0b87412408d3a5cbe405b244` |
 | Explorer | `https://stellar.expert/explorer/testnet/tx/ca6227fd5c426cc2ab1dbd9c2ee2fb6a4fce16fb0b87412408d3a5cbe405b244` |
-| GitHub | `https://github.com/dzakwannajmi/Fluppy` |
+| GitHub | `https://github.com/dzakwannajmi/Flupy` |
 
 ### Runtime Evidence
 
@@ -707,9 +707,9 @@ TypeScript passed
 ### Artifact Validation
 
 ```bash
-curl -I https://fluppy.vercel.app/circuit/v3/fluppy_payment.wasm
-curl -I https://fluppy.vercel.app/circuit/v3/circuit_final.zkey.bin
-curl -I https://fluppy.vercel.app/circuit/v3/verification_key.json
+curl -I https://flupy.vercel.app/circuit/v3/flupy_payment.wasm
+curl -I https://flupy.vercel.app/circuit/v3/circuit_final.zkey.bin
+curl -I https://flupy.vercel.app/circuit/v3/verification_key.json
 ```
 
 Expected:
@@ -721,7 +721,7 @@ HTTP/2 200
 ### Root Sync Validation
 
 ```bash
-curl https://fluppy.vercel.app/api/merkle-root
+curl https://flupy.vercel.app/api/merkle-root
 ```
 
 Expected:
@@ -764,7 +764,7 @@ Known limitations:
 - mobile performance testing is not yet complete,
 - API rate limiting is not yet production-hardened,
 - persistent Merkle storage is not yet deployed,
-- incremental `@fluppy/react` app integration is complete (SDK-1C-6A through 6D validated on Testnet),
+- incremental `@flupy/react` app integration is complete (SDK-1C-6A through 6D validated on Testnet),
 - native on-chain BN254 pairing verification is still pending Soroban SDK support.
 
 ---
@@ -790,13 +790,13 @@ Known limitations:
 
 ### 3. SDK Integration (Complete — SDK-1C-6)
 
-- ✅ `useFluppyHistory` — localStorage persistence (SDK-1C-6A)
-- ✅ `useFluppyWallet` — Freighter bridge (SDK-1C-6B)
-- ✅ `FluppyProvider` — context in /app subtree via providers.tsx (SDK-1C-6C)
-- ✅ `useFluppyPayment` — experimental SDK path E2E confirmed on Testnet (SDK-1C-6D)
+- ✅ `useFlupyHistory` — localStorage persistence (SDK-1C-6A)
+- ✅ `useFlupyWallet` — Freighter bridge (SDK-1C-6B)
+- ✅ `FlupyProvider` — context in /app subtree via providers.tsx (SDK-1C-6C)
+- ✅ `useFlupyPayment` — experimental SDK path E2E confirmed on Testnet (SDK-1C-6D)
 
-Both the primary payment path (`executeFluppyPayment`) and SDK hook path
-(`useFluppyPayment`) are confirmed on Stellar Testnet with valid on-chain
+Both the primary payment path (`executeFlupyPayment`) and SDK hook path
+(`useFlupyPayment`) are confirmed on Stellar Testnet with valid on-chain
 95/5 atomic splits.
 
 ### 4. Observability

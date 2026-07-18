@@ -1,4 +1,4 @@
-import { CIRCUIT_DEPTH, POSEIDON_TAGS } from '@fluppy/core';
+import { CIRCUIT_DEPTH, POSEIDON_TAGS } from '@flupy/core';
 
 export const TREE_DEPTH = CIRCUIT_DEPTH;
 

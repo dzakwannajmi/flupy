@@ -4,7 +4,7 @@ import {
   enrollCommitment,
   getMerkleProof as getBrowserMerkleProof,
   type BrowserMerkleProof,
-} from '@fluppy/browser';
+} from '@flupy/browser';
 
 export interface MerkleProof {
   pathElements: bigint[];
@@ -30,7 +30,7 @@ export async function addToMockWhitelist(secret: string): Promise<void> {
  * Fetches a Merkle membership proof from the backend.
  *
  * This wrapper preserves the existing app API while delegating the browser
- * implementation to @fluppy/browser.
+ * implementation to @flupy/browser.
  */
 export async function getMerkleProof(secret: string): Promise<MerkleProof> {
   const proof: BrowserMerkleProof = await getBrowserMerkleProof(secret);

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     default: "Fluppy SDK Documentation",
   },
   description:
-    "Developer documentation for the Fluppy ZK Payment Protocol SDK — @fluppy/core, @fluppy/browser, @fluppy/react.",
+    "Developer documentation for the Fluppy ZK Payment Protocol SDK — @flupy/core, @flupy/browser, @flupy/react.",
 };
 
 const DOC_SECTIONS = [
@@ -23,9 +23,9 @@ const DOC_SECTIONS = [
   {
     title: "SDK Reference",
     links: [
-      { href: "/docs/core", label: "@fluppy/core" },
-      { href: "/docs/browser", label: "@fluppy/browser" },
-      { href: "/docs/react", label: "@fluppy/react" },
+      { href: "/docs/core", label: "@flupy/core" },
+      { href: "/docs/browser", label: "@flupy/browser" },
+      { href: "/docs/react", label: "@flupy/react" },
     ],
   },
   {
@@ -98,7 +98,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           <div className="mt-8 rounded-lg border border-white/10 bg-white/5 p-3">
             <p className="text-xs font-medium text-gray-400">SDK Status</p>
             <div className="mt-2 space-y-1.5">
-              {["@fluppy/core", "@fluppy/browser", "@fluppy/react"].map((pkg) => (
+              {["@flupy/core", "@flupy/browser", "@flupy/react"].map((pkg) => (
                 <div key={pkg} className="flex items-center justify-between">
                   <span className="text-xs text-gray-400">{pkg}</span>
                   <span className="text-xs font-medium text-green-400">✓ Complete</span>

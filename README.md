@@ -1,8 +1,8 @@
-# 🔐 Fluppy
+# 🔐 Flupy
 
 ### Privacy-Preserving Payment Infrastructure on Stellar Soroban
 
-Fluppy is an open-source, non-custodial payment gateway that combines
+Flupy is an open-source, non-custodial payment gateway that combines
 **Zero-Knowledge Membership Proofs (Groth16 / BN254)** with **atomic on-chain revenue splitting**
 — built on Stellar Soroban with a three-layer modular SDK architecture.
 
@@ -49,7 +49,7 @@ Fluppy is an open-source, non-custodial payment gateway that combines
 
 **Phase 3D — Production Testnet E2E Success + Full SDK Integration**
 
-Fluppy has successfully reached a production-candidate Testnet milestone with a complete
+Flupy has successfully reached a production-candidate Testnet milestone with a complete
 three-layer SDK architecture and validated incremental app integration.
 
 The deployed Vercel frontend successfully:
@@ -63,24 +63,24 @@ The deployed Vercel frontend successfully:
 - confirms transactions on Stellar Testnet,
 - persists local transaction history in the browser.
 
-The `@fluppy/react` SDK integration into the app is now complete through SDK-1C-6:
+The `@flupy/react` SDK integration into the app is now complete through SDK-1C-6:
 
-- `useFluppyHistory` — transaction history aligned to SDK localStorage persistence (SDK-1C-6A)
-- `useFluppyWallet` — Freighter wallet state bridged to SDK hook (SDK-1C-6B)
-- `FluppyProvider` — SDK context provider integrated into `/app` route subtree (SDK-1C-6C)
-- `useFluppyPayment` — experimental SDK payment path validated end-to-end on Testnet (SDK-1C-6D)
+- `useFlupyHistory` — transaction history aligned to SDK localStorage persistence (SDK-1C-6A)
+- `useFlupyWallet` — Freighter wallet state bridged to SDK hook (SDK-1C-6B)
+- `FlupyProvider` — SDK context provider integrated into `/app` route subtree (SDK-1C-6C)
+- `useFlupyPayment` — experimental SDK payment path validated end-to-end on Testnet (SDK-1C-6D)
 
 Two independent E2E payment paths are now confirmed on Stellar Testnet:
 
-1. **Primary path** — stable production payment via `executeFluppyPayment()` from `@fluppy/browser`
-2. **SDK hook path** — experimental payment via `useFluppyPayment()` from `@fluppy/react`
+1. **Primary path** — stable production payment via `executeFlupyPayment()` from `@flupy/browser`
+2. **SDK hook path** — experimental payment via `useFlupyPayment()` from `@flupy/react`
 
 Both paths produce valid on-chain transactions with confirmed 95/5 atomic splits.
 
 Current deployment:
 
 ```text
-https://fluppy.vercel.app/app
+https://flupy.vercel.app/app
 ```
 
 ---
@@ -98,7 +98,7 @@ Existing payment systems on Soroban still have two unresolved gaps:
 2. **No trustless revenue distribution** — merchants often split payments manually off-chain,
    creating reconciliation overhead, counterparty risk, and limited transparency.
 
-Fluppy solves both in one payment flow: users prove eligibility privately, then the contract
+Flupy solves both in one payment flow: users prove eligibility privately, then the contract
 settles the payment atomically.
 
 ---
@@ -109,7 +109,7 @@ settles the payment atomically.
 
 > **Private eligibility proof + transparent atomic on-chain settlement.**
 
-Fluppy separates *what a user proves* from *what a user reveals*.
+Flupy separates *what a user proves* from *what a user reveals*.
 
 Users generate a Zero-Knowledge membership proof in the browser. The protocol verifies that the
 user belongs to an approved Merkle set without exposing the underlying credential or raw identity
@@ -132,26 +132,26 @@ graph TD
     subgraph Browser ["USER BROWSER"]
         direction TB
 
-        subgraph ReactSDK ["@fluppy/react SDK"]
+        subgraph ReactSDK ["@flupy/react SDK"]
             direction TB
-            R1["FluppyProvider"]
-            R2["useFluppyCredential"]
-            R3["useFluppyPayment"]
-            R4["useFluppyWallet"]
-            R5["useFluppyHistory"]
+            R1["FlupyProvider"]
+            R2["useFlupyCredential"]
+            R3["useFlupyPayment"]
+            R4["useFlupyWallet"]
+            R5["useFlupyHistory"]
         end
 
-        subgraph BrowserSDK ["@fluppy/browser SDK"]
+        subgraph BrowserSDK ["@flupy/browser SDK"]
             direction TB
             A["identity.ts → AES-GCM credential storage"]
             B["merkle-client.ts → commitment compute + Merkle proof fetch"]
             C["artifacts.ts → WASM/ZKey loader with cache"]
             D["prover.ts → snarkjs.groth16.fullProve()"]
             E["stellar.ts → Freighter signing + Soroban submission"]
-            F["payment.ts → executeFluppyPayment() orchestrator"]
+            F["payment.ts → executeFlupyPayment() orchestrator"]
         end
 
-        Core["@fluppy/core: constants, errors, encoding, shared types, recipient hash, chain ID"]
+        Core["@flupy/core: constants, errors, encoding, shared types, recipient hash, chain ID"]
 
         ReactSDK --> BrowserSDK
         BrowserSDK --> Core
@@ -195,19 +195,19 @@ This means:
 
 ## 📦 SDK Architecture
 
-Fluppy is structured as a pnpm monorepo with a reusable three-layer SDK.
+Flupy is structured as a pnpm monorepo with a reusable three-layer SDK.
 
 | Package           | Status     | Description                                                                                                   |
 | ----------------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
-| `@fluppy/core`    | ✅ Complete | Pure TypeScript protocol primitives: constants, errors, encoding, shared types, recipient hash, chain ID      |
-| `@fluppy/browser` | ✅ Complete | Browser SDK: Merkle client, artifact loader, ZK prover, identity, Stellar/Freighter, payment orchestrator     |
-| `@fluppy/react`   | ✅ Complete | React SDK: `FluppyProvider`, `useFluppyCredential`, `useFluppyPayment`, `useFluppyWallet`, `useFluppyHistory` |
+| `@flupy/core`    | ✅ Complete | Pure TypeScript protocol primitives: constants, errors, encoding, shared types, recipient hash, chain ID      |
+| `@flupy/browser` | ✅ Complete | Browser SDK: Merkle client, artifact loader, ZK prover, identity, Stellar/Freighter, payment orchestrator     |
+| `@flupy/react`   | ✅ Complete | React SDK: `FlupyProvider`, `useFlupyCredential`, `useFlupyPayment`, `useFlupyWallet`, `useFlupyHistory` |
 
 > Note: The SDK packages are currently internal monorepo packages and have not yet been published to npm.
 
 ---
 
-### `@fluppy/core` — Protocol Primitives
+### `@flupy/core` — Protocol Primitives
 
 | Module              | Description                                                                   |
 | ------------------- | ----------------------------------------------------------------------------- |
@@ -220,7 +220,7 @@ Fluppy is structured as a pnpm monorepo with a reusable three-layer SDK.
 
 ---
 
-### `@fluppy/browser` — Browser SDK
+### `@flupy/browser` — Browser SDK
 
 | Module             | Description                                                                            |
 | ------------------ | -------------------------------------------------------------------------------------- |
@@ -229,19 +229,19 @@ Fluppy is structured as a pnpm monorepo with a reusable three-layer SDK.
 | `prover.ts`        | Generates Groth16 proofs with SnarkJS and performs local verification                  |
 | `identity.ts`      | Manages encrypted browser credentials using IndexedDB, PBKDF2, and AES-GCM             |
 | `stellar.ts`       | Handles Freighter signing, Soroban simulation, submission, and transaction polling     |
-| `payment.ts`       | Provides `executeFluppyPayment()` orchestration across Merkle, ZK, and Stellar modules |
+| `payment.ts`       | Provides `executeFlupyPayment()` orchestration across Merkle, ZK, and Stellar modules |
 
 ---
 
-### `@fluppy/react` — React SDK
+### `@flupy/react` — React SDK
 
 | Hook / Component      | Description                                                                                                               |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `FluppyProvider`      | React context provider for Fluppy configuration such as `stellarConfig`, `networkPassphrase`, and optional Merkle options |
-| `useFluppyCredential` | Credential lifecycle hook: create, unlock, remove, refresh, error reset                                                   |
-| `useFluppyPayment`    | Payment lifecycle hook built on `executeFluppyPayment()` with status, progress, tx hash, abort, and reset controls        |
-| `useFluppyWallet`     | Freighter wallet connection hook using dynamic imports for SSR safety                                                     |
-| `useFluppyHistory`    | Local payment history hook with `bigint` serialization and localStorage persistence                                       |
+| `FlupyProvider`      | React context provider for Flupy configuration such as `stellarConfig`, `networkPassphrase`, and optional Merkle options |
+| `useFlupyCredential` | Credential lifecycle hook: create, unlock, remove, refresh, error reset                                                   |
+| `useFlupyPayment`    | Payment lifecycle hook built on `executeFlupyPayment()` with status, progress, tx hash, abort, and reset controls        |
+| `useFlupyWallet`     | Freighter wallet connection hook using dynamic imports for SSR safety                                                     |
+| `useFlupyHistory`    | Local payment history hook with `bigint` serialization and localStorage persistence                                       |
 
 React SDK properties:
 
@@ -295,12 +295,12 @@ React SDK properties:
 The app has been refactored from a monolithic frontend flow into reusable SDK modules:
 
 ```text
-@fluppy/core
+@flupy/core
   → protocol primitives
   → constants, errors, encoding, shared types
   → recipient hash and chain ID utilities
 
-@fluppy/browser
+@flupy/browser
   → Merkle client
   → artifact loader
   → ZK prover
@@ -308,15 +308,15 @@ The app has been refactored from a monolithic frontend flow into reusable SDK mo
   → Stellar/Freighter payment submit
   → payment orchestrator
 
-@fluppy/react
-  → FluppyProvider
-  → useFluppyCredential
-  → useFluppyPayment
-  → useFluppyWallet
-  → useFluppyHistory
+@flupy/react
+  → FlupyProvider
+  → useFlupyCredential
+  → useFlupyPayment
+  → useFlupyWallet
+  → useFlupyHistory
 ```
 
-The incremental app integration with `@fluppy/react` is now complete through SDK-1C-6,
+The incremental app integration with `@flupy/react` is now complete through SDK-1C-6,
 with both the primary payment path and the experimental SDK hook path validated
 end-to-end on Stellar Testnet.
 
@@ -329,7 +329,7 @@ end-to-end on Stellar Testnet.
 ### Production Testnet App
 
 ```text
-https://fluppy.vercel.app/app
+https://flupy.vercel.app/app
 ```
 
 ### Stellar Testnet
@@ -359,11 +359,11 @@ Transaction confirmed           ✓
 Trace summary                   SUCCESS
 ```
 
-Latest validated Testnet payment via `useFluppyPayment` SDK hook path (SDK-1C-6D):
+Latest validated Testnet payment via `useFlupyPayment` SDK hook path (SDK-1C-6D):
 
 ```text
-FluppyProvider context          ✓ (SDK-1C-6C)
-useFluppyCredential unlock      ✓
+FlupyProvider context          ✓ (SDK-1C-6C)
+useFlupyCredential unlock      ✓
 Merkle proof received           ✓
 Groth16 proof generated         ✓
 Local verification              ✓ VALID
@@ -395,10 +395,10 @@ pi_c = 64B
 
 ### Production Artifact Verification
 
-Fluppy serves production circuit artifacts from:
+Flupy serves production circuit artifacts from:
 
 ```text
-/circuit/v3/fluppy_payment.wasm
+/circuit/v3/flupy_payment.wasm
 /circuit/v3/circuit_final.zkey.bin
 /circuit/v3/verification_key.json
 ```
@@ -408,9 +408,9 @@ The proving key artifact is served as `.zkey.bin` for Vercel static deployment c
 Verify deployed artifacts:
 
 ```bash
-curl -I https://fluppy.vercel.app/circuit/v3/fluppy_payment.wasm
-curl -I https://fluppy.vercel.app/circuit/v3/circuit_final.zkey.bin
-curl -I https://fluppy.vercel.app/circuit/v3/verification_key.json
+curl -I https://flupy.vercel.app/circuit/v3/flupy_payment.wasm
+curl -I https://flupy.vercel.app/circuit/v3/circuit_final.zkey.bin
+curl -I https://flupy.vercel.app/circuit/v3/verification_key.json
 ```
 
 Expected result:
@@ -422,7 +422,7 @@ HTTP/2 200
 Observed artifact sizes:
 
 ```text
-fluppy_payment.wasm       = 2,243,297 bytes
+flupy_payment.wasm       = 2,243,297 bytes
 circuit_final.zkey.bin    = 5,913,232 bytes
 verification_key.json     = 4,028 bytes
 ```
@@ -458,9 +458,9 @@ frontend/backend Merkle root == on-chain contract Merkle root
 ### SDK Validation Evidence
 
 ```text
-@fluppy/core     build ✓   typecheck ✓
-@fluppy/browser  build ✓   typecheck ✓
-@fluppy/react    build ✓   typecheck ✓
+@flupy/core     build ✓   typecheck ✓
+@flupy/browser  build ✓   typecheck ✓
+@flupy/react    build ✓   typecheck ✓
 Next.js app      build ✓
 ```
 
@@ -469,9 +469,9 @@ Validation status:
 * `pnpm build:core` succeeded.
 * `pnpm build:browser` succeeded.
 * `pnpm build:react` succeeded.
-* `pnpm --filter @fluppy/react typecheck` succeeded.
+* `pnpm --filter @flupy/react typecheck` succeeded.
 * `pnpm build:app` succeeded.
-* Full incremental app integration with `@fluppy/react` completed through SDK-1C-6.
+* Full incremental app integration with `@flupy/react` completed through SDK-1C-6.
 * Both primary and SDK hook payment paths validated end-to-end on Stellar Testnet.
 
 ---
@@ -514,7 +514,7 @@ Coverage includes:
 The initial Merkle proof API rebuilt a full depth-20 tree on proof requests, which could take
 around **120–195 seconds** and made the payment flow impractical for users.
 
-Fluppy now uses a sparse Merkle tree strategy with cached zero hashes and module-level singleton
+Flupy now uses a sparse Merkle tree strategy with cached zero hashes and module-level singleton
 state.
 
 | Metric            | Before           | After                                   |
@@ -543,9 +543,9 @@ roughly a **10,000x+ speedup** compared to the original full-tree rebuild path.
 
 ### Current MVP
 
-Fluppy does **not** operate a production relayer in the current MVP.
+Flupy does **not** operate a production relayer in the current MVP.
 
-Fluppy does **not** sponsor user network fees in the current MVP.
+Flupy does **not** sponsor user network fees in the current MVP.
 
 All payments are user-signed through Freighter.
 
@@ -600,8 +600,8 @@ They are not a production billing system in the current MVP.
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/dzakwannajmi/Fluppy.git
-cd fluppy
+git clone https://github.com/dzakwannajmi/Flupy.git
+cd flupy
 ```
 
 ### 2. Install Dependencies
@@ -640,7 +640,7 @@ pnpm dev
 Required local files:
 
 ```text
-app/public/circuit/v3/fluppy_payment.wasm
+app/public/circuit/v3/flupy_payment.wasm
 app/public/circuit/v3/circuit_final.zkey.bin
 app/public/circuit/v3/verification_key.json
 ```
@@ -648,7 +648,7 @@ app/public/circuit/v3/verification_key.json
 Local artifact check:
 
 ```bash
-curl -I http://localhost:3000/circuit/v3/fluppy_payment.wasm
+curl -I http://localhost:3000/circuit/v3/flupy_payment.wasm
 curl -I http://localhost:3000/circuit/v3/circuit_final.zkey.bin
 curl -I http://localhost:3000/circuit/v3/verification_key.json
 ```
@@ -662,12 +662,12 @@ curl -I http://localhost:3000/circuit/v3/verification_key.json
 | Command                                   | Description                        |
 | ----------------------------------------- | ---------------------------------- |
 | `pnpm install`                            | Install workspace dependencies     |
-| `pnpm build:core`                         | Build `@fluppy/core`               |
-| `pnpm --filter @fluppy/core typecheck`    | Typecheck `@fluppy/core`           |
-| `pnpm build:browser`                      | Build `@fluppy/browser`            |
-| `pnpm --filter @fluppy/browser typecheck` | Typecheck `@fluppy/browser`        |
-| `pnpm build:react`                        | Build `@fluppy/react`              |
-| `pnpm --filter @fluppy/react typecheck`   | Typecheck `@fluppy/react`          |
+| `pnpm build:core`                         | Build `@flupy/core`               |
+| `pnpm --filter @flupy/core typecheck`    | Typecheck `@flupy/core`           |
+| `pnpm build:browser`                      | Build `@flupy/browser`            |
+| `pnpm --filter @flupy/browser typecheck` | Typecheck `@flupy/browser`        |
+| `pnpm build:react`                        | Build `@flupy/react`              |
+| `pnpm --filter @flupy/react typecheck`   | Typecheck `@flupy/react`          |
 | `pnpm build:app`                          | Build the Next.js frontend         |
 | `cargo test -- --nocapture`               | Run Soroban contract tests         |
 | `stellar contract build`                  | Build Soroban contract WASM        |
@@ -679,22 +679,22 @@ Recommended validation sequence:
 pnpm build:core
 pnpm build:browser
 pnpm build:react
-pnpm --filter @fluppy/react typecheck
+pnpm --filter @flupy/react typecheck
 pnpm build:app
 ```
 
 Production artifact validation:
 
 ```bash
-curl -I https://fluppy.vercel.app/circuit/v3/fluppy_payment.wasm
-curl -I https://fluppy.vercel.app/circuit/v3/circuit_final.zkey.bin
-curl -I https://fluppy.vercel.app/circuit/v3/verification_key.json
+curl -I https://flupy.vercel.app/circuit/v3/flupy_payment.wasm
+curl -I https://flupy.vercel.app/circuit/v3/circuit_final.zkey.bin
+curl -I https://flupy.vercel.app/circuit/v3/verification_key.json
 ```
 
 Contract root validation:
 
 ```bash
-curl https://fluppy.vercel.app/api/merkle-root
+curl https://flupy.vercel.app/api/merkle-root
 ```
 
 ---
@@ -736,16 +736,16 @@ This endpoint is used by the frontend root sync guard to prevent stale proof gen
 ## 📁 Project Structure
 
 ```text
-fluppy/
+flupy/
 ├── app/
 │   ├── src/
 │   │   ├── app/
 │   │   │   └── app/
-│   │   │       ├── layout.tsx         (FluppyAppProvider wrapper)
-│   │   │       ├── providers.tsx      (FluppyProvider config — SDK-1C-6C)
+│   │   │       ├── layout.tsx         (FlupyAppProvider wrapper)
+│   │   │       ├── providers.tsx      (FlupyProvider config — SDK-1C-6C)
 │   │   │       └── page.tsx           (integrated: history, wallet, provider, payment)
 │   │   ├── hooks/
-│   │   │   └── useFluppy.ts
+│   │   │   └── useFlupy.ts
 │   │   └── lib/
 │   │       ├── errorMapper.ts
 │   │       ├── history.ts
@@ -758,12 +758,12 @@ fluppy/
 │   └── public/
 │       └── circuit/
 │           └── v3/
-│               ├── fluppy_payment.wasm
+│               ├── flupy_payment.wasm
 │               ├── circuit_final.zkey.bin
 │               └── verification_key.json
 │
 ├── packages/
-│   ├── fluppy-core/
+│   ├── flupy-core/
 │   │   └── src/
 │   │       ├── constants.ts
 │   │       ├── errors.ts
@@ -772,7 +772,7 @@ fluppy/
 │   │       ├── recipient-hash.ts
 │   │       └── chain-id.ts
 │   │
-│   ├── fluppy-browser/
+│   ├── flupy-browser/
 │   │   └── src/
 │   │       ├── merkle-client.ts
 │   │       ├── artifacts.ts
@@ -781,18 +781,18 @@ fluppy/
 │   │       ├── stellar.ts
 │   │       └── payment.ts
 │   │
-│   └── fluppy-react/
+│   └── flupy-react/
 │       └── src/
 │           ├── provider.tsx
 │           ├── types.ts
 │           ├── hooks.ts
-│           ├── useFluppyCredential.ts
-│           ├── useFluppyPayment.ts
-│           ├── useFluppyWallet.ts
-│           └── useFluppyHistory.ts
+│           ├── useFlupyCredential.ts
+│           ├── useFlupyPayment.ts
+│           ├── useFlupyWallet.ts
+│           └── useFlupyHistory.ts
 │
 ├── circuits/
-│   ├── FluppyPayment.circom
+│   ├── FlupyPayment.circom
 │   ├── input.json
 │   ├── proof.json
 │   ├── public.json
@@ -830,8 +830,8 @@ fluppy/
 * Proof generation happens locally in the browser.
 * Local proof verification is enforced before contract submission in the current development flow.
 * Frontend/backend Merkle root is compared against the on-chain contract root before proof generation.
-* `useFluppyHistory` stores transaction metadata only; it does not store secrets, passwords, or raw proofs.
-* `useFluppyWallet` stores only the public wallet address.
+* `useFlupyHistory` stores transaction metadata only; it does not store secrets, passwords, or raw proofs.
+* `useFlupyWallet` stores only the public wallet address.
 * Current MVP uses user-signed Freighter transactions.
 * Current MVP does not include a production relayer.
 * Current MVP does not include gas sponsorship.
@@ -853,11 +853,11 @@ Native BN254 on-chain pairing verification is planned for a future phase once th
 | -------- | ------------------------------------------------------------------------------ | ----------- |
 | Phase 1  | Soroban contract + ZK circuit + Testnet MVP                                    | ✅ Complete  |
 | Phase 2  | Merkle backend performance optimization                                        | ✅ Complete  |
-| Phase 3  | `@fluppy/core` protocol primitives                                             | ✅ Complete  |
-| Phase 4  | `@fluppy/browser` SDK extraction                                               | ✅ Complete  |
-| Phase 5  | `@fluppy/react` hooks and provider                                             | ✅ Complete  |
+| Phase 3  | `@flupy/core` protocol primitives                                             | ✅ Complete  |
+| Phase 4  | `@flupy/browser` SDK extraction                                               | ✅ Complete  |
+| Phase 5  | `@flupy/react` hooks and provider                                             | ✅ Complete  |
 | Phase 6  | Production Testnet E2E validation on Vercel                                    | ✅ Complete  |
-| Phase 7  | Incremental app integration with `@fluppy/react` (SDK-1C-6A through 6D)       | ✅ Complete  |
+| Phase 7  | Incremental app integration with `@flupy/react` (SDK-1C-6A through 6D)       | ✅ Complete  |
 | Phase 8  | Runtime hardening: Web Worker proof generation, timeout, artifact checksum     | 📋 Next     |
 | Phase 9  | Backend hardening: persistent Merkle storage, rate limiting, merchant API keys | 📋 Planned  |
 | Phase 10 | External security audit and audit-readiness review                             | 📋 Planned  |
@@ -893,15 +893,15 @@ backend before deeper production readiness.
 
 ### 3. SDK Integration (Completed)
 
-The incremental `@fluppy/react` app integration is now complete through SDK-1C-6:
+The incremental `@flupy/react` app integration is now complete through SDK-1C-6:
 
-* **SDK-1C-6A** — `useFluppyHistory` aligned to localStorage persistence key `fluppy:payment-history:v1`.
-* **SDK-1C-6B** — `useFluppyWallet` bridged to existing Freighter wallet connection flow.
-* **SDK-1C-6C** — `FluppyProvider` integrated into `/app` route subtree via `providers.tsx` and `layout.tsx`.
-* **SDK-1C-6D** — `useFluppyPayment` experimental SDK hook path validated end-to-end on Stellar Testnet.
+* **SDK-1C-6A** — `useFlupyHistory` aligned to localStorage persistence key `flupy:payment-history:v1`.
+* **SDK-1C-6B** — `useFlupyWallet` bridged to existing Freighter wallet connection flow.
+* **SDK-1C-6C** — `FlupyProvider` integrated into `/app` route subtree via `providers.tsx` and `layout.tsx`.
+* **SDK-1C-6D** — `useFlupyPayment` experimental SDK hook path validated end-to-end on Stellar Testnet.
 
-Both the primary payment path (`executeFluppyPayment` from `@fluppy/browser`) and the SDK hook
-path (`useFluppyPayment` from `@fluppy/react`) are now confirmed on Stellar Testnet with valid
+Both the primary payment path (`executeFlupyPayment` from `@flupy/browser`) and the SDK hook
+path (`useFlupyPayment` from `@flupy/react`) are now confirmed on Stellar Testnet with valid
 on-chain 95/5 atomic splits.
 
 ### 4. Grant Documentation and Demo Evidence
@@ -950,7 +950,7 @@ The following are intentionally out of scope for the current Testnet MVP:
 * Production relayer
 * Gasless payment sponsorship
 * API key billing system
-* Public npm package publication for `@fluppy/core`, `@fluppy/browser`, or `@fluppy/react`
+* Public npm package publication for `@flupy/core`, `@flupy/browser`, or `@flupy/react`
 * Production merchant dashboard
 * Full KYC/AML provider integration
 * Production database hardening

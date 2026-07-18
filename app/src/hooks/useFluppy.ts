@@ -17,7 +17,7 @@ import {
   RootSyncError,
   type FluppyPaymentStep,
   type StellarConfig,
-} from "@fluppy/browser";
+} from "@flupy/browser";
 
 import {
   credentialExists,

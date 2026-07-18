@@ -1,16 +1,16 @@
-# 🔐 Security Policy — Fluppy
+# 🔐 Security Policy — Flupy
 
 ## Overview
 
-Fluppy is a privacy-preserving payment protocol on Stellar Soroban that combines
+Flupy is a privacy-preserving payment protocol on Stellar Soroban that combines
 Zero-Knowledge Membership Proofs with atomic USDC settlement.
 
-This document describes Fluppy's current security model, implemented protections,
+This document describes Flupy's current security model, implemented protections,
 known limitations, threat model, testing status, and responsible disclosure policy.
 
 > ⚠️ **Testnet Status Notice**
 >
-> Fluppy is currently a production-candidate **Stellar Testnet** implementation.
+> Flupy is currently a production-candidate **Stellar Testnet** implementation.
 > It has successfully completed end-to-end payment validation on the deployed Vercel frontend
 > and Stellar Testnet, but it is **not yet mainnet-ready**.
 >
@@ -264,7 +264,7 @@ Transaction confirmed on Stellar Testnet
 
 ### 2.12 Encrypted Browser Credential Storage
 
-Fluppy stores browser credentials using encrypted client-side storage.
+Flupy stores browser credentials using encrypted client-side storage.
 
 Current credential model:
 
@@ -285,16 +285,16 @@ Current credential model:
 
 ### 2.13 SDK Boundary Safety
 
-Fluppy uses a three-layer SDK architecture:
+Flupy uses a three-layer SDK architecture:
 
-* `@fluppy/core`
-* `@fluppy/browser`
-* `@fluppy/react`
+* `@flupy/core`
+* `@flupy/browser`
+* `@flupy/react`
 
 Security-sensitive SDK boundaries:
 
-* `@fluppy/browser` does not import React, Next.js, Sentry, toast libraries, or UI code.
-* `@fluppy/react` does not store raw secrets or passwords in React state.
+* `@flupy/browser` does not import React, Next.js, Sentry, toast libraries, or UI code.
+* `@flupy/react` does not store raw secrets or passwords in React state.
 * Payment history stores transaction metadata only.
 * Raw proofs are not logged by the React SDK.
 
@@ -311,7 +311,7 @@ Security-sensitive SDK boundaries:
 Production circuit artifacts are served from:
 
 ```text
-/circuit/v3/fluppy_payment.wasm
+/circuit/v3/flupy_payment.wasm
 /circuit/v3/circuit_final.zkey.bin
 /circuit/v3/verification_key.json
 ```
@@ -327,7 +327,7 @@ for Vercel static asset compatibility.
 Verified production artifact status:
 
 ```text
-fluppy_payment.wasm       HTTP/2 200
+flupy_payment.wasm       HTTP/2 200
 circuit_final.zkey.bin    HTTP/2 200
 verification_key.json     HTTP/2 200
 ```
@@ -381,7 +381,7 @@ Browser-side Groth16 local verification is strictly enforced before every contra
 
 **Future production path:**
 
-When stable BN254 host functions are available in Soroban SDK, Fluppy will migrate to native
+When stable BN254 host functions are available in Soroban SDK, Flupy will migrate to native
 on-chain BN254 verification through the existing modular verifier backend.
 
 ---
@@ -408,7 +408,7 @@ The current Testnet build does not yet perform native on-chain Groth16 pairing v
 
 Severity: **High for Mainnet readiness**
 
-Fluppy has not yet completed an external smart contract audit.
+Flupy has not yet completed an external smart contract audit.
 
 **Planned action:**
 
@@ -495,7 +495,7 @@ Current proof generation works in the browser but may block the main thread on l
 
 Severity: **Intentional MVP limitation**
 
-Fluppy is deployed to Stellar Testnet only.
+Flupy is deployed to Stellar Testnet only.
 
 Mainnet deployment is explicitly out of scope for the current MVP.
 
@@ -648,7 +648,7 @@ Production Testnet payment: confirmed
 ### 8.1 Live App
 
 ```text
-https://fluppy.vercel.app/app
+https://flupy.vercel.app/app
 ```
 
 ### 8.2 Contract
@@ -672,9 +672,9 @@ https://stellar.expert/explorer/testnet/tx/ca6227fd5c426cc2ab1dbd9c2ee2fb6a4fce1
 ### 8.4 Artifact Verification
 
 ```bash
-curl -I https://fluppy.vercel.app/circuit/v3/fluppy_payment.wasm
-curl -I https://fluppy.vercel.app/circuit/v3/circuit_final.zkey.bin
-curl -I https://fluppy.vercel.app/circuit/v3/verification_key.json
+curl -I https://flupy.vercel.app/circuit/v3/flupy_payment.wasm
+curl -I https://flupy.vercel.app/circuit/v3/circuit_final.zkey.bin
+curl -I https://flupy.vercel.app/circuit/v3/verification_key.json
 ```
 
 Expected:
@@ -686,7 +686,7 @@ HTTP/2 200
 ### 8.5 Contract Root Verification
 
 ```bash
-curl https://fluppy.vercel.app/api/merkle-root
+curl https://flupy.vercel.app/api/merkle-root
 ```
 
 Observed:

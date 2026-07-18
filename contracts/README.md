@@ -1,4 +1,4 @@
-# 🦀 Fluppy Smart Contract — Soroban
+# 🦀 Flupy Smart Contract — Soroban
 
 > ⚠️ **Testnet Notice**
 >
@@ -47,7 +47,7 @@
 
 ## Overview
 
-This directory contains the Soroban smart contract for the Fluppy Protocol.
+This directory contains the Soroban smart contract for the Flupy Protocol.
 
 The contract handles:
 
@@ -120,7 +120,7 @@ contracts/src/
 │   └── bn254_native.rs  # Production Groth16 verifier (Protocol 26, compile-clean)
 │
 ├── payment.rs           # Payment execution, public input checks, split logic
-├── errors.rs            # FluppyError enum
+├── errors.rs            # FlupyError enum
 ├── lib.rs               # Contract entrypoint and exported contract API
 └── test.rs              # Contract tests
 ```
@@ -264,7 +264,7 @@ User signs transaction with Freighter
 
 ## Atomic Settlement
 
-Fluppy performs an atomic 95/5 split through the Stellar Asset Contract.
+Flupy performs an atomic 95/5 split through the Stellar Asset Contract.
 
 ```text
 merchant_receive = amount * 95 / 100
@@ -624,7 +624,7 @@ Example active root:
 | Contract ID | `CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS` |
 | Latest Confirmed Tx (SDK hook path) | `bcc57200a6590db53a7cea6fd6aa02911bdd6001f5a7892b77e6451066b38cbe` |
 | Explorer | `https://stellar.expert/explorer/testnet/tx/13367140816011264` |
-| Live App | `https://fluppy.vercel.app/app` |
+| Live App | `https://flupy.vercel.app/app` |
 
 Runtime evidence:
 

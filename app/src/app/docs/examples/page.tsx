@@ -53,8 +53,8 @@ export default function ExamplesPage() {
       <Code filename="app/layout.tsx">{`'use client';
 
 import { useMemo } from 'react';
-import { FluppyProvider } from '@fluppy/react';
-import type { FluppyReactConfig } from '@fluppy/react';
+import { FluppyProvider } from '@flupy/react';
+import type { FluppyReactConfig } from '@flupy/react';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const config = useMemo((): FluppyReactConfig => ({
@@ -86,7 +86,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </p>
       <Code filename="WalletButton.tsx">{`'use client';
 
-import { useFluppyWallet } from '@fluppy/react';
+import { useFluppyWallet } from '@flupy/react';
 
 export function WalletButton() {
   const { address, isConnected, isConnecting, error, connect, resetError } = useFluppyWallet();
@@ -120,7 +120,7 @@ export function WalletButton() {
       </Warn>
       <Code filename="CredentialManager.tsx">{`'use client';
 
-import { useFluppyCredential } from '@fluppy/react';
+import { useFluppyCredential } from '@flupy/react';
 
 export function CredentialManager({
   onSecretCreated,   // caller shows this backup secret to the user ONCE
@@ -169,7 +169,7 @@ export function CredentialManager({
       <H2 id="payment">4. Payment Flow</H2>
       <Code filename="PaymentForm.tsx">{`'use client';
 
-import { useFluppyPayment } from '@fluppy/react';
+import { useFluppyPayment } from '@flupy/react';
 
 export function PaymentForm({
   merchantAddress,  // your application supplies this — do not hardcode in SDK
@@ -250,8 +250,8 @@ export function PaymentForm({
       </Note>
       <Code filename="PaymentHistory.tsx">{`'use client';
 
-import { useFluppyHistory } from '@fluppy/react';
-import type { FluppyPaymentRecord } from '@fluppy/react';
+import { useFluppyHistory } from '@flupy/react';
+import type { FluppyPaymentRecord } from '@flupy/react';
 
 export function PaymentHistory() {
   const { records, update, remove, clear } = useFluppyHistory();
@@ -316,7 +316,7 @@ import {
   useFluppyCredential,
   useFluppyPayment,
   useFluppyHistory,
-} from '@fluppy/react';
+} from '@flupy/react';
 
 export function PaymentCard({
   merchantAddress,        // from your app config — do not hardcode
@@ -382,7 +382,7 @@ export function PaymentCard({
       {/* Browser SDK direct */}
       <H2 id="browser-direct">7. Browser SDK Without React</H2>
       <p className="text-sm text-gray-400">
-        <code className="text-white">@fluppy/browser</code> works without React —
+        <code className="text-white">@flupy/browser</code> works without React —
         useful for vanilla TypeScript integrations or non-React frameworks.
       </p>
       <Code filename="payment-vanilla.ts">{`import {
@@ -390,7 +390,7 @@ export function PaymentCard({
   executeFluppyPayment,
   RootSyncError,
   type StellarConfig,
-} from '@fluppy/browser';
+} from '@flupy/browser';
 
 const stellarConfig: StellarConfig = {
   contractId:        process.env.NEXT_PUBLIC_CONTRACT_ID!,

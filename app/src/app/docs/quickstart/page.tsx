@@ -1,9 +1,9 @@
 /**
  * docs/quickstart/page.tsx — Developer quickstart for Fluppy React SDK.
  *
- * Demonstrates the full payment flow using @fluppy/react hooks.
+ * Demonstrates the full payment flow using @flupy/react hooks.
  *
- * Important: @fluppy/react is a completed SDK layer.
+ * Important: @flupy/react is a completed SDK layer.
  * Full app integration (replacing existing useFluppy.ts) is a separate next phase.
  * These code examples show how a future consumer would integrate the SDK.
  */
@@ -73,14 +73,14 @@ export default function QuickstartPage() {
       <div>
         <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">Quickstart</h1>
         <p className="text-lg text-gray-400">
-          This guide shows the full payment flow using <code className="text-white">@fluppy/react</code> hooks —
+          This guide shows the full payment flow using <code className="text-white">@flupy/react</code> hooks —
           from wallet connection to a confirmed ZK payment on Stellar Testnet.
         </p>
       </div>
 
       <Note>
         <strong>SDK status:</strong>{' '}
-        <code>@fluppy/react</code> is complete as an SDK layer. These examples show
+        <code>@flupy/react</code> is complete as an SDK layer. These examples show
         how developers integrate the SDK. Full migration of the existing Fluppy app
         to these hooks is a separate next phase.
       </Note>
@@ -117,8 +117,8 @@ export default function QuickstartPage() {
         All Fluppy hooks must be inside this provider to access the shared SDK configuration.
       </p>
 
-      <CodeBlock filename="app/layout.tsx">{`import { FluppyProvider } from '@fluppy/react';
-import type { FluppyReactConfig } from '@fluppy/react';
+      <CodeBlock filename="app/layout.tsx">{`import { FluppyProvider } from '@flupy/react';
+import type { FluppyReactConfig } from '@flupy/react';
 import { useMemo } from 'react';
 
 // Memoize config to prevent unnecessary re-renders
@@ -159,7 +159,7 @@ export default function RootLayout({
 
       <CodeBlock filename="WalletButton.tsx">{`'use client';
 
-import { useFluppyWallet } from '@fluppy/react';
+import { useFluppyWallet } from '@flupy/react';
 
 export function WalletButton() {
   const {
@@ -228,7 +228,7 @@ export function WalletButton() {
 
       <CodeBlock filename="CredentialSetup.tsx">{`'use client';
 
-import { useFluppyCredential } from '@fluppy/react';
+import { useFluppyCredential } from '@flupy/react';
 
 export function CredentialSetup() {
   const {
@@ -284,7 +284,7 @@ export function CredentialSetup() {
 
       <CodeBlock filename="PaymentForm.tsx">{`'use client';
 
-import { useFluppyCredential, useFluppyPayment, useFluppyHistory } from '@fluppy/react';
+import { useFluppyCredential, useFluppyPayment, useFluppyHistory } from '@flupy/react';
 
 export function PaymentForm({ merchantAddress }: { merchantAddress: string }) {
   const cred    = useFluppyCredential();
@@ -383,7 +383,7 @@ export function PaymentForm({ merchantAddress }: { merchantAddress: string }) {
 
       <CodeBlock filename="PaymentHistory.tsx">{`'use client';
 
-import { useFluppyHistory } from '@fluppy/react';
+import { useFluppyHistory } from '@flupy/react';
 
 export function PaymentHistory() {
   const { records, clear } = useFluppyHistory();

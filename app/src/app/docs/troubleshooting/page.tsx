@@ -144,24 +144,24 @@ export default function TroubleshootingPage() {
       </Note>
       <div className="space-y-3">
         <IssueCard
-          error="Cannot find module '@fluppy/core'"
+          error="Cannot find module '@flupy/core'"
           cause="pnpm install was not run from the monorepo root, or workspace symlinks are missing."
           fix="Run `pnpm install` from the repository root, then `pnpm build:core`."
         />
         <IssueCard
-          error="Cannot find module '@fluppy/browser' / '@fluppy/react'"
+          error="Cannot find module '@flupy/browser' / '@flupy/react'"
           cause="The package was not built — dist/ folder is empty or missing."
           fix="Run `pnpm build:browser` and/or `pnpm build:react` before starting the app."
         />
         <IssueCard
-          error="Type error: Property 'X' does not exist on type (from @fluppy/*)"
+          error="Type error: Property 'X' does not exist on type (from @flupy/*)"
           cause="Stale dist/index.d.ts — package was updated in source but not rebuilt."
           fix="Rebuild the package: `pnpm build:core`, `pnpm build:browser`, or `pnpm build:react`."
         />
         <IssueCard
           error="pnpm build:react: command not found"
           cause="build:react script is missing from root package.json."
-          fix={<>Add <code className="text-yellow-300">{`"build:react": "pnpm --filter @fluppy/react build"`}</code> to the root package.json scripts section.</>}
+          fix={<>Add <code className="text-yellow-300">{`"build:react": "pnpm --filter @flupy/react build"`}</code> to the root package.json scripts section.</>}
         />
         <IssueCard
           error="TypeScript: rootDir or paths alias mismatch"
@@ -174,7 +174,7 @@ pnpm install
 pnpm build:core
 pnpm build:browser
 pnpm build:react
-pnpm --filter @fluppy/react typecheck
+pnpm --filter @flupy/react typecheck
 pnpm build:app`}</Code>
 
       {/* ── 2. Environment ── */}
@@ -418,7 +418,7 @@ pnpm build:browser
 pnpm build:react
 
 # 3. Typecheck React SDK
-pnpm --filter @fluppy/react typecheck
+pnpm --filter @flupy/react typecheck
 
 # 4. Build the Next.js app
 pnpm build:app

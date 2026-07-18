@@ -14,7 +14,7 @@ import { useFluppy } from "../../hooks/useFluppy";
 import { ProofProgressBar } from '../../components/ProofProgressBar';
 import { TxHistoryPanel } from '../../components/TxHistoryPanel';
 import { buildExplorerUrl } from "../../lib/history";
-import { useFluppyCredential, useFluppyHistory, useFluppyPayment, useFluppyWallet, type FluppyPaymentRecord } from "@fluppy/react";
+import { useFluppyCredential, useFluppyHistory, useFluppyPayment, useFluppyWallet, type FluppyPaymentRecord } from "@flupy/react";
 
 // ─── Design tokens ──────────────────────────────────────────────────────────
 const T = {
@@ -839,7 +839,7 @@ export default function AppPage() {
                   </button>
 
                   <p className="mt-2 text-[11px] leading-relaxed text-white/40">
-                    Experimental SDK path using @fluppy/react useFluppyPayment.
+                    Experimental SDK path using @flupy/react useFluppyPayment.
                     The primary Pay button above remains the stable flow.
                   </p>
 

@@ -74,9 +74,9 @@ export default function InstallationPage() {
       </div>
 
       <Note type="info">
-        Fluppy packages (<code className="text-blue-200">@fluppy/core</code>,{' '}
-        <code className="text-blue-200">@fluppy/browser</code>,{' '}
-        <code className="text-blue-200">@fluppy/react</code>) are{' '}
+        Fluppy packages (<code className="text-blue-200">@flupy/core</code>,{' '}
+        <code className="text-blue-200">@flupy/browser</code>,{' '}
+        <code className="text-blue-200">@flupy/react</code>) are{' '}
         <strong>internal workspace packages</strong> and are not yet published to npm.
         Public npm publication is planned after external security audit and multi-party
         trusted setup ceremony.
@@ -146,7 +146,7 @@ pnpm install`}</CodeBlock>
 
       <p className="text-sm text-gray-500">
         This links all workspace packages via symlinks. You will see{' '}
-        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">node_modules/@fluppy/core</code> inside{' '}
+        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">node_modules/@flupy/core</code> inside{' '}
         <code className="rounded bg-white/10 px-1 py-0.5 text-xs">packages/fluppy-browser</code> and{' '}
         <code className="rounded bg-white/10 px-1 py-0.5 text-xs">app</code> as workspace symlinks.
       </p>
@@ -187,17 +187,17 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</CodeBlock>
         Build all SDK packages in dependency order. The Next.js app consumes them via workspace symlinks.
       </p>
 
-      <CodeBlock>{`# Build @fluppy/core (zero dependencies — always first)
+      <CodeBlock>{`# Build @flupy/core (zero dependencies — always first)
 pnpm build:core
 
-# Build @fluppy/browser (depends on @fluppy/core)
+# Build @flupy/browser (depends on @flupy/core)
 pnpm build:browser
 
-# Build @fluppy/react (depends on @fluppy/browser + @fluppy/core)
+# Build @flupy/react (depends on @flupy/browser + @flupy/core)
 pnpm build:react
 
 # Typecheck React SDK
-pnpm --filter @fluppy/react typecheck
+pnpm --filter @flupy/react typecheck
 
 # Build the Next.js app
 pnpm build:app`}</CodeBlock>
@@ -218,9 +218,9 @@ pnpm build:app`}</CodeBlock>
           </thead>
           <tbody className="divide-y divide-white/5">
             {[
-              ['@fluppy/core', '~10 KB', '~11 KB', '~9 KB'],
-              ['@fluppy/browser', '~31 KB', '~32 KB', '~11 KB'],
-              ['@fluppy/react', '~14 KB', '~14 KB', '~14 KB'],
+              ['@flupy/core', '~10 KB', '~11 KB', '~9 KB'],
+              ['@flupy/browser', '~31 KB', '~32 KB', '~11 KB'],
+              ['@flupy/react', '~14 KB', '~14 KB', '~14 KB'],
             ].map(([pkg, esm, cjs, dts]) => (
               <tr key={pkg} className="hover:bg-white/5">
                 <td className="px-4 py-2.5 font-mono text-xs font-semibold text-white">{pkg}</td>
@@ -249,15 +249,15 @@ pnpm dev
 
       <CodeBlock filename="packages/fluppy-browser/package.json">{`{
   "dependencies": {
-    "@fluppy/core": "workspace:*"
+    "@flupy/core": "workspace:*"
   }
 }`}</CodeBlock>
 
       <CodeBlock filename="app/package.json">{`{
   "dependencies": {
-    "@fluppy/browser": "workspace:*",
-    "@fluppy/core": "workspace:*",
-    "@fluppy/react": "workspace:*"
+    "@flupy/browser": "workspace:*",
+    "@flupy/core": "workspace:*",
+    "@flupy/react": "workspace:*"
   }
 }`}</CodeBlock>
 
@@ -282,7 +282,7 @@ pnpm dev
       <CodeBlock>{`# Future package-manager command after package publication.
 # DO NOT use this command today — packages are not yet published.
 
-pnpm add @fluppy/core @fluppy/browser @fluppy/react`}</CodeBlock>
+pnpm add @flupy/core @flupy/browser @flupy/react`}</CodeBlock>
 
       <CodeBlock filename="tsconfig.json (future)">{`{
   "compilerOptions": {

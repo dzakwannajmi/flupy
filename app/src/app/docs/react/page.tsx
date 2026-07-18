@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '@fluppy/react',
-  description: 'API reference for @fluppy/react — Fluppy React SDK hooks and provider.',
+  title: '@flupy/react',
+  description: 'API reference for @flupy/react — Fluppy React SDK hooks and provider.',
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
@@ -61,18 +61,18 @@ export default function ReactPage() {
     <div className="space-y-6">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-0.5 text-xs font-medium text-pink-400">@fluppy/react</span>
+          <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-0.5 text-xs font-medium text-pink-400">@flupy/react</span>
           <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400">✓ Complete</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@fluppy/react</h1>
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@flupy/react</h1>
         <p className="text-lg text-gray-400">
-          React SDK built on <code className="text-white">@fluppy/browser</code>. Provides a context
+          React SDK built on <code className="text-white">@flupy/browser</code>. Provides a context
           provider and four domain hooks for the full Fluppy payment lifecycle.
         </p>
       </div>
 
       <Note>
-        <strong>Status:</strong> <code>@fluppy/react</code> is complete as an SDK layer.
+        <strong>Status:</strong> <code>@flupy/react</code> is complete as an SDK layer.
         Full migration of the existing Fluppy app to these hooks is a planned next phase.
         These hooks are ready to be consumed by any React 18+ application with{' '}
         <code>FluppyProvider</code> at the root.
@@ -119,7 +119,7 @@ export default function ReactPage() {
             ['merkleOptions?',   'MerkleClientOptions','Optional: apiBaseUrl override for the Merkle proof backend'],
           ]}
         />
-        <Code filename="layout.tsx">{`import { FluppyProvider } from '@fluppy/react';
+        <Code filename="layout.tsx">{`import { FluppyProvider } from '@flupy/react';
 
 const config = {
   stellarConfig: {
@@ -280,7 +280,7 @@ import {
   useFluppyPayment,
   useFluppyHistory,
   useFluppyWallet,
-} from '@fluppy/react';
+} from '@flupy/react';
 
 export function PaymentCard({ merchant }: { merchant: string }) {
   const wallet  = useFluppyWallet();

@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '@fluppy/browser',
-  description: 'API reference for @fluppy/browser — Fluppy browser SDK.',
+  title: '@flupy/browser',
+  description: 'API reference for @flupy/browser — Fluppy browser SDK.',
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
@@ -50,12 +50,12 @@ export default function BrowserPage() {
     <div className="space-y-6">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-2.5 py-0.5 text-xs font-medium text-purple-400">@fluppy/browser</span>
+          <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-2.5 py-0.5 text-xs font-medium text-purple-400">@flupy/browser</span>
           <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400">✓ Complete</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@fluppy/browser</h1>
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@flupy/browser</h1>
         <p className="text-lg text-gray-400">
-          Browser runtime SDK built on <code className="text-white">@fluppy/core</code>. Provides identity management,
+          Browser runtime SDK built on <code className="text-white">@flupy/core</code>. Provides identity management,
           Merkle proof client, ZK proof generation, and Stellar/Freighter payment submission.
         </p>
       </div>
@@ -226,7 +226,7 @@ export default function BrowserPage() {
   unlockCredential,
   RootSyncError,
   type StellarConfig,
-} from '@fluppy/browser';
+} from '@flupy/browser';
 
 const config: StellarConfig = {
   contractId:        process.env.NEXT_PUBLIC_CONTRACT_ID!,

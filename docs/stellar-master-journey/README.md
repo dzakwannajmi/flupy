@@ -1,8 +1,8 @@
-# Fluppy — Stellar Master Journey Submission
+# Flupy — Stellar Master Journey Submission
 
 ## Project Overview
 
-**Fluppy** is a privacy-preserving, eligibility-based merchant payment protocol built on Stellar Soroban.
+**Flupy** is a privacy-preserving, eligibility-based merchant payment protocol built on Stellar Soroban.
 
 Users prove private membership or eligibility using a Groth16 ZK proof generated in the browser via Circom and SnarkJS. The Soroban smart contract enforces nullifier uniqueness, Merkle root integrity, recipient and amount binding, and executes atomic payment settlement — 95% to the merchant, 5% to the protocol treasury.
 
@@ -31,8 +31,8 @@ Users prove private membership or eligibility using a Groth16 ZK proof generated
 
 | | |
 |---|---|
-| **GitHub Repository** | [View Repo](https://github.com/dzakwannajmi/Fluppy) |
-| **Live Demo** | [Open Fluppy](https://fluppy.vercel.app/) |
+| **GitHub Repository** | [View Repo](https://github.com/dzakwannajmi/Flupy) |
+| **Live Demo** | [Open Flupy](https://flupy.vercel.app/) |
 | **Contract Address** | `CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS` |
 | **Transaction Hash** | `1b3ad3d7b28208a9a5572755bd6e5479177d5b58f23d8445128bfeae1caea739` |
 | **Demo Video** | [Watch Demo](https://youtu.be/7R9P7tibI08) |
@@ -53,12 +53,12 @@ Users prove private membership or eligibility using a Groth16 ZK proof generated
 | Send a transaction on Stellar Testnet | ✅ Complete | [Screenshot 05](./screenshots/05-transaction-success.png) |
 | Success/failure feedback shown | ✅ Complete | Toast + status message in UI |
 | Transaction hash displayed to user | ✅ Complete | [Screenshot 06](./screenshots/06-stellar-explorer.png) |
-| Public GitHub repository | ✅ Complete | [Repository](https://github.com/dzakwannajmi/Fluppy) |
+| Public GitHub repository | ✅ Complete | [Repository](https://github.com/dzakwannajmi/Flupy) |
 | README with setup instructions | ✅ Complete | See root README |
 
 ### Notes
 
-The existing Fluppy Soroban payment flow satisfies the Level 1 transaction requirement. The transaction is submitted on Stellar Testnet using XLM for fees, with full Freighter wallet signing. Mentor confirmed this flow is sufficient for Level 1.
+The existing Flupy Soroban payment flow satisfies the Level 1 transaction requirement. The transaction is submitted on Stellar Testnet using XLM for fees, with full Freighter wallet signing. Mentor confirmed this flow is sufficient for Level 1.
 
 ---
 
@@ -102,17 +102,17 @@ The existing Fluppy Soroban payment flow satisfies the Level 1 transaction requi
 | Error handling and loading states | ✅ Complete | Loading spinner, error states, wallet guard |
 | Contract/frontend testing evidence | ✅ Complete | [Screenshot 08](./screenshots/08-test-output.png) |
 | Production-ready architecture docs | ✅ Complete | See `ARCHITECTURE.md` in root |
-| Public GitHub repository | ✅ Complete | [Repository](https://github.com/dzakwannajmi/Fluppy) |
+| Public GitHub repository | ✅ Complete | [Repository](https://github.com/dzakwannajmi/Flupy) |
 | README with complete documentation | ✅ Complete | This document |
 | 10+ meaningful commits | ✅ Complete | See commit history |
-| Live demo link | ✅ Complete | [Open Fluppy](https://fluppy.vercel.app/) |
+| Live demo link | ✅ Complete | [Open Flupy](https://flupy.vercel.app/) |
 | Contract deployment address | ✅ Complete | `CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS` |
 | Transaction hash | ✅ Complete | `1b3ad3d7b28208a9a5572755bd6e5479177d5b58f23d8445128bfeae1caea739` |
 | Demo video (1–2 minutes) | ✅ Complete | [Watch Demo](<DEMO_VIDEO_URL>) |
 
 ### Advanced Contract Logic Detail
 
-The Fluppy Soroban contract implements:
+The Flupy Soroban contract implements:
 
 - **Merkle root check** — Verifies the submitted root matches the stored on-chain root before processing
 - **Nullifier replay protection** — Each proof submission uses a unique nullifier stored on-chain; duplicate nullifiers are rejected

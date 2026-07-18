@@ -5,7 +5,7 @@ import {
   verifyProofLocally as verifyBrowserProofLocally,
   type PaymentProofOutput,
   type ProofProgressCallback,
-} from '@fluppy/browser';
+} from '@flupy/browser';
 
 import type { MerkleProof } from './merkle';
 
@@ -27,12 +27,12 @@ export interface GenerateProofOptions {
 export {
   computeChainId,
   computeRecipientHash,
-} from '@fluppy/browser';
+} from '@flupy/browser';
 
 /**
  * Compatibility wrapper for the legacy app API.
  *
- * The implementation now lives in @fluppy/browser, but useFluppy.ts can keep
+ * The implementation now lives in @flupy/browser, but useFluppy.ts can keep
  * calling the old positional signature during SDK-1B migration.
  */
 export async function generateZkProof(

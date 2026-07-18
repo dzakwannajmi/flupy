@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '@fluppy/core',
-  description: 'API reference for @fluppy/core — Fluppy protocol primitives.',
+  title: '@flupy/core',
+  description: 'API reference for @flupy/core — Fluppy protocol primitives.',
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
@@ -53,13 +53,13 @@ export default function CorePage() {
     <div className="space-y-6">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium text-blue-400">@fluppy/core</span>
+          <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium text-blue-400">@flupy/core</span>
           <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400">✓ Complete</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@fluppy/core</h1>
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@flupy/core</h1>
         <p className="text-lg text-gray-400">
-          Protocol-level primitives shared by <code className="text-white">@fluppy/browser</code> and{' '}
-          <code className="text-white">@fluppy/react</code>. Pure TypeScript — no browser APIs, no React, no wallet dependency.
+          Protocol-level primitives shared by <code className="text-white">@flupy/browser</code> and{' '}
+          <code className="text-white">@flupy/react</code>. Pure TypeScript — no browser APIs, no React, no wallet dependency.
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export default function CorePage() {
         byte arrays (<code className="text-white">BytesN&lt;64&gt;</code>,{' '}
         <code className="text-white">BytesN&lt;128&gt;</code>,{' '}
         <code className="text-white">BytesN&lt;32&gt;</code>). The encoding helpers in{' '}
-        <code className="text-white">@fluppy/core</code> handle this conversion:
+        <code className="text-white">@flupy/core</code> handle this conversion:
       </p>
       <div className="overflow-hidden rounded-xl border border-white/10 bg-gray-900 p-4 text-xs text-gray-400">
         <div className="space-y-1 font-mono">
@@ -200,7 +200,7 @@ export default function CorePage() {
   parseFluppyError,
   type PaymentProofOutput,
   type MerkleProof,
-} from '@fluppy/core';
+} from '@flupy/core';
 
 // Compute BN254-safe inputs
 const recipientHash = computeRecipientHash('GDLST72T...');

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const SDK_PACKAGES = [
   {
-    name: "@fluppy/core",
+    name: "@flupy/core",
     status: "Complete",
     size: "10 KB ESM",
     desc: "Protocol primitives: constants, errors, encoding, recipient hash, chain ID, shared types.",
@@ -17,7 +17,7 @@ const SDK_PACKAGES = [
     color: "blue",
   },
   {
-    name: "@fluppy/browser",
+    name: "@flupy/browser",
     status: "Complete",
     size: "31 KB ESM",
     desc: "Browser SDK: Merkle client, artifact loader, ZK prover, identity, Stellar/Freighter, payment orchestrator.",
@@ -25,7 +25,7 @@ const SDK_PACKAGES = [
     color: "purple",
   },
   {
-    name: "@fluppy/react",
+    name: "@flupy/react",
     status: "Complete",
     size: "14 KB ESM",
     desc: "React SDK: FluppyProvider, useFluppyCredential, useFluppyPayment, useFluppyWallet, useFluppyHistory.",
@@ -47,7 +47,7 @@ const VALIDATION_ROWS = [
   { label: "pnpm build:core", result: "✓ Pass" },
   { label: "pnpm build:browser", result: "✓ Pass" },
   { label: "pnpm build:react", result: "✓ Pass" },
-  { label: "pnpm --filter @fluppy/react typecheck", result: "✓ Pass (0 errors)" },
+  { label: "pnpm --filter @flupy/react typecheck", result: "✓ Pass (0 errors)" },
   { label: "pnpm build:app", result: "✓ Pass" },
   { label: "Payment E2E (Stellar Testnet)", result: "✓ Confirmed" },
 ] as const;
@@ -149,11 +149,11 @@ export default function DocsPage() {
           <pre className="overflow-x-auto p-5 text-xs leading-relaxed text-gray-300">
 {`Browser (User)
   │
-  ├─ @fluppy/react      → useFluppyCredential: AES-GCM secret (IndexedDB)
-  ├─ @fluppy/browser    → computeCommitment → POST /api/merkle-proof
-  ├─ @fluppy/browser    → snarkjs.groth16.fullProve() → ZK proof (BN254)
-  ├─ @fluppy/browser    → verifyProofLocally() → ✓ VALID
-  └─ @fluppy/browser    → Freighter sign → Soroban RPC submit
+  ├─ @flupy/react      → useFluppyCredential: AES-GCM secret (IndexedDB)
+  ├─ @flupy/browser    → computeCommitment → POST /api/merkle-proof
+  ├─ @flupy/browser    → snarkjs.groth16.fullProve() → ZK proof (BN254)
+  ├─ @flupy/browser    → verifyProofLocally() → ✓ VALID
+  └─ @flupy/browser    → Freighter sign → Soroban RPC submit
                                     │
                            Soroban Contract
                               │
@@ -248,7 +248,7 @@ export default function DocsPage() {
                 "Atomic 95/5 USDC split on-chain",
                 "Nullifier-based replay protection",
                 "ChainId binding (cross-network guard)",
-                "Three-layer modular SDK (@fluppy/*)",
+                "Three-layer modular SDK (@flupy/*)",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="mt-0.5 text-green-400">·</span>

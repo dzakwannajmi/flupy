@@ -18,6 +18,7 @@
     "@stellar/freighter-api": "^6.0.1",
     "@stellar/stellar-sdk": "^15.0.1",
     "@types/three": "^0.183.1",
+    "@vercel/analytics": "^2.0.1",
     "buffer": "^6.0.3",
     "circomlibjs": "^0.1.7",
     "clsx": "^2.1.1",

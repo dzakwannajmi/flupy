@@ -1,0 +1,56 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@fluppy/browser": "workspace:*",
+    "@fluppy/core": "workspace:*",
+    "@fluppy/react": "workspace:*",
+    "@noble/hashes": "1.8.0",
+    "@sentry/nextjs": "^10.53.1",
+    "@stellar/freighter-api": "^6.0.1",
+    "@stellar/stellar-sdk": "^15.0.1",
+    "@types/three": "^0.183.1",
+    "buffer": "^6.0.3",
+    "circomlibjs": "^0.1.7",
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.4.2",
+    "framer-motion": "^12.38.0",
+    "gsap": "^3.15.0",
+    "lucide-react": "^1.8.0",
+    "merkletreejs": "^0.6.0",
+    "motion": "^12.38.0",
+    "next": "^16.2.4",
+    "poseidon-lite": "^0.3.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hot-toast": "^2.6.0",
+    "react-icons": "^5.6.0",
+    "snarkjs": "^0.7.6",
+    "tailwind-merge": "^3.5.0",
+    "three": "^0.183.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/circomlibjs": "^0.1.6",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "@noble/hashes": "1.8.0"
+  }
+}

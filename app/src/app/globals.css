@@ -1,0 +1,60 @@
+/* 1. SEMUA IMPORT WAJIB DI ATAS SENDIRI */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-geist-sans: "Geist", sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Monaco, "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
+  --font-geist-pixel-square: "Geist Pixel Square", var(--font-geist-mono);
+
+  --background: #FDFCFD;
+  --foreground: #171717;
+
+  --primary: #FF85BB;
+  --primary-foreground: #FFFFFF;
+  --accent-purple: #B497CF;
+  --glow-dark: #120F17;
+
+  --card: #FFFFFF;
+  --card-border: #F1F5F9;
+  --input: #F8FAFC;
+}
+
+
+/* Logo Loop */
+.icon-mask {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.icon-mask:hover {
+  background-color: #FF85BB; 
+  transform: scale(1.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0F0B0A;
+    --foreground: #FDFCFD;
+    --card: #1A1615;
+    --card-border: #2D2523;
+    --input: #221E1D;
+    --glow-dark: #000000;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-pixel-square);
+  -webkit-font-smoothing: none;
+  transition: background-color 0.3s ease;
+  overflow-x: hidden;
+}

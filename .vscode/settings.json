@@ -1,0 +1,8 @@
+{
+  "rust-analyzer.cargo.target": "wasm32v1-none",
+  "rust-analyzer.cargo.features": [],
+  "rust-analyzer.procMacro.enable": true,
+  "rust-analyzer.procMacro.attributes.enable": true,
+  "rust-analyzer.check.targets": ["wasm32v1-none"],
+  "rust-analyzer.cargo.buildScripts.enable": true
+}

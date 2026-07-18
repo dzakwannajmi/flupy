@@ -21,13 +21,13 @@ function isMockEnrollmentAllowed(): boolean {
     return true;
   }
 
-  const allowInstawardsDemoEnrollment =
-    process.env.FLUPPY_ALLOW_INSTAWARDS_DEMO_ENROLLMENT === 'true';
+  const allowDemoEnrollment =
+    process.env.FLUPY_ALLOW_DEMO_ENROLLMENT === 'true';
 
   const isTestnet =
     process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE === 'Test SDF Network ; September 2015';
 
-  return allowInstawardsDemoEnrollment && isTestnet;
+  return allowDemoEnrollment && isTestnet;
 }
 
 function normalizeCommitment(input: unknown): bigint | null {
@@ -56,7 +56,7 @@ export async function POST(
       {
         error: 'enrollment_disabled_in_production',
         message:
-          'Demo enrollment is disabled outside local development unless explicitly enabled for a controlled Instawards Testnet demo.',
+          'Demo enrollment is disabled outside local development unless explicitly enabled for a controlled Testnet demo.',
       },
       { status: 403 },
     );

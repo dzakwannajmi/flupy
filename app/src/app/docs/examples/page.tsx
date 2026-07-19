@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { Icon } from '@iconify/react';
 
 export const metadata: Metadata = {
   title: 'Examples',
@@ -22,7 +23,7 @@ function Note({ children }: { children: ReactNode }) {
   return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><span className="shrink-0">ℹ</span><div>{children}</div></div>;
 }
 function Warn({ children }: { children: ReactNode }) {
-  return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><span className="shrink-0">🔐</span><div>{children}</div></div>;
+  return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><Icon icon="ph:warning" width={18} height={18} className="shrink-0" /><div>{children}</div></div>;
 }
 
 export default function ExamplesPage() {

@@ -10,6 +10,7 @@
 
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Icon } from '@iconify/react';
 
 export const metadata: Metadata = {
   title: 'Quickstart',
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 function SectionHeading({ id, step, children }: { id: string; step: number; children: ReactNode }) {
   return (
     <h2 id={id} className="mb-3 mt-12 scroll-mt-20 flex items-center gap-3 text-xl font-semibold text-[#0e0f0c] first:mt-0">
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pink-600 text-xs font-bold">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#9fe870] text-xs font-bold">
         {step}
       </span>
       {children}
@@ -48,7 +49,7 @@ function CodeBlock({ children, filename }: { children: string; filename?: string
 function Warning({ children }: { children: ReactNode }) {
   return (
     <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300">
-      <span className="shrink-0 text-base">🔐</span>
+      <Icon icon="ph:warning" width={18} height={18} className="shrink-0" />
       <div>{children}</div>
     </div>
   );
@@ -97,7 +98,7 @@ export default function QuickstartPage() {
             ['5', 'Store payment record locally',         'useFluppyHistory → add(record)'],
           ].map(([num, action, detail]) => (
             <div key={num} className="flex items-start gap-3">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-pink-600/30 text-xs font-bold text-pink-400">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#9fe870]/30 text-xs font-bold text-[#163300]">
                 {num}
               </span>
               <div>

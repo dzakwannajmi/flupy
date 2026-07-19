@@ -86,7 +86,7 @@ export default function CorePage() {
           const colors: Record<string, string> = {
             blue: 'border-blue-500/20 text-blue-700', red: 'border-red-500/20 text-red-700',
             purple: 'border-purple-500/20 text-purple-700', gray: 'border-black/15 text-[#454745]',
-            yellow: 'border-yellow-500/20 text-amber-700', pink: 'border-pink-500/20 text-[#163300]',
+            yellow: 'border-yellow-500/20 text-amber-700', pink: 'border-[#9fe870]/20 text-[#163300]',
           };
           return (
             <div key={mod as string} className={`flex items-start gap-3 rounded-xl border bg-black/[0.03] p-3 ${colors[color as string]}`}>

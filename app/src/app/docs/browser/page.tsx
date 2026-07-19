@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { Icon } from '@iconify/react';
 
 export const metadata: Metadata = {
   title: '@flupy/browser',
@@ -22,7 +23,7 @@ function Note({ children }: { children: ReactNode }) {
   return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><span className="shrink-0">ℹ</span><div>{children}</div></div>;
 }
 function Warn({ children }: { children: ReactNode }) {
-  return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><span className="shrink-0">🔐</span><div>{children}</div></div>;
+  return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><Icon icon="ph:warning" width={18} height={18} className="shrink-0" /><div>{children}</div></div>;
 }
 function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
@@ -83,7 +84,7 @@ export default function BrowserPage() {
           const colors: Record<string, string> = {
             purple:'border-purple-500/20 text-purple-700', blue:'border-blue-500/20 text-blue-700',
             yellow:'border-yellow-500/20 text-amber-700', red:'border-red-500/20 text-red-700',
-            green:'border-green-500/20 text-emerald-700',   pink:'border-pink-500/20 text-[#163300]',
+            green:'border-green-500/20 text-emerald-700',   pink:'border-[#9fe870]/20 text-[#163300]',
           };
           return (
             <div key={mod as string} className={`flex items-start gap-3 rounded-xl border bg-black/[0.03] p-3 ${colors[color as string]}`}>

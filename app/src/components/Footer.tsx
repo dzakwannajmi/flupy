@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { FiGithub, FiGlobe } from "react-icons/fi";
+import { Icon } from "@iconify/react";
 
 const T = {
   muted: "#454745",
@@ -25,10 +25,10 @@ export default function Footer() {
 
           <div className="flex items-center gap-8 text-sm font-medium">
             <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#163300]" style={{ color: T.muted }}>
-              <FiGithub className="text-lg" /> GitHub
+              <Icon icon="ph:github-logo" className="text-lg" /> GitHub
             </a>
             <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#163300]" style={{ color: T.muted }}>
-              <FiGlobe className="text-lg" /> Explorer
+              <Icon icon="ph:globe" className="text-lg" /> Explorer
             </a>
           </div>
         </div>

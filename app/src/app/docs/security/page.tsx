@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Icon } from '@iconify/react';
 
 export const metadata: Metadata = {
   title: 'Security Model',
@@ -63,16 +64,16 @@ export default function SecurityPage() {
       <H2 id="overview">Security Overview</H2>
       <div className="grid gap-3 sm:grid-cols-2">
         {[
-          { icon: '🔐', title: 'Browser-side proof generation',   desc: 'Groth16 ZK proof computed entirely in the browser. No raw identity data reaches any server.' },
-          { icon: '✓',  title: 'Local verification before submit',desc: 'snarkjs.groth16.verify() runs locally before every transaction submission. Invalid proofs are rejected client-side.' },
-          { icon: '🌳', title: 'Poseidon Merkle membership',       desc: 'Membership is proven via a Poseidon-hashed Merkle path. Only the commitment hash reaches the backend.' },
-          { icon: '⛓',  title: 'Nullifier replay protection',      desc: 'The contract stores nullifiers after each payment. Duplicate nullifiers are rejected — same proof cannot be reused.' },
-          { icon: '🔗', title: 'ChainId binding',                  desc: 'Every proof embeds a chain-specific chainId derived from the network passphrase. Testnet proofs are invalid on Mainnet.' },
-          { icon: '⚛',  title: 'Atomic 95/5 split',                desc: 'The contract atomically splits every payment. No single party controls the split logic after deployment.' },
+          { icon: 'ph:lock-key-fill', title: 'Browser-side proof generation',   desc: 'Groth16 ZK proof computed entirely in the browser. No raw identity data reaches any server.' },
+          { icon: 'ph:check-circle-fill',  title: 'Local verification before submit',desc: 'snarkjs.groth16.verify() runs locally before every transaction submission. Invalid proofs are rejected client-side.' },
+          { icon: 'ph:tree-structure', title: 'Poseidon Merkle membership',       desc: 'Membership is proven via a Poseidon-hashed Merkle path. Only the commitment hash reaches the backend.' },
+          { icon: 'ph:prohibit',  title: 'Nullifier replay protection',      desc: 'The contract stores nullifiers after each payment. Duplicate nullifiers are rejected — same proof cannot be reused.' },
+          { icon: 'ph:link', title: 'ChainId binding',                  desc: 'Every proof embeds a chain-specific chainId derived from the network passphrase. Testnet proofs are invalid on Mainnet.' },
+          { icon: 'ph:atom',  title: 'Atomic 95/5 split',                desc: 'The contract atomically splits every payment. No single party controls the split logic after deployment.' },
         ].map(({ icon, title, desc }) => (
           <div key={title} className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
             <div className="mb-1 flex items-center gap-2">
-              <span>{icon}</span>
+              <Icon icon={icon} width={18} height={18} className="text-[#163300]" />
               <span className="text-sm font-semibold text-[#0e0f0c]">{title}</span>
             </div>
             <p className="text-xs text-[#454745]">{desc}</p>

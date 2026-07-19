@@ -3,21 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useInView, Variants } from "framer-motion";
 
-import {
-  FiArrowDown,
-  FiGithub,
-  FiChevronDown,
-  FiSettings,
-  FiLock,
-  FiPackage,
-  FiSend,
-  FiLink,
-  FiDollarSign,
-  FiCheckCircle,
-  FiXCircle,
-  FiKey,
-} from "react-icons/fi";
-import { BsStars, BsCalculator } from "react-icons/bs";
+import { Icon } from "@iconify/react";
 import { isConnected, requestAccess } from "@stellar/freighter-api";
 
 // Import Komponen Custom
@@ -261,10 +247,10 @@ function Hero() {
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }} className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a href="#payment-preview" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full text-black font-bold text-sm transition-transform hover:scale-105" style={{ background: T.primary }}>
-            Run Live Demo <FiArrowDown className="text-lg" />
+            Run Live Demo <Icon icon="ph:arrow-down" className="text-lg" />
           </a>
           <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border font-bold text-sm text-[#0e0f0c] transition-colors hover:bg-black/5" style={{ borderColor: T.border }}>
-            <FiGithub className="text-lg" /> View GitHub
+            <Icon icon="ph:github-logo" className="text-lg" /> View GitHub
           </a>
           <button
             onClick={() => document.getElementById("payment-preview")?.scrollIntoView({ behavior: "smooth" })}
@@ -307,7 +293,7 @@ function WhatIsFluppy() {
             <div className="md:w-1/3 p-10 flex flex-col justify-between" style={{ background: "#0a080d" }}>
               <div>
                 <div className="w-12 h-12 rounded-xl mb-6 flex items-center justify-center" style={{ background: T.primary }}>
-                  <BsStars className="text-black text-2xl" />
+                  <Icon icon="ph:sparkle-fill" className="text-black text-2xl" />
                 </div>
                 <h2 className="text-3xl font-bold text-[#0e0f0c] tracking-tight leading-tight">
                   Built for the<br /><HighlightText>privacy-first</HighlightText><br />economy
@@ -456,7 +442,7 @@ function DAppPreview() {
                 <div className="icon-mask w40 h-40 md:w-30 md:h-30 bg-white" style={{ maskImage: 'url(/logos/Stellar.svg)', WebkitMaskImage: 'url(/logos/Stellar.svg)' }} />
               </div>
               <button className="px-8 py-4 bg-white text-black font-bold rounded-2xl flex items-center gap-2 hover:scale-105 transition-transform shadow-2xl">
-                <BsStars className="text-xl" /> Enter App
+                <Icon icon="ph:sparkle-fill" className="text-xl" /> Enter App
               </button>
             </div>
 
@@ -483,7 +469,7 @@ function FAQItem({ q, a, isOpen, onClick }: { q: string, a: string, isOpen: bool
       <button onClick={onClick} className="w-full flex justify-between items-center py-6 text-left focus:outline-none group">
         <span className={`text-lg font-bold transition-colors ${isOpen ? 'text-[#0e0f0c]' : 'text-[#0e0f0c] group-hover:text-[#0e0f0c]'}`}>{q}</span>
         <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-[#454745] group-hover:text-[#0e0f0c]">
-          <FiChevronDown size={22} />
+          <Icon icon="ph:caret-down" width={22} height={22} />
         </motion.div>
       </button>
       <AnimatePresence>
@@ -560,13 +546,13 @@ export default function Page() {
         const access = await requestAccess();
         if (access.error) throw new Error(access.error);
         setPublicKey(access.address);
-        addLog(<FiKey className="text-[#FF85BB]" />, `Freighter Connected: ${access.address.slice(0, 6)}...${access.address.slice(-4)}`, "success");
+        addLog(<Icon icon="ph:key" className="text-[#9fe870]" />, `Freighter Connected: ${access.address.slice(0, 6)}...${access.address.slice(-4)}`, "success");
       } else {
         showToast("Please install Freighter extension!");
         window.open("https://freighter.app", "_blank");
       }
     } catch (e: any) {
-      addLog(<FiXCircle className="text-red-400" />, `Wallet error: ${e.message}`, "error");
+      addLog(<Icon icon="ph:x-circle" className="text-red-400" />, `Wallet error: ${e.message}`, "error");
     }
   };
 
@@ -581,7 +567,7 @@ export default function Page() {
     setTimeout(() => { demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
 
     try {
-      addLog(<FiSettings className="text-gray-400" />, "Generating ZK Proof (Groth16 / BN254)...");
+      addLog(<Icon icon="ph:gear" className="text-gray-400" />, "Generating ZK Proof (Groth16 / BN254)...");
       const resProof = await fetch('/api/generate-proof', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ secret, destination, amount: amountStroops })
@@ -589,10 +575,10 @@ export default function Page() {
       const dataProof = await resProof.json();
       if (!resProof.ok) throw new Error(dataProof.error);
 
-      addLog(<FiLock className="text-blue-400" />, "Validating Merkle Membership (depth=20)...");
-      addLog(<BsCalculator className="text-yellow-400" />, `Computing Hash for Destination...`);
-      addLog(<FiPackage className="text-orange-400" />, "Packaging proof for Soroban (XDR encoding)...");
-      addLog(<FiSend className="text-[#FF85BB]" />, "Submitting transaction to Stellar Testnet...");
+      addLog(<Icon icon="ph:lock" className="text-blue-400" />, "Validating Merkle Membership (depth=20)...");
+      addLog(<Icon icon="ph:calculator" className="text-yellow-400" />, `Computing Hash for Destination...`);
+      addLog(<Icon icon="ph:package" className="text-orange-400" />, "Packaging proof for Soroban (XDR encoding)...");
+      addLog(<Icon icon="ph:paper-plane-tilt" className="text-[#9fe870]" />, "Submitting transaction to Stellar Testnet...");
 
       const resTx = await fetch('/api/submit-tx', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -601,13 +587,13 @@ export default function Page() {
       const dataTx = await resTx.json();
       if (!resTx.ok) throw new Error(dataTx.error);
 
-      addLog(<FiLink className="text-indigo-400" />, "Executing Smart Contract: execute_payment()...");
-      addLog(<FiDollarSign className="text-emerald-400" />, "Atomic split → 95% merchant · 5% treasury...");
-      addLog(<FiCheckCircle className="text-green-500" />, `SUCCESS — Tx: ${dataTx.hash.slice(0, 10)}...`, "success");
+      addLog(<Icon icon="ph:link" className="text-indigo-400" />, "Executing Smart Contract: execute_payment()...");
+      addLog(<Icon icon="ph:currency-dollar" className="text-emerald-400" />, "Atomic split → 95% merchant · 5% treasury...");
+      addLog(<Icon icon="ph:check-circle" className="text-green-500" />, `SUCCESS — Tx: ${dataTx.hash.slice(0, 10)}...`, "success");
 
       setTxHash(dataTx.hash); setDone(true);
     } catch (err: any) {
-      addLog(<FiXCircle className="text-red-400" />, `Transaction failed: ${err.message}`, "error");
+      addLog(<Icon icon="ph:x-circle" className="text-red-400" />, `Transaction failed: ${err.message}`, "error");
     } finally {
       setRunning(false);
     }

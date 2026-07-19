@@ -1,8 +1,6 @@
 import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { GoArrowUpRight } from 'react-icons/go';
-import { FiKey } from 'react-icons/fi';
-import { BsStars } from 'react-icons/bs'; 
+import { Icon } from '@iconify/react'; 
 
 type CardNavLink = {
     label: string;
@@ -160,7 +158,7 @@ const CardNav: React.FC<CardNavProps> = ({
 
                     <div className="logo-container flex items-center gap-2.5 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none pointer-events-none">
                         <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "#9fe870" }}>
-                            <BsStars className="text-black text-sm" />
+                            <Icon icon="ph:sparkle-fill" className="text-black text-sm" />
                         </div>
                         <span className="font-bold text-lg text-[#0e0f0c] tracking-tight">FLUPPY</span>
                     </div>
@@ -180,7 +178,7 @@ const CardNav: React.FC<CardNavProps> = ({
                     >
                         {publicKey ? (
                             <>
-                                <FiKey className="text-lg" />
+                                <Icon icon="ph:key" className="text-lg" />
                                 {`${publicKey.slice(0, 5)}...${publicKey.slice(-4)}`}
                             </>
                         ) : (
@@ -204,7 +202,7 @@ const CardNav: React.FC<CardNavProps> = ({
                             <div className="nav-card-links mt-auto flex flex-col gap-[6px]">
                                 {item.links?.map((lnk, i) => (
                                     <a key={`${lnk.label}-${i}`} href={lnk.href} className="nav-card-link inline-flex items-center gap-[8px] no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 text-[14px] md:text-[15px] opacity-80 hover:opacity-100">
-                                        <GoArrowUpRight className="nav-card-link-icon shrink-0" aria-hidden="true" />
+                                        <Icon icon="ph:arrow-up-right" className="nav-card-link-icon shrink-0" aria-hidden="true" />
                                         {lnk.label}
                                     </a>
                                 ))}

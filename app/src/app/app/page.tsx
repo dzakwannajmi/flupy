@@ -2,12 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FiSettings, FiLock, FiPackage, FiSend, FiLink,
-  FiDollarSign, FiCheckCircle, FiXCircle, FiKey,
-  FiShield, FiRefreshCw, FiEye, FiEyeOff, FiUserPlus,
-} from "react-icons/fi";
-import { BsCalculator } from "react-icons/bs";
+import { Icon } from "@iconify/react";
 import { isConnected } from "@stellar/freighter-api";
 import Navbar from "../../components/Navbar";
 import { useFluppy } from "../../hooks/useFluppy";
@@ -147,7 +142,7 @@ function TerminalLog({
           className="ml-4 text-xs tracking-widest uppercase font-mono flex items-center gap-2 select-none"
           style={{ color: "rgba(14, 15, 12, 0.5)" }}
         >
-          <FiSettings size={12} className="animate-[spin_4s_linear_infinite]" />
+          <Icon icon="ph:gear" width={12} height={12} className="animate-[spin_4s_linear_infinite]" />
           Soroban Shell
         </span>
       </div>
@@ -263,18 +258,18 @@ export default function AppPage() {
     const isError = text.includes("❌") || text.includes("FAIL") || text.includes("FAILED");
 
     const icon = isSuccess
-      ? <FiCheckCircle className="text-green-400" />
+      ? <Icon icon="ph:check-circle" className="text-green-400" />
       : isError
-        ? <FiXCircle className="text-red-400" />
+        ? <Icon icon="ph:x-circle" className="text-red-400" />
         : text.includes("ZKP")
-          ? <FiLock className="text-blue-400" />
+          ? <Icon icon="ph:lock" className="text-blue-400" />
           : text.includes("Merkle")
-            ? <BsCalculator className="text-yellow-400" />
+            ? <Icon icon="ph:calculator" className="text-yellow-400" />
             : text.includes("Stellar")
-              ? <FiSend className="text-[#163300]" />
+              ? <Icon icon="ph:paper-plane-tilt" className="text-[#163300]" />
               : text.includes("Finance")
-                ? <FiDollarSign className="text-emerald-400" />
-                : <FiSettings className="text-gray-400" />;
+                ? <Icon icon="ph:currency-dollar" className="text-emerald-400" />
+                : <Icon icon="ph:gear" className="text-gray-400" />;
 
     const kind: LogKind = isSuccess ? "success" : isError ? "error" : "info";
 
@@ -363,7 +358,7 @@ export default function AppPage() {
       const message = e instanceof Error ? e.message : String(e);
 
       addLocalLog(
-        <FiXCircle className="text-red-400" />,
+        <Icon icon="ph:x-circle" className="text-red-400" />,
         `Wallet error: ${message}`,
         "error",
       );
@@ -380,18 +375,18 @@ export default function AppPage() {
       const secret = await setupCredential(newPassword);
       setSetupSecret(secret);
       addLocalLog(
-        <FiKey className="text-[#163300]" />,
+        <Icon icon="ph:key" className="text-[#163300]" />,
         "ZK credential created successfully!",
         "success",
       );
       addLocalLog(
-        <FiShield className="text-yellow-400" />,
+        <Icon icon="ph:shield-check" className="text-yellow-400" />,
         "⚠️  Save your backup secret in a safe place!",
         "info",
       );
     } catch (e: any) {
       addLocalLog(
-        <FiXCircle className="text-red-400" />,
+        <Icon icon="ph:x-circle" className="text-red-400" />,
         `Setup failed: ${e.message}`,
         "error",
       );
@@ -535,7 +530,7 @@ export default function AppPage() {
       sdkPayment.resetError();
 
       addLocalLog(
-        <FiShield className="text-[#163300]" />,
+        <Icon icon="ph:shield-check" className="text-[#163300]" />,
         "SDK Demo: Unlocking credential for experimental payment...",
         "info",
       );
@@ -545,7 +540,7 @@ export default function AppPage() {
       const secret = await sdkCredential.unlock(password);
 
       addLocalLog(
-        <FiPackage className="text-blue-400" />,
+        <Icon icon="ph:package" className="text-blue-400" />,
         "SDK Demo: Running useFluppyPayment experimental path...",
         "info",
       );
@@ -566,7 +561,7 @@ export default function AppPage() {
         );
 
         addLocalLog(
-          <FiCheckCircle className="text-green-400" />,
+          <Icon icon="ph:check-circle" className="text-green-400" />,
           `SDK Demo: Transaction confirmed (${confirmedTxHash.slice(0, 10)}...)`,
           "success",
         );
@@ -575,7 +570,7 @@ export default function AppPage() {
       const message = e instanceof Error ? e.message : String(e);
 
       addLocalLog(
-        <FiXCircle className="text-red-400" />,
+        <Icon icon="ph:x-circle" className="text-red-400" />,
         `SDK Demo failed safely: ${message}`,
         "error",
       );
@@ -632,7 +627,7 @@ export default function AppPage() {
                 className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold text-black"
                 style={{ background: T.primary }}
               >
-                <FiUserPlus /> Create ZK Credential
+                <Icon icon="ph:user-plus" /> Create ZK Credential
               </button>
             </div>
           )}
@@ -700,7 +695,7 @@ export default function AppPage() {
                     Password ZK Credential
                   </label>
                   <div className="relative">
-                    <FiLock className="absolute left-5 top-[18px] text-[#454745] text-lg" />
+                    <Icon icon="ph:lock" className="absolute left-5 top-[18px] text-[#454745] text-lg" />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
@@ -715,7 +710,7 @@ export default function AppPage() {
                       onClick={() => setShowPassword(p => !p)}
                       className="absolute right-5 top-[18px] text-[#454745] hover:text-[#0e0f0c] transition-colors"
                     >
-                      {showPassword ? <FiEyeOff /> : <FiEye />}
+                      {showPassword ? <Icon icon="ph:eye-slash" /> : <Icon icon="ph:eye" />}
                     </button>
                   </div>
 
@@ -764,7 +759,7 @@ export default function AppPage() {
                     Amount (USDC)
                   </label>
                   <div className="relative">
-                    <FiDollarSign className="absolute left-5 top-[18px] text-[#454745] text-lg" />
+                    <Icon icon="ph:currency-dollar" className="absolute left-5 top-[18px] text-[#454745] text-lg" />
                     <input
                       type="number"
                       step="0.1"
@@ -794,17 +789,17 @@ export default function AppPage() {
                 >
                   {loading ? (
                     <>
-                      <FiSettings className="animate-spin text-lg" />
+                      <Icon icon="ph:gear" className="animate-spin text-lg" />
                       Executing ZKP...
                     </>
                   ) : done ? (
                     <>
-                      <FiRefreshCw className="text-lg" />
+                      <Icon icon="ph:arrow-clockwise" className="text-lg" />
                       Pay Again
                     </>
                   ) : (
                     <>
-                      <FiShield className="text-lg" />
+                      <Icon icon="ph:shield-check" className="text-lg" />
                       Pay with ZK
                     </>
                   )}
@@ -827,12 +822,12 @@ export default function AppPage() {
                   >
                     {sdkPayment.isLoading ? (
                       <>
-                        <FiSettings className="animate-spin text-lg" />
+                        <Icon icon="ph:gear" className="animate-spin text-lg" />
                         Running SDK Payment...
                       </>
                     ) : (
                       <>
-                        <FiPackage className="text-lg" />
+                        <Icon icon="ph:package" className="text-lg" />
                         Run SDK Payment (Experimental)
                       </>
                     )}

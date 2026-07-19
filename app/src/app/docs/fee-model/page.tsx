@@ -69,7 +69,7 @@ export default function FeeModelPage() {
         {[
           { label: 'User pays',         pct: '100%', color: 'border-black/15 bg-black/[0.03] text-[#0e0f0c]', sub: 'full payment amount' },
           { label: 'Merchant receives', pct:  '95%', color: 'border-green-500/30 bg-green-500/5 text-emerald-700', sub: 'net settlement' },
-          { label: 'Treasury receives', pct:   '5%', color: 'border-pink-500/30 bg-pink-500/5 text-[#163300]', sub: 'protocol fee' },
+          { label: 'Treasury receives', pct:   '5%', color: 'border-[#9fe870]/30 bg-[#9fe870]/5 text-[#163300]', sub: 'protocol fee' },
         ].map(({ label, pct, color, sub }) => (
           <div key={label} className={`rounded-xl border p-4 ${color}`}>
             <div className="text-3xl font-bold">{pct}</div>

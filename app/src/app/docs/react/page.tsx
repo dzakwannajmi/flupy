@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { Icon } from '@iconify/react';
 
 export const metadata: Metadata = {
   title: '@flupy/react',
@@ -19,7 +20,7 @@ function Code({ children, filename }: { children: string; filename?: string }) {
   );
 }
 function Warn({ children }: { children: ReactNode }) {
-  return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><span className="shrink-0">🔐</span><div>{children}</div></div>;
+  return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><Icon icon="ph:warning" width={18} height={18} className="shrink-0" /><div>{children}</div></div>;
 }
 function Note({ children }: { children: ReactNode }) {
   return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><span className="shrink-0">ℹ</span><div>{children}</div></div>;
@@ -61,7 +62,7 @@ export default function ReactPage() {
     <div className="space-y-6">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-0.5 text-xs font-medium text-[#163300]">@flupy/react</span>
+          <span className="rounded-full border border-[#9fe870]/30 bg-[#9fe870]/10 px-2.5 py-0.5 text-xs font-medium text-[#163300]">@flupy/react</span>
           <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700">✓ Complete</span>
         </div>
         <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">@flupy/react</h1>

@@ -129,8 +129,9 @@ export default function SecurityPage() {
       <H2 id="merkle">Merkle Proof Security</H2>
       <div className="space-y-3">
         {[
-          { title: 'Only the commitment reaches the backend', desc: 'The SDK computes Poseidon(LEAF_TAG=2, secret) locally and sends only that hash to /api/merkle-proof. The raw secret never leaves the browser.' },
-          { title: 'Sparse Merkle tree with domain separation', desc: 'The server builds a sparse Poseidon Merkle tree using pre-computed zero hashes. Domain tags (LEAF=2, NODE=3) prevent cross-context hash collisions.' },
+          { title: 'Only the commitment reaches the backend at enrollment', desc: 'The SDK computes Poseidon(LEAF_TAG=2, secret) locally and sends only that hash to /api/merkle-proof/enroll. The raw secret never leaves the browser.' },
+          { title: 'Proof-fetch is identical for every requester', desc: 'GET /api/merkle-proof returns the full enrolled leaf set + root — the same response regardless of which credential the caller holds. Earlier versions accepted a per-commitment lookup, which let the server infer "this session is about to pay, right now" from request timing and correlate it with the payment tx landing seconds later, without any wallet address ever being transmitted. The client now locates its own leaf and computes its Merkle path entirely locally.' },
+          { title: 'Sparse Merkle tree with domain separation', desc: 'The tree is built from pre-computed zero hashes, identically on server (enrollment/caching) and client (proof computation). Domain tags (LEAF=2, NODE=3) prevent cross-context hash collisions.' },
           { title: 'Root sync guard', desc: 'executeFluppyPayment() compares the frontend Merkle root against the on-chain contract root before generating a proof. A mismatch throws RootSyncError before any computation begins.' },
         ].map(({ title, desc }) => (
           <div key={title} className="rounded-xl border border-white/10 bg-white/5 p-4">

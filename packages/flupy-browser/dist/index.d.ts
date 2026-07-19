@@ -28,9 +28,12 @@ declare function computeCommitment(secret: string): Promise<bigint>;
  */
 declare function enrollCommitment(secret: string, options?: MerkleClientOptions): Promise<EnrollCommitmentResult>;
 /**
- * Fetches a Merkle membership proof from the backend.
+ * Fetches the full enrolled leaf set from the backend and computes this
+ * secret's Merkle membership proof entirely client-side.
  *
- * The backend receives only the commitment, never the raw secret.
+ * The backend receives NO commitment, NO secret, and no indication of
+ * which leaf is being proven — see the privacy rationale on
+ * buildPathFromLeaves() above.
  */
 declare function getMerkleProof(secret: string, options?: MerkleClientOptions): Promise<BrowserMerkleProof>;
 

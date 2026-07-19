@@ -77,40 +77,143 @@ async function enrollCommitment(secret, options) {
   }
   return await response.json();
 }
+var zeroHashCache = null;
+async function getZeroHashes() {
+  if (zeroHashCache) {
+    return zeroHashCache;
+  }
+  const poseidon = await getPoseidon();
+  const field = poseidon.F;
+  const hashes = new Array(CIRCUIT_DEPTH + 1);
+  hashes[0] = field.toObject(
+    poseidon([
+      POSEIDON_TAGS.LEAF,
+      0n
+    ])
+  );
+  for (let level = 1; level <= CIRCUIT_DEPTH; level++) {
+    const previous = hashes[level - 1];
+    if (previous === void 0) {
+      throw new Error(`[Merkle] Missing zero hash for level ${level - 1}`);
+    }
+    hashes[level] = field.toObject(
+      poseidon([
+        POSEIDON_TAGS.NODE,
+        previous,
+        previous
+      ])
+    );
+  }
+  zeroHashCache = hashes;
+  return zeroHashCache;
+}
+async function buildPathFromLeaves(leaves, leafIndex) {
+  const poseidon = await getPoseidon();
+  const field = poseidon.F;
+  const zeroHashes = await getZeroHashes();
+  const levels = Array.from(
+    { length: CIRCUIT_DEPTH + 1 },
+    () => /* @__PURE__ */ new Map()
+  );
+  const leafLevel = levels[0];
+  if (!leafLevel) {
+    throw new Error("[Merkle] Missing leaf level");
+  }
+  for (let i = 0; i < leaves.length; i++) {
+    const leaf = leaves[i];
+    if (leaf === void 0) {
+      throw new Error(`[Merkle] Missing leaf at index ${i}`);
+    }
+    leafLevel.set(i, leaf);
+  }
+  for (let level = 0; level < CIRCUIT_DEPTH; level++) {
+    const currentLevel = levels[level];
+    const nextLevel = levels[level + 1];
+    const zeroHash = zeroHashes[level];
+    if (!currentLevel || !nextLevel || zeroHash === void 0) {
+      throw new Error(`[Merkle] Invalid tree state at level ${level}`);
+    }
+    const parentIndices = /* @__PURE__ */ new Set();
+    for (const nodeIndex of currentLevel.keys()) {
+      parentIndices.add(Math.floor(nodeIndex / 2));
+    }
+    for (const parentIndex of parentIndices) {
+      const leftIndex = parentIndex * 2;
+      const rightIndex = leftIndex + 1;
+      const leftHash = currentLevel.get(leftIndex) ?? zeroHash;
+      const rightHash = currentLevel.get(rightIndex) ?? zeroHash;
+      const parentHash = field.toObject(
+        poseidon([
+          POSEIDON_TAGS.NODE,
+          leftHash,
+          rightHash
+        ])
+      );
+      nextLevel.set(parentIndex, parentHash);
+    }
+  }
+  const rootLevel = levels[CIRCUIT_DEPTH];
+  const defaultRoot = zeroHashes[CIRCUIT_DEPTH];
+  if (!rootLevel || defaultRoot === void 0) {
+    throw new Error("[Merkle] Missing root level");
+  }
+  const root = rootLevel.get(0) ?? defaultRoot;
+  const pathElements = [];
+  const pathIndices = [];
+  let index = leafIndex;
+  for (let level = 0; level < CIRCUIT_DEPTH; level++) {
+    const levelNodes = levels[level];
+    const zeroHash = zeroHashes[level];
+    if (!levelNodes || zeroHash === void 0) {
+      throw new Error(`[Merkle] Missing proof data at level ${level}`);
+    }
+    const isRight = index % 2 === 1;
+    const siblingIndex = isRight ? index - 1 : index + 1;
+    const siblingHash = levelNodes.get(siblingIndex) ?? zeroHash;
+    pathElements.push(siblingHash);
+    pathIndices.push(isRight ? 1 : 0);
+    index = Math.floor(index / 2);
+  }
+  return { pathElements, pathIndices, root };
+}
 async function getMerkleProof(secret, options) {
   const commitment = await computeCommitment(secret);
-  const commitmentHex = commitmentToHex(commitment);
-  console.log(
-    "[Merkle] Requesting proof for commitment:",
-    `${commitmentHex.slice(0, 16)}...`
-  );
+  const commitmentDecimal = commitment.toString();
   const response = await fetch(
     resolveApiUrl("/api/merkle-proof", options),
     {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        commitment: commitmentHex
-      })
+      method: "GET"
     }
   );
   if (!response.ok) {
     const error = await readApiError(
       response,
-      "[Merkle] Proof request failed"
+      "[Merkle] Leaf set request failed"
     );
     throw new Error(`[Merkle] ${error}`);
   }
   const data = await response.json();
-  console.log(
-    `[Merkle] Proof received. Root: ${data.root.slice(0, 20)}...`
+  const leafIndex = data.leaves.indexOf(commitmentDecimal);
+  if (leafIndex === -1) {
+    throw new Error(
+      "[Merkle] Commitment not found in enrolled leaf set. Has this credential been enrolled?"
+    );
+  }
+  const leaves = data.leaves.map((leaf) => BigInt(leaf));
+  const { pathElements, pathIndices, root } = await buildPathFromLeaves(
+    leaves,
+    leafIndex
   );
+  const serverRoot = BigInt(data.root);
+  if (root !== serverRoot) {
+    throw new Error(
+      "[Merkle] Locally computed root does not match server-reported root. This indicates a tree construction mismatch."
+    );
+  }
   return {
-    pathElements: data.pathElements.map((element) => BigInt(element)),
-    pathIndices: data.pathIndices,
-    root: BigInt(data.root)
+    pathElements,
+    pathIndices,
+    root
   };
 }
 

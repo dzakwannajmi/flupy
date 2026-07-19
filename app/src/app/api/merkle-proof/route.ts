@@ -1,7 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerTree } from '../../../lib/merkle-server/tree-cache';
-import { extractMerklePath } from '../../../lib/merkle-server/tree-builder';
-import type { ServerMerkleProof } from '../../../lib/merkle-server/types';
 
 // Force this route to run on Node.js runtime (not Edge)
 // circomlibjs requires Node-native crypto
@@ -14,67 +12,54 @@ interface ErrorResponse {
 }
 
 const ERROR_CODES = {
-  INVALID_FORMAT:        'invalid_commitment_format',
-  NOT_ENROLLED:          'commitment_not_enrolled',
-  INTERNAL_ERROR:        'internal_server_error',
+  INTERNAL_ERROR: 'internal_server_error',
 } as const;
 
+interface LeafSetResponse {
+  readonly leaves: string[];
+  readonly root:   string;
+}
+
 /**
- * POST /api/merkle-proof
+ * GET /api/merkle-proof
  *
- * Returns a Merkle membership proof for the given commitment.
+ * Returns the ENTIRE enrolled leaf set + current root — identical response
+ * for every requester, regardless of which commitment they hold.
  *
- * Request body:
- *   { commitment: "hex-encoded-bigint" }   // 1-64 chars, lowercase hex
+ * Privacy rationale (per Fable-assisted privacy audit): a per-commitment
+ * "give me the path for leaf X" endpoint lets the server learn "this
+ * session is about to pay, right now" and correlate that timing with the
+ * payment tx landing seconds later — a deanonymization vector that
+ * requires no wallet address ever being transmitted. Serving the full,
+ * identical leaf set to everyone removes the server's ability to
+ * distinguish "who is about to pay" from request patterns. The client
+ * locates its own leaf and computes its own Merkle path locally.
+ *
+ * Publishing the full commitment list this way is safe: commitments are
+ * Poseidon hashes (Poseidon(LEAF_TAG, secret)) and leak nothing about the
+ * underlying secret without it.
  *
  * Response:
- *   { pathElements: string[], pathIndices: number[], root: string }
- *   All bigints are decimal-string encoded for JSON safety.
- *
- * Security:
- *   - Backend NEVER receives raw secret
- *   - Commitment is the hashed identity: Poseidon(LEAF_TAG, secret)
- *   - Even if backend is compromised, attacker cannot derive secrets
+ *   { leaves: string[], root: string }
+ *   leaves[i] is the commitment at tree index i, as a decimal-string
+ *   encoded bigint. All bigints are decimal-string encoded for JSON
+ *   safety.
  */
-export async function POST(
-  req: NextRequest,
-): Promise<NextResponse<ServerMerkleProof | ErrorResponse>> {
+export async function GET(): Promise<NextResponse<LeafSetResponse | ErrorResponse>> {
   try {
-    const body = await req.json();
+    const tree = await getServerTree();
 
-    // ── Input validation ────────────────────────────────────────────────
-    const { commitment } = body as { commitment?: unknown };
+    // commitmentMap: hex-key -> index. Invert it into an index-ordered
+    // decimal-string leaf array for the client.
+    const leaves: string[] = new Array(tree.commitmentMap.size);
 
-    if (typeof commitment !== 'string' || !/^[0-9a-fA-F]{1,64}$/.test(commitment)) {
-      return NextResponse.json(
-        { error: ERROR_CODES.INVALID_FORMAT },
-        { status: 400 },
-      );
+    for (const [hexKey, index] of tree.commitmentMap) {
+      leaves[index] = BigInt('0x' + hexKey).toString();
     }
-
-    // ── Normalize commitment to 64-char lowercase hex ──────────────────
-    const normalizedHex = BigInt('0x' + commitment)
-      .toString(16)
-      .padStart(64, '0');
-
-    // ── Tree lookup ─────────────────────────────────────────────────────
-    const tree    = await getServerTree();
-    const leafIdx = tree.commitmentMap.get(normalizedHex);
-
-    if (leafIdx === undefined) {
-      return NextResponse.json(
-        { error: ERROR_CODES.NOT_ENROLLED },
-        { status: 404 },
-      );
-    }
-
-    // ── Extract proof path ──────────────────────────────────────────────
-    const { pathElements, pathIndices } = extractMerklePath(tree, leafIdx);
 
     return NextResponse.json({
-      pathElements: pathElements.map(e => e.toString()),
-      pathIndices,
-      root:         tree.root.toString(),
+      leaves,
+      root: tree.root.toString(),
     });
   } catch (err) {
     console.error('[/api/merkle-proof] error:', err);

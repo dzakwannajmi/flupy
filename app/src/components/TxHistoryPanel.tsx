@@ -199,9 +199,9 @@ function TxHistoryItem({
             target="_blank"
             rel="noopener noreferrer"
             className="
-              text-xs text-pink-400
+              text-xs text-[#163300]
               transition-colors
-              hover:text-pink-300
+              hover:text-[#9fe870]
             "
             aria-label="Open transaction in explorer"
           >

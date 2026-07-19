@@ -18,13 +18,13 @@ import { useFluppyCredential, useFluppyHistory, useFluppyPayment, useFluppyWalle
 
 // ─── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  bg: "#120F17",
-  fg: "#FDFCFD",
-  muted: "#94a3b8",
-  primary: "#FF85BB",
-  dark: "#0A080D",
-  card: "#18151E",
-  border: "rgba(255,255,255,0.08)",
+  bg: "#ffffff",
+  fg: "#0e0f0c",
+  muted: "#454745",
+  primary: "#9fe870",
+  dark: "#163300",
+  card: "#ffffff",
+  border: "rgba(14, 15, 12, 0.08)",
 };
 
 // ─── Tipe ────────────────────────────────────────────────────────────────────
@@ -79,7 +79,7 @@ function TerminalLog({
             className="w-2 h-2 rounded-full"
             style={{ background: T.primary }}
           />
-          <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <span className="text-xs font-mono" style={{ color: "rgba(14, 15, 12, 0.5)" }}>
             executing…
           </span>
         </div>
@@ -90,7 +90,7 @@ function TerminalLog({
       return (
         <div className="flex items-center gap-3 w-full">
           <span className="w-2 h-2 rounded-full bg-green-400" />
-          <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <span className="text-xs font-mono" style={{ color: "rgba(14, 15, 12, 0.5)" }}>
             exit 0 · verified
           </span>
 
@@ -111,7 +111,7 @@ function TerminalLog({
       return (
         <div className="flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-red-400" />
-          <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <span className="text-xs font-mono" style={{ color: "rgba(14, 15, 12, 0.5)" }}>
             exit 1 · check logs
           </span>
         </div>
@@ -119,7 +119,7 @@ function TerminalLog({
     }
 
     return (
-      <span className="text-xs select-none font-mono" style={{ color: "rgba(255,255,255,0.3)" }}>
+      <span className="text-xs select-none font-mono" style={{ color: "rgba(14, 15, 12, 0.4)" }}>
         ready
       </span>
     );
@@ -145,7 +145,7 @@ function TerminalLog({
         <span className="w-3 h-3 rounded-full bg-green-400/80" />
         <span
           className="ml-4 text-xs tracking-widest uppercase font-mono flex items-center gap-2 select-none"
-          style={{ color: "rgba(255,255,255,0.4)" }}
+          style={{ color: "rgba(14, 15, 12, 0.5)" }}
         >
           <FiSettings size={12} className="animate-[spin_4s_linear_infinite]" />
           Soroban Shell
@@ -155,7 +155,7 @@ function TerminalLog({
       {/* Log area */}
       <div className="flex-1 px-6 py-6 overflow-y-auto space-y-3 text-sm font-mono">
         {logs.length === 0 && !running && (
-          <p className="text-xs select-none" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="text-xs select-none" style={{ color: "rgba(14, 15, 12, 0.4)" }}>
             Awaiting execution…
           </p>
         )}
@@ -172,7 +172,7 @@ function TerminalLog({
                     ? "#4ade80"
                     : log.kind === "error"
                       ? "#f87171"
-                      : "rgba(255,255,255,0.8)",
+                      : "rgba(14, 15, 12, 0.8)",
               }}
             >
               <span className="flex-shrink-0 text-base leading-none mt-[2px]">
@@ -271,7 +271,7 @@ export default function AppPage() {
           : text.includes("Merkle")
             ? <BsCalculator className="text-yellow-400" />
             : text.includes("Stellar")
-              ? <FiSend className="text-pink-400" />
+              ? <FiSend className="text-[#163300]" />
               : text.includes("Finance")
                 ? <FiDollarSign className="text-emerald-400" />
                 : <FiSettings className="text-gray-400" />;
@@ -380,7 +380,7 @@ export default function AppPage() {
       const secret = await setupCredential(newPassword);
       setSetupSecret(secret);
       addLocalLog(
-        <FiKey className="text-pink-400" />,
+        <FiKey className="text-[#163300]" />,
         "ZK credential created successfully!",
         "success",
       );
@@ -535,7 +535,7 @@ export default function AppPage() {
       sdkPayment.resetError();
 
       addLocalLog(
-        <FiShield className="text-pink-400" />,
+        <FiShield className="text-[#163300]" />,
         "SDK Demo: Unlocking credential for experimental payment...",
         "info",
       );
@@ -618,7 +618,7 @@ export default function AppPage() {
             >
               Live DApp
             </h1>
-            <h2 className="text-3xl font-bold text-white mt-2">Execute Payment.</h2>
+            <h2 className="text-3xl font-bold text-[#0e0f0c] mt-2">Execute Payment.</h2>
           </div>
 
           {/* ── Banner: belum punya credential ─────────────────────────── */}
@@ -639,8 +639,8 @@ export default function AppPage() {
 
           {/* ── Panel setup credential ─────────────────────────────────── */}
           {showSetup && credentialStatus === "not_found" && (
-            <div className="mb-6 p-6 rounded-2xl border border-pink-400/30 bg-pink-400/5 space-y-4">
-              <h3 className="text-sm font-bold text-white">Create New ZK Credential</h3>
+            <div className="mb-6 p-6 rounded-2xl border border-[#9fe870]/40 bg-[#9fe870]/10 space-y-4">
+              <h3 className="text-sm font-bold text-[#0e0f0c]">Create New ZK Credential</h3>
 
               <input
                 type="password"
@@ -666,7 +666,7 @@ export default function AppPage() {
                   <p className="text-xs text-green-300 mb-2 font-bold">
                     ✓ Backup Secret (save it now!):
                   </p>
-                  <p className="text-xs font-mono text-white break-all">
+                  <p className="text-xs font-mono text-[#0e0f0c] break-all">
                     {setupSecret}
                   </p>
                   <p className="text-xs text-yellow-300 mt-2">
@@ -700,7 +700,7 @@ export default function AppPage() {
                     Password ZK Credential
                   </label>
                   <div className="relative">
-                    <FiLock className="absolute left-5 top-[18px] text-white/30 text-lg" />
+                    <FiLock className="absolute left-5 top-[18px] text-[#454745] text-lg" />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
@@ -713,7 +713,7 @@ export default function AppPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(p => !p)}
-                      className="absolute right-5 top-[18px] text-white/30 hover:text-white/60 transition-colors"
+                      className="absolute right-5 top-[18px] text-[#454745] hover:text-[#0e0f0c] transition-colors"
                     >
                       {showPassword ? <FiEyeOff /> : <FiEye />}
                     </button>
@@ -764,7 +764,7 @@ export default function AppPage() {
                     Amount (USDC)
                   </label>
                   <div className="relative">
-                    <FiDollarSign className="absolute left-5 top-[18px] text-white/50 text-lg" />
+                    <FiDollarSign className="absolute left-5 top-[18px] text-[#454745] text-lg" />
                     <input
                       type="number"
                       step="0.1"
@@ -822,7 +822,7 @@ export default function AppPage() {
                       !amount ||
                       credentialStatus !== "exists"
                     }
-                    className="w-full py-3 rounded-xl font-bold text-sm transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border border-pink-400/30 text-pink-200 hover:bg-pink-400/10 flex justify-center items-center gap-2"
+                    className="w-full py-3 rounded-xl font-bold text-sm transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border border-[#9fe870]/40 text-[#163300] hover:bg-[#9fe870]/20 flex justify-center items-center gap-2"
                     type="button"
                   >
                     {sdkPayment.isLoading ? (
@@ -838,13 +838,13 @@ export default function AppPage() {
                     )}
                   </button>
 
-                  <p className="mt-2 text-[11px] leading-relaxed text-white/40">
+                  <p className="mt-2 text-[11px] leading-relaxed text-[#454745]">
                     Experimental SDK path using @flupy/react useFluppyPayment.
                     The primary Pay button above remains the stable flow.
                   </p>
 
                   {(sdkPayment.currentStep || sdkPayment.progressStage || sdkPayment.txHash || sdkPayment.error) && (
-                    <div className="mt-3 space-y-1 rounded-lg bg-black/20 p-3 text-[11px] font-mono text-white/50">
+                    <div className="mt-3 space-y-1 rounded-lg bg-black/5 p-3 text-[11px] font-mono text-[#454745]">
                       {sdkPayment.currentStep && (
                         <div>step: {sdkPayment.currentStep}</div>
                       )}

@@ -29,7 +29,7 @@ export function ProofProgressBar({ stage, pct }: Props) {
       {/* Progress bar */}
       <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
         <div
-          className="h-full bg-pink-500 rounded-full transition-all duration-700 ease-out"
+          className="h-full bg-[#9fe870] rounded-full transition-all duration-700 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>

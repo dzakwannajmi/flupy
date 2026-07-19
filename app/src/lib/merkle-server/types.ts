@@ -20,3 +20,15 @@ export interface ServerMerkleProof {
   readonly pathIndices: number[];
   readonly root: string;
 }
+
+/**
+ * A CommitmentSource that also supports writes.
+ *
+ * add/has/size are async because durable backends (Postgres) require a
+ * network round-trip — unlike the original in-memory-only design.
+ */
+export interface MutableCommitmentSource extends CommitmentSource {
+  add(commitment: bigint): Promise<boolean>;
+  has(commitment: bigint): Promise<boolean>;
+  size(): Promise<number>;
+}

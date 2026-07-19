@@ -1,11 +1,14 @@
-import type { CommitmentSource } from './types';
+import { PostgresCommitmentSource } from './postgres-commitment-source';
+import type { MutableCommitmentSource } from './types';
 
 /**
- * In-memory commitment source for local/testnet development.
+ * In-memory commitment source for local development ONLY.
  *
- * The backend stores only commitments. Raw secrets never leave the browser.
+ * WARNING: state is lost on every process restart. Never used when
+ * DATABASE_URL is set (see getCommitmentSource() below) — production
+ * and any Vercel deployment always uses PostgresCommitmentSource.
  */
-export class InMemoryCommitmentSource implements CommitmentSource {
+export class InMemoryCommitmentSource implements MutableCommitmentSource {
   private readonly commitments: bigint[] = [];
   private readonly commitmentKeys = new Set<string>();
 
@@ -13,7 +16,7 @@ export class InMemoryCommitmentSource implements CommitmentSource {
     return [...this.commitments];
   }
 
-  add(commitment: bigint): boolean {
+  async add(commitment: bigint): Promise<boolean> {
     const key = this.toKey(commitment);
 
     if (this.commitmentKeys.has(key)) {
@@ -26,13 +29,13 @@ export class InMemoryCommitmentSource implements CommitmentSource {
     return true;
   }
 
-  has(commitment: bigint): boolean {
+  async has(commitment: bigint): Promise<boolean> {
     return this.commitmentKeys.has(
       this.toKey(commitment),
     );
   }
 
-  size(): number {
+  async size(): Promise<number> {
     return this.commitments.length;
   }
 
@@ -44,11 +47,24 @@ export class InMemoryCommitmentSource implements CommitmentSource {
   }
 }
 
-let sourceInstance: InMemoryCommitmentSource | null = null;
+let sourceInstance: MutableCommitmentSource | null = null;
 
-export function getCommitmentSource(): InMemoryCommitmentSource {
+/**
+ * Returns the process-wide commitment source singleton.
+ *
+ * Uses PostgresCommitmentSource whenever DATABASE_URL is set (Vercel
+ * injects this automatically once the Neon integration is installed —
+ * true for every deployed environment). Falls back to
+ * InMemoryCommitmentSource only for local development without a
+ * configured database.
+ */
+export function getCommitmentSource(): MutableCommitmentSource {
   if (!sourceInstance) {
-    sourceInstance = new InMemoryCommitmentSource();
+    const databaseUrl = process.env.DATABASE_URL;
+
+    sourceInstance = databaseUrl
+      ? new PostgresCommitmentSource(databaseUrl)
+      : new InMemoryCommitmentSource();
   }
 
   return sourceInstance;

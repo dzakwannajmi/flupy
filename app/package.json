@@ -13,6 +13,7 @@
     "@flupy/browser": "workspace:*",
     "@flupy/core": "workspace:*",
     "@flupy/react": "workspace:*",
+    "@neondatabase/serverless": "^1.1.0",
     "@noble/hashes": "1.8.0",
     "@sentry/nextjs": "^10.53.1",
     "@stellar/freighter-api": "^6.0.1",

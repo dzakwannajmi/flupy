@@ -77,14 +77,14 @@ export async function POST(
     }
 
     const source = getCommitmentSource();
-    const added = source.add(commitment);
+    const added = await source.add(commitment);
 
     if (added) {
       invalidateTreeCache();
     }
 
     return NextResponse.json({
-      enrolled: source.size(),
+      enrolled: await source.size(),
       alreadyEnrolled: !added,
     });
   } catch (err: unknown) {

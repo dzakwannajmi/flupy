@@ -74,6 +74,7 @@ export default function CorePage() {
           ['encoding.ts',  'purple', 'G1/G2 Soroban wire format encoding and field element conversion'],
           ['types.ts',     'gray',   'PaymentProofOutput, MerkleProof, ProofProgress, FluppyCoreConfig, PaymentResult'],
           ['recipient-hash.ts', 'yellow', 'computeRecipientHash() — BN254-safe Stellar address hash'],
+          ['payer-hash.ts', 'yellow', 'computePayerHash() — BN254-safe Stellar address hash (payer binding)'],
           ['chain-id.ts',  'pink',   'computeChainId() — network passphrase → BN254-safe chain identifier'],
         ].map(([mod, color, desc]) => {
           const colors: Record<string, string> = {
@@ -117,7 +118,7 @@ export default function CorePage() {
       <Table rows={[
         ['BN254_R',          'bigint',  'BN254 scalar field order — all circuit inputs must be < this value'],
         ['CIRCUIT_DEPTH',    'number',  '20 — Merkle tree depth supporting up to 2^20 enrolled commitments'],
-        ['N_PUBLIC',         'number',  '7 — number of public signals (nullifier, verifiedRoot, merkleRoot, recipientHash, minAmount, maxAmount, chainId)'],
+        ['N_PUBLIC',         'number',  '7 — number of public signals (nullifier, verifiedRoot, merkleRoot, recipientHash, payerHash, amount, chainId)'],
         ['POSEIDON_TAGS',    'object',  'NULLIFIER=1, LEAF=2, NODE=3 — domain separation constants, MUST match circuit'],
         ['DEFAULT_MAX_AMOUNT','bigint', 'Default upper bound for payment amount (1000 USDC in stroops)'],
         ['usdcToStroops()',  'function','Converts human-readable USDC string to stroops bigint'],

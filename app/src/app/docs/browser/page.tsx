@@ -123,8 +123,10 @@ export default function BrowserPage() {
         <strong>RootSyncError</strong>: if the frontend Merkle tree root does not match the on-chain
         contract root, <code>executeFluppyPayment()</code> throws a{' '}
         <code>RootSyncError</code> with <code>frontendRootHex</code> and{' '}
-        <code>contractRootHex</code> fields. The admin must call{' '}
-        <code>set_merkle_root</code> on the contract to resync. See{' '}
+        <code>contractRootHex</code> fields. This is usually transient — an
+        automated sync job anchors new roots every ~10 minutes, and the
+        contract accepts proofs against any of the last 30 anchored roots.
+        See{' '}
         <Link href="/docs/troubleshooting" className="underline">Troubleshooting</Link>.
       </Note>
 
@@ -179,7 +181,7 @@ export default function BrowserPage() {
         rows={[
           ['computeCommitment(secret)',     'Promise<bigint>',        'Computes Poseidon(LEAF_TAG=2, secret) locally — never sends raw secret'],
           ['enrollCommitment(secret)',      'Promise<EnrollResult>',  'POSTs commitment hash to /api/merkle-proof/enroll'],
-          ['getMerkleProof(secret)',        'Promise<MerkleProof>',   'POSTs commitment hash, returns pathElements/pathIndices/root'],
+          ['getMerkleProof(secret)',        'Promise<MerkleProof>',   'GETs the full enrolled leaf set, computes pathElements/pathIndices locally (privacy: server never learns which commitment is being proven)'],
         ]}
       />
       <Note>
@@ -248,7 +250,7 @@ async function pay(password: string, merchant: string, amount: bigint) {
 
   } catch (err) {
     if (err instanceof RootSyncError) {
-      // Admin action required: set_merkle_root on contract
+      // Usually transient — resolves on the next automated sync cycle
       console.error('Root mismatch. Frontend:', err.frontendRootHex);
     }
     throw err;

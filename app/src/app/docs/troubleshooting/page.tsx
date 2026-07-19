@@ -262,8 +262,8 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
         />
         <IssueCard
           error="RootSyncError: frontendRootHex !== contractRootHex"
-          cause="The Merkle tree root stored in the Soroban contract does not match the backend tree root."
-          fix="The contract admin must call `set_merkle_root` on the contract with the current backend root. Until then, no payments can proceed."
+          cause="The Merkle tree root stored in the Soroban contract does not match the backend tree root. This should be rare: the contract accepts proofs against any of the last 30 anchored roots (a root history window), and an automated sync job anchors new roots every ~10 minutes."
+          fix="Usually resolves itself within the next sync cycle. If it persists, check that the automated sync job (GitHub Actions calling /api/admin/sync-root) is running successfully — see its logs for errors."
         />
         <IssueCard
           error="Stale Merkle root after new enrollments"
@@ -337,9 +337,14 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
           fix="Ensure the merchant address passed to pay() is the same G-address used to compute the recipientHash in the circuit."
         />
         <IssueCard
-          error="Error code: InvalidPaymentAmount"
-          cause="The payment amount is outside the allowed range (minAmount–maxAmount public signals)."
-          fix="Check the amount passed to pay(). Amount must be between MIN_AMOUNT and MAX_AMOUNT as defined in the circuit constants."
+          error="Error code 18 — AmountBindingMismatch"
+          cause="The amount public signal in the proof does not match the actual amount argument passed to execute_payment(). The circuit no longer performs range checks — amount is bound exactly, not validated against a min/max range."
+          fix="Ensure the amount passed to pay() is identical to the amount used when the proof was generated. Any application-level spending limits should be enforced by your own UI/backend, not the circuit."
+        />
+        <IssueCard
+          error="Error code 19 — PayerBindingMismatch"
+          cause="The payerHash public signal in the proof does not match the connected wallet address submitting the transaction. This can happen if the wallet was switched between proof generation and submission."
+          fix="Regenerate the proof after confirming the correct wallet is connected. The SDK resolves the sender address once at the start of the payment flow to prevent this."
         />
         <IssueCard
           error="Error code #3 — ContractPaused"

@@ -4,17 +4,17 @@ import { Icon } from '@iconify/react';
 
 export const metadata: Metadata = {
   title: 'Security Model',
-  description: 'Fluppy security model — ZK proofs, credential storage, nullifier protection, chainId binding.',
+  description: 'Flupy security model — ZK proofs, credential storage, nullifier protection, payer/amount binding, root history, and automated sync.',
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
   return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">{children}</h2>;
 }
 function Note({ children }: { children: ReactNode }) {
-  return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><span className="shrink-0">ℹ</span><div>{children}</div></div>;
+  return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><Icon icon="ph:info" width={18} height={18} className="shrink-0 text-blue-700" /><div>{children}</div></div>;
 }
 function Caution({ children }: { children: ReactNode }) {
-  return <div className="flex gap-3 rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-4 text-sm text-yellow-300"><span className="shrink-0">⚠</span><div>{children}</div></div>;
+  return <div className="flex gap-3 rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-4 text-sm text-yellow-300"><Icon icon="ph:warning" width={18} height={18} className="shrink-0 text-amber-700" /><div>{children}</div></div>;
 }
 function Row({ label, value, status }: { label: string; value: string; status: 'private' | 'public' | 'onchain' }) {
   const badge: Record<typeof status, string> = {
@@ -49,13 +49,13 @@ export default function SecurityPage() {
         </div>
         <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">Security Model</h1>
         <p className="text-lg text-[#454745]">
-          How Fluppy protects user identity and prevents payment replay — from browser credential
-          storage through to on-chain nullifier protection.
+          How Flupy protects user identity and prevents payment replay — from browser credential
+          storage through to on-chain nullifier, payer, and amount binding.
         </p>
       </div>
 
       <Caution>
-        Fluppy is a <strong>Testnet MVP</strong>. No external security audit has been completed.
+        Flupy is a <strong>Testnet MVP</strong>. No external security audit has been completed.
         No real funds should be used until a full audit, multi-party trusted setup ceremony, and
         native BN254 on-chain verification are in place.
       </Caution>
@@ -68,7 +68,7 @@ export default function SecurityPage() {
           { icon: 'ph:check-circle-fill',  title: 'Local verification before submit',desc: 'snarkjs.groth16.verify() runs locally before every transaction submission. Invalid proofs are rejected client-side.' },
           { icon: 'ph:tree-structure', title: 'Poseidon Merkle membership',       desc: 'Membership is proven via a Poseidon-hashed Merkle path. Only the commitment hash reaches the backend.' },
           { icon: 'ph:prohibit',  title: 'Nullifier replay protection',      desc: 'The contract stores nullifiers after each payment. Duplicate nullifiers are rejected — same proof cannot be reused.' },
-          { icon: 'ph:link', title: 'ChainId binding',                  desc: 'Every proof embeds a chain-specific chainId derived from the network passphrase. Testnet proofs are invalid on Mainnet.' },
+          { icon: 'ph:link', title: 'Payer, recipient & amount binding',                  desc: 'The proof is bound to the exact payer, merchant, and amount — a captured proof cannot be resubmitted with different values.' },
           { icon: 'ph:atom',  title: 'Atomic 95/5 split',                desc: 'The contract atomically splits every payment. No single party controls the split logic after deployment.' },
         ].map(({ icon, title, desc }) => (
           <div key={title} className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
@@ -98,8 +98,10 @@ export default function SecurityPage() {
             <Row label="ZK witness"        value="Merkle path + circuit inputs — local computation only"      status="private" />
             <Row label="commitment"        value="Poseidon(LEAF_TAG, secret) — sent to Merkle backend only"   status="private" />
             <Row label="nullifier"         value="Poseidon(NULLIFIER_TAG, secret, nonce) — stored on-chain"   status="onchain" />
-            <Row label="merkleRoot"        value="Poseidon tree root — stored on-chain"                       status="onchain" />
-            <Row label="recipientHash"     value="BN254-safe Stellar address hash — public signal"            status="onchain" />
+            <Row label="merkleRoot"        value="Poseidon tree root — one of the last 30 anchored roots"     status="onchain" />
+            <Row label="recipientHash"     value="BN254-safe hash of merchant address — public signal"        status="onchain" />
+            <Row label="payerHash"         value="BN254-safe hash of the submitting wallet — public signal"   status="onchain" />
+            <Row label="amount"            value="Payment amount as a raw field element — public signal"      status="onchain" />
             <Row label="chainId"           value="Network passphrase hash — public signal"                    status="onchain" />
             <Row label="txHash"            value="Stellar transaction hash — public ledger"                   status="public"  />
             <Row label="merchant address"  value="Stellar G-address of merchant — public"                     status="public"  />
@@ -107,6 +109,13 @@ export default function SecurityPage() {
           </tbody>
         </table>
       </div>
+      <Note>
+        Flupy's privacy guarantee is <strong>on-ledger privacy</strong> — the chain cannot link a
+        payment to an identity. It is not privacy-from-operator: because enrollment goes through a
+        server endpoint, the server does know the mapping between a commitment and whoever
+        submitted it. Enrollment itself never touches the chain, so this mapping is never
+        published anywhere else.
+      </Note>
 
       {/* Credential storage */}
       <H2 id="credential">Credential Storage</H2>
@@ -117,7 +126,7 @@ export default function SecurityPage() {
           <div><span className="text-[#0e0f0c]">password</span> + salt <span className="text-gray-600">→</span> <span className="text-amber-700">PBKDF2-SHA256</span> (100k iter dev / 600k prod) <span className="text-gray-600">→</span> <span className="text-blue-700">AES-256-GCM key</span></div>
           <div><span className="text-blue-700">AES-256-GCM</span>(secret, key, iv) <span className="text-gray-600">→</span> <span className="text-emerald-700">ciphertext in IndexedDB</span></div>
           <div className="mt-2"><span className="text-gray-600">// IndexedDB schema — nothing sensitive in plaintext</span></div>
-          <div>DB: <span className="text-[#0e0f0c]">fluppy-identity-v1</span> | store: <span className="text-[#0e0f0c]">credentials</span> | key: <span className="text-[#0e0f0c]">zk-credential</span></div>
+          <div>DB: <span className="text-[#0e0f0c]">flupy-identity-v1</span> | store: <span className="text-[#0e0f0c]">credentials</span> | key: <span className="text-[#0e0f0c]">zk-credential</span></div>
           <div className="text-[#454745]">{'{'} version, kdf, iterations, salt(hex), iv(hex), ciphertext(hex) {'}'}</div>
         </div>
       </div>
@@ -133,7 +142,7 @@ export default function SecurityPage() {
           { title: 'Only the commitment reaches the backend at enrollment', desc: 'The SDK computes Poseidon(LEAF_TAG=2, secret) locally and sends only that hash to /api/merkle-proof/enroll. The raw secret never leaves the browser.' },
           { title: 'Proof-fetch is identical for every requester', desc: 'GET /api/merkle-proof returns the full enrolled leaf set + root — the same response regardless of which credential the caller holds. Earlier versions accepted a per-commitment lookup, which let the server infer "this session is about to pay, right now" from request timing and correlate it with the payment tx landing seconds later, without any wallet address ever being transmitted. The client now locates its own leaf and computes its Merkle path entirely locally.' },
           { title: 'Sparse Merkle tree with domain separation', desc: 'The tree is built from pre-computed zero hashes, identically on server (enrollment/caching) and client (proof computation). Domain tags (LEAF=2, NODE=3) prevent cross-context hash collisions.' },
-          { title: 'Root sync guard', desc: 'executeFluppyPayment() compares the frontend Merkle root against the on-chain contract root before generating a proof. A mismatch throws RootSyncError before any computation begins.' },
+          { title: 'Durable commitment store', desc: 'Enrolled commitments are persisted in Postgres (Neon), not held only in server memory — serverless cold starts no longer risk silently dropping enrollments.' },
         ].map(({ title, desc }) => (
           <div key={title} className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
             <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">{title}</p>
@@ -141,6 +150,63 @@ export default function SecurityPage() {
           </div>
         ))}
       </div>
+
+      {/* Payer / amount binding */}
+      <H2 id="binding">Payer & Amount Binding</H2>
+      <p className="text-sm text-[#454745] mb-3">
+        A proof binds to the exact <strong>merchant</strong>, <strong>payer</strong>, and{' '}
+        <strong>amount</strong> it was generated for. The contract re-derives each value from the
+        real transaction arguments and rejects the payment if any of them don&apos;t match — a
+        captured proof cannot be replayed with a different recipient, a different wallet, or a
+        different amount.
+      </p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {[
+          { title: 'Recipient binding', desc: 'recipientHash = hash(merchant). Prevents a proof from being redirected to a different merchant.' },
+          { title: 'Payer binding', desc: 'payerHash = hash(sender). Prevents a broadcast-but-unconfirmed proof from being resubmitted by a different wallet, which would otherwise burn the original sender\u2019s nullifier at no cost to the attacker.' },
+          { title: 'Amount binding', desc: 'amount is a public signal, bound exactly. The circuit performs no range checks — any spending-policy limits belong in the application, not the circuit.' },
+        ].map(({ title, desc }) => (
+          <div key={title} className="rounded-xl border border-black/10 bg-black/[0.03] p-3">
+            <p className="mb-1 text-xs font-semibold text-[#0e0f0c]">{title}</p>
+            <p className="text-xs text-[#454745]">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Root operator */}
+      <H2 id="root-operator">Root Operator & Automated Sync</H2>
+      <p className="text-sm text-[#454745] mb-3">
+        The Merkle root is anchored on-chain by an automated job, not a manually-invoked admin
+        command. The contract separates two roles:
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+          <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">Admin</p>
+          <p className="text-xs text-[#454745]">Cold key. Full control: pause, fee, rotate the RootOperator. Can also update the root directly as a manual override.</p>
+        </div>
+        <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+          <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">RootOperator</p>
+          <p className="text-xs text-[#454745]">Hot key, held by the automated sync job. Can <em>only</em> update the root — it can never move funds, pause payments, or change fees. Revocable by Admin without a contract upgrade.</p>
+        </div>
+      </div>
+      <p className="mt-3 text-sm text-[#454745]">
+        A GitHub Actions job calls the sync endpoint every ~10 minutes. It compares the on-chain
+        root against the current commitment store, and submits a new root — signed by the
+        RootOperator key — only when they differ. The endpoint is protected by a shared secret,
+        a distributed lock (so overlapping runs don&apos;t race each other), and an idempotency
+        check (a free on-chain read before every write) so a no-op cycle costs nothing.
+      </p>
+
+      {/* Root history */}
+      <H2 id="root-history">Root History Window</H2>
+      <p className="text-sm text-[#454745] mb-3">
+        The contract keeps the last <strong>30 anchored roots</strong>, not just the latest one. A
+        proof is accepted if its root matches any entry in that window. This closes a race that
+        would otherwise occur with frequent syncing: a user fetches a proof against root N, the
+        sync job anchors root N+1 while they&apos;re still generating the proof, and the payment
+        would previously fail outright with a hard <code>RootMismatch</code> error. Now it still
+        succeeds, as long as the sync job hasn&apos;t cycled past 30 roots in the meantime.
+      </p>
 
       {/* Nullifier */}
       <H2 id="nullifier">Nullifier Replay Protection</H2>
@@ -191,7 +257,8 @@ export default function SecurityPage() {
         <p className="text-xs text-[#454745]">
           <strong className="text-yellow-300">Defense-in-depth:</strong> Client-side{' '}
           <code>snarkjs.groth16.verify()</code> is enforced before every transaction submission.
-          Invalid proofs are caught client-side and never submitted to the contract.
+          Invalid proofs are caught client-side and never submitted to the contract. All payer,
+          recipient, and amount binding checks run on-chain regardless of verifier mode.
         </p>
       </div>
       <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
@@ -221,6 +288,7 @@ export default function SecurityPage() {
               ['No external security audit',        'Comprehensive internal test coverage', 'SCF Soroban Audit Bank after MVP'],
               ['No production relayer',             'User-signed Freighter (transparent)',  'Optional future relayer layer'],
               ['Testnet deployment only',           'No real value at risk',               'After audit + ceremony + native verifier'],
+              ['Small anonymity set on testnet',    'Documented, not engineered around',    'Meaningful at production scale with more enrolled users'],
             ].map(([lim, mit, plan]) => (
               <tr key={lim} className="hover:bg-black/[0.03]">
                 <td className="px-4 py-2.5 text-[#0e0f0c] font-medium">{lim}</td>
@@ -235,4 +303,3 @@ export default function SecurityPage() {
     </div>
   );
 }
-

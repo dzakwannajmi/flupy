@@ -35,8 +35,8 @@ export const CIRCUIT_DEPTH = 20;
  *   [1] verifiedRoot    ← circuit output
  *   [2] merkleRoot      ← public input
  *   [3] recipientHash   ← public input
- *   [4] minAmount       ← public input
- *   [5] maxAmount       ← public input
+ *   [4] payerHash       ← public input
+ *   [5] amount          ← public input
  *   [6] chainId         ← public input
  *
  * MUST match N_PUBLIC in contracts/src/verifier/types.rs.
@@ -61,7 +61,9 @@ export const POSEIDON_TAGS = {
 
 /**
  * Default minimum payment amount (0 USDC in stroops).
- * Passed as minAmount public input to the circuit.
+ * Application-level policy suggestion only — no longer passed to the circuit
+ * (payer/amount binding migration removed in-circuit amount range checks).
+ * Kept as an optional convenience constant for UI-side validation.
  */
 export const DEFAULT_MIN_AMOUNT = 0n;
 

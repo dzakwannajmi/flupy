@@ -29,8 +29,8 @@ declare const CIRCUIT_DEPTH = 20;
  *   [1] verifiedRoot    ← circuit output
  *   [2] merkleRoot      ← public input
  *   [3] recipientHash   ← public input
- *   [4] minAmount       ← public input
- *   [5] maxAmount       ← public input
+ *   [4] payerHash       ← public input
+ *   [5] amount          ← public input
  *   [6] chainId         ← public input
  *
  * MUST match N_PUBLIC in contracts/src/verifier/types.rs.
@@ -49,7 +49,9 @@ declare const POSEIDON_TAGS: {
 };
 /**
  * Default minimum payment amount (0 USDC in stroops).
- * Passed as minAmount public input to the circuit.
+ * Application-level policy suggestion only — no longer passed to the circuit
+ * (payer/amount binding migration removed in-circuit amount range checks).
+ * Kept as an optional convenience constant for UI-side validation.
  */
 declare const DEFAULT_MIN_AMOUNT = 0n;
 /**
@@ -259,6 +261,24 @@ interface FluppyCoreConfig {
 declare function computeRecipientHash(stellarAddress: string): string;
 
 /**
+ * Computes a BN254-safe payer hash from a Stellar address.
+ *
+ * Uses the exact same derivation as computeRecipientHash() — same
+ * address-serialization pattern, different semantic field. Deliberately
+ * not a new variant, per the encoding-consistency principle established
+ * for recipientHash.
+ *
+ * Algorithm:
+ * 1. Convert Stellar address to Soroban ScVal XDR.
+ * 2. Hash the XDR bytes using SHA-256.
+ * 3. Zero the most-significant byte to guarantee the result is < BN254_R.
+ * 4. Return the value as a decimal string for Circom input.
+ *
+ * This must match compute_payer_hash() in the Soroban contract.
+ */
+declare function computePayerHash(stellarAddress: string): string;
+
+/**
  * Well-known Stellar network passphrases.
  */
 declare const STELLAR_NETWORKS: {
@@ -287,4 +307,4 @@ declare function computeChainId(networkPassphrase: string): string;
 
 declare const FLUPPY_CORE_VERSION = "0.1.0";
 
-export { BN254_R, CIRCUIT_DEPTH, DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT, FLUPPY_CORE_VERSION, FluppyArtifactError, FluppyContractError, type FluppyCoreConfig, FluppyError, type FluppyErrorAction, type FluppyErrorCode, FluppyNetworkError, FluppyProofError, FluppyRootMismatchError, FluppyWalletError, type LegacyProgressCallback, type MerkleProof, N_PUBLIC, POSEIDON_TAGS, type ParsedFluppyError, type PaymentProofOutput, type PaymentResult, type PaymentStatus, type ProgressCallback, type ProofProgress, STELLAR_NETWORKS, type StellarNetworkName, USDC_DECIMALS, computeChainId, computeRecipientHash, decimalToBe32Hex, encodeG1, encodeG2, hexSecretToFieldElement, parseFluppyError, usdcToStroops };
+export { BN254_R, CIRCUIT_DEPTH, DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT, FLUPPY_CORE_VERSION, FluppyArtifactError, FluppyContractError, type FluppyCoreConfig, FluppyError, type FluppyErrorAction, type FluppyErrorCode, FluppyNetworkError, FluppyProofError, FluppyRootMismatchError, FluppyWalletError, type LegacyProgressCallback, type MerkleProof, N_PUBLIC, POSEIDON_TAGS, type ParsedFluppyError, type PaymentProofOutput, type PaymentResult, type PaymentStatus, type ProgressCallback, type ProofProgress, STELLAR_NETWORKS, type StellarNetworkName, USDC_DECIMALS, computeChainId, computePayerHash, computeRecipientHash, decimalToBe32Hex, encodeG1, encodeG2, hexSecretToFieldElement, parseFluppyError, usdcToStroops };

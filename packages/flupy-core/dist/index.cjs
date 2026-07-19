@@ -327,6 +327,13 @@ function computeRecipientHash(stellarAddress) {
   hashed[0] = 0;
   return BigInt(`0x${hashed.toString("hex")}`).toString();
 }
+function computePayerHash(stellarAddress) {
+  const address = stellarSdk.Address.fromString(stellarAddress);
+  const xdrBytes = address.toScVal().toXDR();
+  const hashed = stellarSdk.hash(xdrBytes);
+  hashed[0] = 0;
+  return BigInt(`0x${hashed.toString("hex")}`).toString();
+}
 var STELLAR_NETWORKS = {
   TESTNET: stellarSdk.Networks.TESTNET,
   MAINNET: stellarSdk.Networks.PUBLIC
@@ -361,6 +368,7 @@ exports.POSEIDON_TAGS = POSEIDON_TAGS;
 exports.STELLAR_NETWORKS = STELLAR_NETWORKS;
 exports.USDC_DECIMALS = USDC_DECIMALS;
 exports.computeChainId = computeChainId;
+exports.computePayerHash = computePayerHash;
 exports.computeRecipientHash = computeRecipientHash;
 exports.decimalToBe32Hex = decimalToBe32Hex;
 exports.encodeG1 = encodeG1;

@@ -325,6 +325,13 @@ function computeRecipientHash(stellarAddress) {
   hashed[0] = 0;
   return BigInt(`0x${hashed.toString("hex")}`).toString();
 }
+function computePayerHash(stellarAddress) {
+  const address = Address.fromString(stellarAddress);
+  const xdrBytes = address.toScVal().toXDR();
+  const hashed = hash(xdrBytes);
+  hashed[0] = 0;
+  return BigInt(`0x${hashed.toString("hex")}`).toString();
+}
 var STELLAR_NETWORKS = {
   TESTNET: Networks.TESTNET,
   MAINNET: Networks.PUBLIC
@@ -342,6 +349,6 @@ function computeChainId(networkPassphrase) {
 // src/index.ts
 var FLUPPY_CORE_VERSION = "0.1.0";
 
-export { BN254_R, CIRCUIT_DEPTH, DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT, FLUPPY_CORE_VERSION, FluppyArtifactError, FluppyContractError, FluppyError, FluppyNetworkError, FluppyProofError, FluppyRootMismatchError, FluppyWalletError, N_PUBLIC, POSEIDON_TAGS, STELLAR_NETWORKS, USDC_DECIMALS, computeChainId, computeRecipientHash, decimalToBe32Hex, encodeG1, encodeG2, hexSecretToFieldElement, parseFluppyError, usdcToStroops };
+export { BN254_R, CIRCUIT_DEPTH, DEFAULT_MAX_AMOUNT, DEFAULT_MIN_AMOUNT, FLUPPY_CORE_VERSION, FluppyArtifactError, FluppyContractError, FluppyError, FluppyNetworkError, FluppyProofError, FluppyRootMismatchError, FluppyWalletError, N_PUBLIC, POSEIDON_TAGS, STELLAR_NETWORKS, USDC_DECIMALS, computeChainId, computePayerHash, computeRecipientHash, decimalToBe32Hex, encodeG1, encodeG2, hexSecretToFieldElement, parseFluppyError, usdcToStroops };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

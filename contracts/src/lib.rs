@@ -6,6 +6,17 @@
 //!   payment.rs  → execute_payment logic
 //!   verify.rs   → Groth16 verifier (BN254)
 //!   test.rs     → unit tests
+//!
+//! ## Role model (Tier 0 separation)
+//! Admin        — cold key. Full control: pause, fee, rotate_operator.
+//!                Can also call set_merkle_root directly (manual override).
+//! RootOperator — hot key, intended for a server-side automated sync job.
+//!                Can ONLY call set_merkle_root. Rotatable by Admin via
+//!                rotate_operator() without needing a contract upgrade.
+//!
+//! Rationale: RootOperator key compromise is bounded to whitelist-integrity
+//! bypass or root-anchoring DoS — it can never move funds (Flupy is
+//! non-custodial) or change Admin/fee/pause state.
 
 #![no_std]
 
@@ -13,7 +24,7 @@
 //    use crate::errors / crate::verify / crate::DataKey) ──────────────────
 mod errors;
 mod payment;
-mod verifier; 
+mod verifier;
 
 #[cfg(test)]
 mod test;
@@ -42,11 +53,20 @@ pub struct MerkleRootUpdated {
     pub new_root: BytesN<32>,
 }
 
+#[contractevent]
+pub struct OperatorRotated {
+    pub new_operator: Address,
+}
+
 #[contracttype]
 #[derive(Clone, Debug)]
 pub enum DataKey {
-    /// Admin address — immutable after __constructor.
+    /// Admin address — immutable after __constructor (rotatable only via
+    /// contract upgrade, not via any callable function).
     Admin,
+    /// Root operator address — the ONLY other identity permitted to call
+    /// set_merkle_root. Rotatable by Admin via rotate_operator().
+    RootOperator,
     /// Stellar Asset Contract address for USDC.
     UsdcToken,
     /// Treasury address — receives 5% protocol fee.
@@ -78,6 +98,7 @@ impl FluppyContract {
     pub fn __constructor(
         env: Env,
         admin: Address,
+        root_operator: Address,
         usdc_token: Address,
         treasury: Address,
         merkle_root: BytesN<32>,
@@ -89,6 +110,9 @@ impl FluppyContract {
         admin.require_auth();
 
         env.storage().instance().set(&DataKey::Admin, &admin);
+        env.storage()
+            .instance()
+            .set(&DataKey::RootOperator, &root_operator);
         env.storage()
             .instance()
             .set(&DataKey::UsdcToken, &usdc_token);
@@ -145,14 +169,15 @@ impl FluppyContract {
         Ok(())
     }
 
-    /// Update the authorised Merkle root (new whitelist snapshot). Admin only.
+    /// Update the authorised Merkle root (new whitelist snapshot).
+    /// Callable by Admin (manual override) OR RootOperator (automated sync).
     pub fn set_merkle_root(
         env: Env,
         caller: Address,
         new_root: BytesN<32>,
     ) -> Result<(), FluppyError> {
         caller.require_auth();
-        require_admin(&env, &caller)?;
+        require_admin_or_operator(&env, &caller)?;
 
         env.storage()
             .instance()
@@ -176,6 +201,31 @@ impl FluppyContract {
         Ok(())
     }
 
+    /// Rotates the RootOperator address. Admin only.
+    ///
+    /// Lets Admin revoke a compromised or retired operator hot key without
+    /// a contract upgrade — the operator is a storage value, not baked
+    /// into the WASM.
+    pub fn rotate_operator(
+        env: Env,
+        caller: Address,
+        new_operator: Address,
+    ) -> Result<(), FluppyError> {
+        caller.require_auth();
+        require_admin(&env, &caller)?;
+
+        env.storage()
+            .instance()
+            .set(&DataKey::RootOperator, &new_operator);
+
+        OperatorRotated {
+            new_operator: new_operator.clone(),
+        }
+        .publish(&env);
+
+        Ok(())
+    }
+
     // ── Read-only queries ────────────────────────────────────────────────────
 
     pub fn is_paused(env: Env) -> bool {
@@ -187,6 +237,10 @@ impl FluppyContract {
 
     pub fn get_merkle_root(env: Env) -> Option<BytesN<32>> {
         env.storage().instance().get(&DataKey::MerkleRoot)
+    }
+
+    pub fn get_root_operator(env: Env) -> Option<Address> {
+        env.storage().instance().get(&DataKey::RootOperator)
     }
 
     /// Returns true if this nullifier was already used in a previous payment.
@@ -229,6 +283,35 @@ pub(crate) fn require_admin(env: &Env, caller: &Address) -> Result<(), FluppyErr
         .ok_or(FluppyError::NotInitialized)?;
 
     if *caller != admin {
+        return Err(FluppyError::NotAdmin);
+    }
+    Ok(())
+}
+
+/// Returns Err(NotAdmin) if `caller` is neither the Admin nor the
+/// RootOperator. Used exclusively by set_merkle_root, which both roles
+/// may call.
+pub(crate) fn require_admin_or_operator(
+    env: &Env,
+    caller: &Address,
+) -> Result<(), FluppyError> {
+    let admin: Address = env
+        .storage()
+        .instance()
+        .get(&DataKey::Admin)
+        .ok_or(FluppyError::NotInitialized)?;
+
+    if *caller == admin {
+        return Ok(());
+    }
+
+    let operator: Address = env
+        .storage()
+        .instance()
+        .get(&DataKey::RootOperator)
+        .ok_or(FluppyError::NotInitialized)?;
+
+    if *caller != operator {
         return Err(FluppyError::NotAdmin);
     }
     Ok(())

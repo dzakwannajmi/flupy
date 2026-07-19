@@ -11,6 +11,7 @@ struct F {
     env: Env,
     client: FluppyContractClient<'static>,
     admin: Address,
+    root_operator: Address,
     treasury: Address,
     usdc: token::Client<'static>,
     usdc_sa: token::StellarAssetClient<'static>,
@@ -22,6 +23,7 @@ fn setup() -> F {
     env.mock_all_auths();
 
     let admin = Address::generate(&env);
+    let root_operator = Address::generate(&env);
     let treasury = Address::generate(&env);
 
     let usdc_id = env
@@ -33,14 +35,15 @@ fn setup() -> F {
     let root = BytesN::from_array(&env, &[0x01; 32]);
 
     // __constructor fires here — pass args as tuple matching parameter order:
-    // (admin, usdc_token, treasury, merkle_root)
-    let contract_id = env.register(FluppyContract, (&admin, &usdc_id, &treasury, &root));
+    // (admin, root_operator, usdc_token, treasury, merkle_root)
+    let contract_id = env.register(FluppyContract, (&admin, &root_operator, &usdc_id, &treasury, &root));
     let client = FluppyContractClient::new(&env, &contract_id);
 
     F {
         env,
         client,
         admin,
+        root_operator,
         treasury,
         usdc,
         usdc_sa,
@@ -482,4 +485,92 @@ fn test_split_no_overflow_on_large_amount() {
     assert!(m > 0);
     assert!(t > 0);
     assert_eq!(m + t, safe_large);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §9  Root operator role separation (Tier 0)
+// ─────────────────────────────────────────────────────────────────────────────
+
+#[test]
+fn test_operator_can_update_merkle_root() {
+    let f = setup();
+    let new_root = BytesN::from_array(&f.env, &[0xEE; 32]);
+    f.client.set_merkle_root(&f.root_operator, &new_root);
+    assert_eq!(f.client.get_merkle_root(), Some(new_root));
+}
+
+#[test]
+fn test_admin_can_still_update_merkle_root_directly() {
+    let f = setup();
+    let new_root = BytesN::from_array(&f.env, &[0xFF; 32]);
+    f.client.set_merkle_root(&f.admin, &new_root);
+    assert_eq!(f.client.get_merkle_root(), Some(new_root));
+}
+
+#[test]
+fn test_non_admin_non_operator_cannot_update_root() {
+    let f = setup();
+    let imposter = Address::generate(&f.env);
+    let new_root = BytesN::from_array(&f.env, &[0xAA; 32]);
+    assert!(
+        f.client.try_set_merkle_root(&imposter, &new_root).is_err(),
+        "Neither admin nor operator — must be rejected"
+    );
+}
+
+#[test]
+fn test_operator_cannot_pause() {
+    let f = setup();
+    assert!(
+        f.client.try_set_pause(&f.root_operator, &true).is_err(),
+        "Operator has no pause authority — must be rejected"
+    );
+}
+
+#[test]
+fn test_operator_cannot_set_fee() {
+    let f = setup();
+    assert!(
+        f.client.try_set_fee(&f.root_operator, &100_i128).is_err(),
+        "Operator has no fee authority — must be rejected"
+    );
+}
+
+#[test]
+fn test_operator_cannot_rotate_operator() {
+    let f = setup();
+    let new_operator = Address::generate(&f.env);
+    assert!(
+        f.client
+            .try_rotate_operator(&f.root_operator, &new_operator)
+            .is_err(),
+        "Operator cannot rotate itself — admin only"
+    );
+}
+
+#[test]
+fn test_admin_can_rotate_operator() {
+    let f = setup();
+    let new_operator = Address::generate(&f.env);
+    f.client.rotate_operator(&f.admin, &new_operator);
+    assert_eq!(f.client.get_root_operator(), Some(new_operator.clone()));
+
+    // Old operator must lose access after rotation
+    let new_root = BytesN::from_array(&f.env, &[0xBB; 32]);
+    assert!(
+        f.client
+            .try_set_merkle_root(&f.root_operator, &new_root)
+            .is_err(),
+        "Old operator must be rejected after rotation"
+    );
+
+    // New operator must gain access
+    f.client.set_merkle_root(&new_operator, &new_root);
+    assert_eq!(f.client.get_merkle_root(), Some(new_root));
+}
+
+#[test]
+fn test_get_root_operator_returns_current_operator() {
+    let f = setup();
+    assert_eq!(f.client.get_root_operator(), Some(f.root_operator.clone()));
 }

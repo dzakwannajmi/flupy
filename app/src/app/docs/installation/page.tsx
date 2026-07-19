@@ -18,25 +18,25 @@ export const metadata: Metadata = {
 
 function SectionHeading({ id, children }: { id: string; children: ReactNode }) {
   return (
-    <h2 id={id} className="mb-3 mt-12 scroll-mt-20 text-xl font-semibold text-white first:mt-0">
+    <h2 id={id} className="mb-3 mt-12 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">
       {children}
     </h2>
   );
 }
 
 function SubHeading({ children }: { children: ReactNode }) {
-  return <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-widest text-gray-500">{children}</h3>;
+  return <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-widest text-[#454745]">{children}</h3>;
 }
 
 function CodeBlock({ children, filename }: { children: string; filename?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
+    <div className="overflow-hidden rounded-xl border border-black/10">
       {filename && (
-        <div className="border-b border-white/10 bg-white/5 px-4 py-2">
-          <span className="text-xs font-mono text-gray-500">{filename}</span>
+        <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2">
+          <span className="text-xs font-mono text-[#454745]">{filename}</span>
         </div>
       )}
-      <pre className="overflow-x-auto bg-gray-900 p-4 text-sm text-gray-300">
+      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]">
         <code>{children}</code>
       </pre>
     </div>
@@ -66,8 +66,8 @@ export default function InstallationPage() {
 
       {/* Header */}
       <div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">Installation</h1>
-        <p className="text-lg text-gray-400">
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">Installation</h1>
+        <p className="text-lg text-[#454745]">
           Fluppy SDK is currently distributed as an internal pnpm monorepo workspace.
           This guide covers local development setup.
         </p>
@@ -85,13 +85,13 @@ export default function InstallationPage() {
       {/* ── Prerequisites ── */}
       <SectionHeading id="prerequisites">1. Prerequisites</SectionHeading>
 
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="overflow-hidden rounded-xl border border-black/10">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Tool</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Version</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Purpose</th>
+            <tr className="border-b border-black/10 bg-black/[0.03]">
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Tool</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Version</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Purpose</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -102,10 +102,10 @@ export default function InstallationPage() {
               ['Stellar CLI', '≥ 22.x', 'Contract deployment and invocation'],
               ['Freighter', 'Latest', 'Stellar wallet browser extension for signing'],
             ].map(([tool, ver, desc]) => (
-              <tr key={tool} className="hover:bg-white/5">
-                <td className="px-4 py-2.5 font-mono text-xs font-semibold text-white">{tool}</td>
-                <td className="px-4 py-2.5 text-xs text-gray-400">{ver}</td>
-                <td className="px-4 py-2.5 text-xs text-gray-500">{desc}</td>
+              <tr key={tool} className="hover:bg-black/[0.03]">
+                <td className="px-4 py-2.5 font-mono text-xs font-semibold text-[#0e0f0c]">{tool}</td>
+                <td className="px-4 py-2.5 text-xs text-[#454745]">{ver}</td>
+                <td className="px-4 py-2.5 text-xs text-[#454745]">{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -128,9 +128,9 @@ cargo install --locked stellar-cli --features opt`}</CodeBlock>
       <CodeBlock>{`git clone https://github.com/dzakwannajmi/Fluppy.git
 cd fluppy`}</CodeBlock>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-[#454745]">
         The repository uses a pnpm workspace monorepo. The root{' '}
-        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">pnpm-workspace.yaml</code>{' '}
+        <code className="rounded bg-black/5 px-1 py-0.5 text-xs">pnpm-workspace.yaml</code>{' '}
         declares three workspace packages plus the Next.js app.
       </p>
 
@@ -144,11 +144,11 @@ cd fluppy`}</CodeBlock>
       <CodeBlock>{`# From the repository root — installs all workspace dependencies
 pnpm install`}</CodeBlock>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-[#454745]">
         This links all workspace packages via symlinks. You will see{' '}
-        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">node_modules/@flupy/core</code> inside{' '}
-        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">packages/fluppy-browser</code> and{' '}
-        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">app</code> as workspace symlinks.
+        <code className="rounded bg-black/5 px-1 py-0.5 text-xs">node_modules/@flupy/core</code> inside{' '}
+        <code className="rounded bg-black/5 px-1 py-0.5 text-xs">packages/fluppy-browser</code> and{' '}
+        <code className="rounded bg-black/5 px-1 py-0.5 text-xs">app</code> as workspace symlinks.
       </p>
 
       {/* ── Configure ── */}
@@ -156,8 +156,8 @@ pnpm install`}</CodeBlock>
 
       <CodeBlock>{`cp app/.env.example app/.env.local`}</CodeBlock>
 
-      <p className="mb-3 text-sm text-gray-500">
-        Edit <code className="rounded bg-white/10 px-1 py-0.5 text-xs">app/.env.local</code> with the following Testnet values:
+      <p className="mb-3 text-sm text-[#454745]">
+        Edit <code className="rounded bg-black/5 px-1 py-0.5 text-xs">app/.env.local</code> with the following Testnet values:
       </p>
 
       <CodeBlock filename="app/.env.local">{`# Soroban contract — deployed on Stellar Testnet
@@ -183,7 +183,7 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</CodeBlock>
       {/* ── Build ── */}
       <SectionHeading id="build">5. Build SDK Packages</SectionHeading>
 
-      <p className="mb-3 text-sm text-gray-500">
+      <p className="mb-3 text-sm text-[#454745]">
         Build all SDK packages in dependency order. The Next.js app consumes them via workspace symlinks.
       </p>
 
@@ -202,18 +202,18 @@ pnpm --filter @flupy/react typecheck
 # Build the Next.js app
 pnpm build:app`}</CodeBlock>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-[#454745]">
         All five commands should complete with no errors. Expected SDK bundle sizes after build:
       </p>
 
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="overflow-hidden rounded-xl border border-black/10">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Package</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">ESM</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">CJS</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">DTS</th>
+            <tr className="border-b border-black/10 bg-black/[0.03]">
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Package</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">ESM</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">CJS</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">DTS</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -222,11 +222,11 @@ pnpm build:app`}</CodeBlock>
               ['@flupy/browser', '~31 KB', '~32 KB', '~11 KB'],
               ['@flupy/react', '~14 KB', '~14 KB', '~14 KB'],
             ].map(([pkg, esm, cjs, dts]) => (
-              <tr key={pkg} className="hover:bg-white/5">
-                <td className="px-4 py-2.5 font-mono text-xs font-semibold text-white">{pkg}</td>
-                <td className="px-4 py-2.5 text-xs text-gray-400">{esm}</td>
-                <td className="px-4 py-2.5 text-xs text-gray-400">{cjs}</td>
-                <td className="px-4 py-2.5 text-xs text-gray-400">{dts}</td>
+              <tr key={pkg} className="hover:bg-black/[0.03]">
+                <td className="px-4 py-2.5 font-mono text-xs font-semibold text-[#0e0f0c]">{pkg}</td>
+                <td className="px-4 py-2.5 text-xs text-[#454745]">{esm}</td>
+                <td className="px-4 py-2.5 text-xs text-[#454745]">{cjs}</td>
+                <td className="px-4 py-2.5 text-xs text-[#454745]">{dts}</td>
               </tr>
             ))}
           </tbody>
@@ -243,7 +243,7 @@ pnpm dev
       {/* ── Workspace Dependencies ── */}
       <SectionHeading id="workspace">7. Workspace Dependency Model</SectionHeading>
 
-      <p className="mb-3 text-sm text-gray-500">
+      <p className="mb-3 text-sm text-[#454745]">
         Packages reference each other via the pnpm workspace protocol:
       </p>
 
@@ -261,10 +261,10 @@ pnpm dev
   }
 }`}</CodeBlock>
 
-      <p className="text-sm text-gray-500">
-        The <code className="rounded bg-white/10 px-1 py-0.5 text-xs">workspace:*</code> protocol
+      <p className="text-sm text-[#454745]">
+        The <code className="rounded bg-black/5 px-1 py-0.5 text-xs">workspace:*</code> protocol
         resolves to the local package path at install time. Running{' '}
-        <code className="rounded bg-white/10 px-1 py-0.5 text-xs">pnpm install</code> from the root
+        <code className="rounded bg-black/5 px-1 py-0.5 text-xs">pnpm install</code> from the root
         creates the necessary symlinks automatically.
       </p>
 

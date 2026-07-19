@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
-  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-white first:mt-0">{children}</h2>;
+  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">{children}</h2>;
 }
 function Code({ children, filename }: { children: string; filename?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
-      {filename && <div className="border-b border-white/10 bg-white/5 px-4 py-2"><span className="font-mono text-xs text-gray-500">{filename}</span></div>}
-      <pre className="overflow-x-auto bg-gray-900 p-4 text-sm text-gray-300"><code>{children}</code></pre>
+    <div className="overflow-hidden rounded-xl border border-black/10">
+      {filename && <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2"><span className="font-mono text-xs text-[#454745]">{filename}</span></div>}
+      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]"><code>{children}</code></pre>
     </div>
   );
 }
@@ -29,8 +29,8 @@ export default function ExamplesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">Examples</h1>
-        <p className="text-lg text-gray-400">
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">Examples</h1>
+        <p className="text-lg text-[#454745]">
           Complete code examples for integrating the Fluppy SDK into a React application.
           All examples use the internal monorepo workspace packages.
         </p>
@@ -45,9 +45,9 @@ export default function ExamplesPage() {
 
       {/* Provider setup */}
       <H2 id="provider">1. Provider Setup</H2>
-      <p className="text-sm text-gray-400">
-        Place <code className="text-white">FluppyProvider</code> near your application root.
-        Memoize the config object with <code className="text-white">useMemo</code> to prevent
+      <p className="text-sm text-[#454745]">
+        Place <code className="text-[#0e0f0c]">FluppyProvider</code> near your application root.
+        Memoize the config object with <code className="text-[#0e0f0c]">useMemo</code> to prevent
         unnecessary re-renders in child hooks.
       </p>
       <Code filename="app/layout.tsx">{`'use client';
@@ -80,8 +80,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
       {/* Wallet connection */}
       <H2 id="wallet">2. Wallet Connection</H2>
-      <p className="text-sm text-gray-400">
-        <code className="text-white">useFluppyWallet</code> wraps Freighter wallet state.
+      <p className="text-sm text-[#454745]">
+        <code className="text-[#0e0f0c]">useFluppyWallet</code> wraps Freighter wallet state.
         All Freighter calls use dynamic import — safe in SSR environments.
       </p>
       <Code filename="WalletButton.tsx">{`'use client';
@@ -303,10 +303,10 @@ function addPaymentToHistory(
 
       {/* Combined example */}
       <H2 id="combined">6. Combined Payment Card</H2>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-[#454745]">
         A compact example combining all hooks. In a real application, supply{' '}
-        <code className="text-white">merchantAddress</code> from your configuration and{' '}
-        <code className="text-white">password</code> from a secure password input — never
+        <code className="text-[#0e0f0c]">merchantAddress</code> from your configuration and{' '}
+        <code className="text-[#0e0f0c]">password</code> from a secure password input — never
         hardcode them.
       </p>
       <Code filename="PaymentCard.tsx">{`'use client';
@@ -381,8 +381,8 @@ export function PaymentCard({
 
       {/* Browser SDK direct */}
       <H2 id="browser-direct">7. Browser SDK Without React</H2>
-      <p className="text-sm text-gray-400">
-        <code className="text-white">@flupy/browser</code> works without React —
+      <p className="text-sm text-[#454745]">
+        <code className="text-[#0e0f0c]">@flupy/browser</code> works without React —
         useful for vanilla TypeScript integrations or non-React frameworks.
       </p>
       <Code filename="payment-vanilla.ts">{`import {

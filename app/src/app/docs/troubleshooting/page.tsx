@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
   return (
-    <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-white first:mt-0">
+    <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">
       {children}
     </h2>
   );
@@ -19,13 +19,13 @@ function H2({ id, children }: { id: string; children: ReactNode }) {
 
 function Code({ children, filename }: { children: string; filename?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
+    <div className="overflow-hidden rounded-xl border border-black/10">
       {filename && (
-        <div className="border-b border-white/10 bg-white/5 px-4 py-2">
-          <span className="font-mono text-xs text-gray-500">{filename}</span>
+        <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2">
+          <span className="font-mono text-xs text-[#454745]">{filename}</span>
         </div>
       )}
-      <pre className="overflow-x-auto bg-gray-900 p-4 text-sm text-gray-300">
+      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]">
         <code>{children}</code>
       </pre>
     </div>
@@ -60,18 +60,18 @@ function IssueCard({
   fix: string | ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
-      <div className="border-b border-white/10 bg-white/5 px-4 py-2.5">
-        <code className="text-xs font-semibold text-red-400">{error}</code>
+    <div className="overflow-hidden rounded-xl border border-black/10">
+      <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2.5">
+        <code className="text-xs font-semibold text-red-700">{error}</code>
       </div>
       <div className="divide-y divide-white/5 text-xs">
         <div className="flex gap-3 px-4 py-2.5">
-          <span className="w-14 shrink-0 font-semibold text-gray-500">Cause</span>
-          <span className="text-gray-400">{cause}</span>
+          <span className="w-14 shrink-0 font-semibold text-[#454745]">Cause</span>
+          <span className="text-[#454745]">{cause}</span>
         </div>
         <div className="flex gap-3 px-4 py-2.5">
-          <span className="w-14 shrink-0 font-semibold text-gray-500">Fix</span>
-          <span className="text-gray-400">{fix}</span>
+          <span className="w-14 shrink-0 font-semibold text-[#454745]">Fix</span>
+          <span className="text-[#454745]">{fix}</span>
         </div>
       </div>
     </div>
@@ -87,19 +87,19 @@ export default function TroubleshootingPage() {
       {/* Header */}
       <div>
         <div className="mb-3">
-          <span className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2.5 py-0.5 text-xs font-medium text-yellow-400">
+          <span className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-700">
             Testnet MVP — Internal Monorepo SDK
           </span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">Troubleshooting</h1>
-        <p className="text-lg text-gray-400">
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">Troubleshooting</h1>
+        <p className="text-lg text-[#454745]">
           Common errors and their fixes for the Fluppy SDK. Packages are internal workspace
           packages — see{' '}
-          <Link href="/docs/installation" className="text-white underline">
+          <Link href="/docs/installation" className="text-[#0e0f0c] underline">
             Installation
           </Link>{' '}
           for setup, and{' '}
-          <Link href="/docs/core" className="text-white underline">
+          <Link href="/docs/core" className="text-[#0e0f0c] underline">
             API Reference
           </Link>{' '}
           for usage.
@@ -107,8 +107,8 @@ export default function TroubleshootingPage() {
       </div>
 
       {/* Jump links */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-500">
+      <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#454745]">
           Jump to section
         </p>
         <div className="flex flex-wrap gap-2">
@@ -127,7 +127,7 @@ export default function TroubleshootingPage() {
             <a
               key={href}
               href={href as string}
-              className="rounded-lg border border-white/10 px-2.5 py-1 text-xs text-gray-400 transition-colors hover:border-white/20 hover:text-white"
+              className="rounded-lg border border-black/10 px-2.5 py-1 text-xs text-[#454745] transition-colors hover:border-black/15 hover:text-[#0e0f0c]"
             >
               {label}
             </a>
@@ -227,7 +227,7 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
         <IssueCard
           error="Insufficient balance for transaction fee"
           cause="Testnet wallet has no XLM to pay the Soroban network fee."
-          fix={<>Fund the Testnet account at{' '}<a href="https://laboratory.stellar.org/account-creator" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">Stellar Laboratory</a>{' '}or use the Friendbot API.</>}
+          fix={<>Fund the Testnet account at{' '}<a href="https://laboratory.stellar.org/account-creator" target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">Stellar Laboratory</a>{' '}or use the Friendbot API.</>}
         />
         <IssueCard
           error="No USDC trustline or insufficient USDC balance"
@@ -262,7 +262,7 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
         <IssueCard
           error="Secret appearing in console or network tab"
           cause="Developer code accidentally logs the secret returned from unlock()."
-          fix={<>Never call <code className="text-red-400">console.log(secret)</code>. Pass the secret directly from <code>unlock()</code> to <code>pay()</code> in the same async function.</>}
+          fix={<>Never call <code className="text-red-700">console.log(secret)</code>. Pass the secret directly from <code>unlock()</code> to <code>pay()</code> in the same async function.</>}
         />
       </div>
 
@@ -373,7 +373,7 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
         <IssueCard
           error="[useFluppyContext] No FluppyProvider found in the component tree"
           cause="A Fluppy hook was called outside of a FluppyProvider subtree."
-          fix={<>Wrap the component tree with <code className="text-yellow-300">{'<FluppyProvider config={...}>'}</code>. See <Link href="/docs/react#provider" className="text-blue-400 underline">Provider setup</Link>.</>}
+          fix={<>Wrap the component tree with <code className="text-yellow-300">{'<FluppyProvider config={...}>'}</code>. See <Link href="/docs/react#provider" className="text-blue-700 underline">Provider setup</Link>.</>}
         />
         <IssueCard
           error="FluppyProvider: stellarConfig or networkPassphrase missing"
@@ -383,7 +383,7 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
         <IssueCard
           error="Secret accidentally stored in useState"
           cause="Developer stored the result of unlock() in a React state variable."
-          fix={<>Pass the secret directly from <code>unlock()</code> to <code>pay()</code> within the same async handler. Never store it: <code className="text-red-400">const [secret, setSecret] = useState()</code> is incorrect.</>}
+          fix={<>Pass the secret directly from <code>unlock()</code> to <code>pay()</code> within the same async handler. Never store it: <code className="text-red-700">const [secret, setSecret] = useState()</code> is incorrect.</>}
         />
         <IssueCard
           error="useFluppyHistory: localStorage parse error on mount"
@@ -404,7 +404,7 @@ NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</Code>
 
       {/* ── 9. Quick commands ── */}
       <H2 id="commands">Quick Command Checklist</H2>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-[#454745]">
         Run these commands in order when diagnosing any issue:
       </p>
       <Code>{`cd ~/fluppy
@@ -432,16 +432,16 @@ find app/src/app/docs -name "page.tsx" | sort`}</Code>
 
       {/* ── 10. File an issue ── */}
       <H2 id="issue">Filing an Issue</H2>
-      <p className="mb-4 text-sm text-gray-400">
+      <p className="mb-4 text-sm text-[#454745]">
         When reporting a bug or unexpected behaviour, please include the following information
         to help diagnose the issue quickly.
       </p>
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="overflow-hidden rounded-xl border border-black/10">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Field</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">What to include</th>
+            <tr className="border-b border-black/10 bg-black/[0.03]">
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Field</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">What to include</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5 text-xs">
@@ -456,9 +456,9 @@ find app/src/app/docs -name "page.tsx" | sort`}</Code>
               ['Build command output',      'Paste output of `pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app`'],
               ['Environment',               'Confirm NEXT_PUBLIC_CONTRACT_ID and NEXT_PUBLIC_NETWORK_PASSPHRASE are set (redact values if needed)'],
             ].map(([field, desc]) => (
-              <tr key={field} className="hover:bg-white/5">
-                <td className="px-4 py-2.5 font-semibold text-white">{field}</td>
-                <td className="px-4 py-2.5 text-gray-400">{desc}</td>
+              <tr key={field} className="hover:bg-black/[0.03]">
+                <td className="px-4 py-2.5 font-semibold text-[#0e0f0c]">{field}</td>
+                <td className="px-4 py-2.5 text-[#454745]">{desc}</td>
               </tr>
             ))}
           </tbody>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
-  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-white first:mt-0">{children}</h2>;
+  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">{children}</h2>;
 }
 function Note({ children }: { children: ReactNode }) {
   return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><span className="shrink-0">ℹ</span><div>{children}</div></div>;
@@ -20,15 +20,15 @@ export default function FeeModelPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">Fee Model</h1>
-        <p className="text-lg text-gray-400">
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">Fee Model</h1>
+        <p className="text-lg text-[#454745]">
           Who pays what in a Fluppy payment — from the user wallet fee to the on-chain 95/5 split.
         </p>
       </div>
 
       {/* Summary */}
-      <div className="rounded-xl border border-white/10 bg-gray-900 p-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-500">Payment flow summary</p>
+      <div className="rounded-xl border border-black/10 bg-white p-5">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#454745]">Payment flow summary</p>
         <div className="space-y-2">
           {[
             ['User',                 'Signs transaction through Freighter wallet',      'required'],
@@ -37,17 +37,17 @@ export default function FeeModelPage() {
             ['Developer / Merchant', 'Does not pay network fee in current MVP',         'not applicable'],
           ].map(([party, action, badge]) => {
             const badgeStyle: Record<string, string> = {
-              'required':        'bg-blue-500/10 text-blue-400 border-blue-500/30',
-              'automatic':       'bg-green-500/10 text-green-400 border-green-500/30',
-              'not applicable':  'bg-gray-500/10 text-gray-400 border-gray-500/30',
+              'required':        'bg-blue-500/10 text-blue-700 border-blue-500/30',
+              'automatic':       'bg-green-500/10 text-emerald-700 border-green-500/30',
+              'not applicable':  'bg-gray-500/10 text-[#454745] border-gray-500/30',
             };
             return (
               <div key={action} className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 text-gray-600">·</span>
                   <div>
-                    <span className="text-sm font-semibold text-white">{party}: </span>
-                    <span className="text-sm text-gray-400">{action}</span>
+                    <span className="text-sm font-semibold text-[#0e0f0c]">{party}: </span>
+                    <span className="text-sm text-[#454745]">{action}</span>
                   </div>
                 </div>
                 <span className={`shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium ${badgeStyle[badge]}`}>
@@ -61,15 +61,15 @@ export default function FeeModelPage() {
 
       {/* 95/5 split */}
       <H2 id="split">The 95/5 Atomic Split</H2>
-      <p className="text-sm text-gray-400 mb-4">
+      <p className="text-sm text-[#454745] mb-4">
         When a user submits a ZK payment, the Soroban contract atomically bifurcates the amount
         in a single ledger operation. This is not configurable after deployment.
       </p>
       <div className="grid gap-4 sm:grid-cols-3">
         {[
-          { label: 'User pays',         pct: '100%', color: 'border-white/20 bg-white/5 text-white', sub: 'full payment amount' },
-          { label: 'Merchant receives', pct:  '95%', color: 'border-green-500/30 bg-green-500/5 text-green-400', sub: 'net settlement' },
-          { label: 'Treasury receives', pct:   '5%', color: 'border-pink-500/30 bg-pink-500/5 text-pink-400', sub: 'protocol fee' },
+          { label: 'User pays',         pct: '100%', color: 'border-black/15 bg-black/[0.03] text-[#0e0f0c]', sub: 'full payment amount' },
+          { label: 'Merchant receives', pct:  '95%', color: 'border-green-500/30 bg-green-500/5 text-emerald-700', sub: 'net settlement' },
+          { label: 'Treasury receives', pct:   '5%', color: 'border-pink-500/30 bg-pink-500/5 text-[#163300]', sub: 'protocol fee' },
         ].map(({ label, pct, color, sub }) => (
           <div key={label} className={`rounded-xl border p-4 ${color}`}>
             <div className="text-3xl font-bold">{pct}</div>
@@ -86,11 +86,11 @@ export default function FeeModelPage() {
 
       {/* Example calculation */}
       <H2 id="example">Example Calculation</H2>
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="overflow-hidden rounded-xl border border-black/10">
         <table className="w-full text-sm">
-          <thead><tr className="border-b border-white/10 bg-white/5">
+          <thead><tr className="border-b border-black/10 bg-black/[0.03]">
             {['Payment amount', 'Merchant receives', 'Treasury receives', 'Network fee'].map(h => (
-              <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{h}</th>
+              <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">{h}</th>
             ))}
           </tr></thead>
           <tbody className="divide-y divide-white/5 text-xs">
@@ -100,9 +100,9 @@ export default function FeeModelPage() {
               ['10 USDC',  '9.50 USDC',  '0.50 USDC',  'Paid by user via Freighter'],
               ['100 USDC', '95.00 USDC', '5.00 USDC',  'Paid by user via Freighter'],
             ].map(row => (
-              <tr key={row[0]} className="hover:bg-white/5">
+              <tr key={row[0]} className="hover:bg-black/[0.03]">
                 {row.map((cell, i) => (
-                  <td key={i} className={`px-4 py-2.5 ${i === 0 ? 'font-semibold text-white' : i === 3 ? 'text-gray-500' : 'text-gray-400'}`}>{cell}</td>
+                  <td key={i} className={`px-4 py-2.5 ${i === 0 ? 'font-semibold text-[#0e0f0c]' : i === 3 ? 'text-[#454745]' : 'text-[#454745]'}`}>{cell}</td>
                 ))}
               </tr>
             ))}
@@ -112,7 +112,7 @@ export default function FeeModelPage() {
 
       {/* Network fee */}
       <H2 id="network-fee">Stellar Network Fee</H2>
-      <p className="text-sm text-gray-400 mb-3">
+      <p className="text-sm text-[#454745] mb-3">
         Soroban transactions require a base reserve and a fee paid in XLM. In the current MVP:
       </p>
       <div className="space-y-2">
@@ -123,9 +123,9 @@ export default function FeeModelPage() {
           ['Fee sponsorship',  'No production relayer or gas sponsorship in current Testnet MVP'],
           ['Typical cost',     'Varies with ledger congestion — usually very small (~0.001–0.01 XLM)'],
         ].map(([label, desc]) => (
-          <div key={label} className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
-            <span className="mt-0.5 shrink-0 text-xs font-semibold text-gray-400 w-32">{label}</span>
-            <span className="text-xs text-gray-400">{desc}</span>
+          <div key={label} className="flex items-start gap-3 rounded-xl border border-black/10 bg-black/[0.03] p-3">
+            <span className="mt-0.5 shrink-0 text-xs font-semibold text-[#454745] w-32">{label}</span>
+            <span className="text-xs text-[#454745]">{desc}</span>
           </div>
         ))}
       </div>
@@ -149,7 +149,7 @@ export default function FeeModelPage() {
             ].map(([feat, status]) => (
               <tr key={feat} className="hover:bg-yellow-500/5">
                 <td className="px-4 py-2.5 font-medium text-yellow-300">{feat}</td>
-                <td className="px-4 py-2.5 text-gray-500">{status}</td>
+                <td className="px-4 py-2.5 text-[#454745]">{status}</td>
               </tr>
             ))}
           </tbody>
@@ -165,8 +165,8 @@ export default function FeeModelPage() {
           { title: 'Fee Abstraction UX', desc: 'Future UI helpers could abstract the network fee display for users without reducing transparency. Users would still authorize the full transaction including the network fee amount.' },
         ].map(({ title, desc }) => (
           <div key={title} className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-4">
-            <p className="mb-1 text-sm font-semibold text-purple-400">{title} <span className="text-xs font-normal text-gray-500">— future</span></p>
-            <p className="text-xs text-gray-400">{desc}</p>
+            <p className="mb-1 text-sm font-semibold text-purple-700">{title} <span className="text-xs font-normal text-[#454745]">— future</span></p>
+            <p className="text-xs text-[#454745]">{desc}</p>
           </div>
         ))}
       </div>
@@ -188,8 +188,8 @@ export default function FeeModelPage() {
           { do: false, text: 'Market the protocol as having zero fees — the split and network fee are real costs' },
         ].map(({ do: isDo, text }) => (
           <div key={text} className={`flex items-start gap-2 rounded-xl border p-3 ${isDo ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
-            <span className={`shrink-0 font-bold ${isDo ? 'text-green-400' : 'text-red-400'}`}>{isDo ? '✓' : '✗'}</span>
-            <span className="text-xs text-gray-400">{text}</span>
+            <span className={`shrink-0 font-bold ${isDo ? 'text-emerald-700' : 'text-red-700'}`}>{isDo ? '✓' : '✗'}</span>
+            <span className="text-xs text-[#454745]">{text}</span>
           </div>
         ))}
       </div>

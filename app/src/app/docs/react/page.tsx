@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
-  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-white first:mt-0">{children}</h2>;
+  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">{children}</h2>;
 }
 function Code({ children, filename }: { children: string; filename?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
-      {filename && <div className="border-b border-white/10 bg-white/5 px-4 py-2"><span className="font-mono text-xs text-gray-500">{filename}</span></div>}
-      <pre className="overflow-x-auto bg-gray-900 p-4 text-sm text-gray-300"><code>{children}</code></pre>
+    <div className="overflow-hidden rounded-xl border border-black/10">
+      {filename && <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2"><span className="font-mono text-xs text-[#454745]">{filename}</span></div>}
+      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]"><code>{children}</code></pre>
     </div>
   );
 }
@@ -27,9 +27,9 @@ function Note({ children }: { children: ReactNode }) {
 function HookSection({ id, name, badge, children }: { id: string; name: string; badge?: string; children: ReactNode }) {
   return (
     <section>
-      <h2 id={id} className="mb-3 mt-10 scroll-mt-20 flex items-center gap-2 text-xl font-semibold text-white first:mt-0">
-        <code className="text-pink-400">{name}</code>
-        {badge && <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-400">{badge}</span>}
+      <h2 id={id} className="mb-3 mt-10 scroll-mt-20 flex items-center gap-2 text-xl font-semibold text-[#0e0f0c] first:mt-0">
+        <code className="text-[#163300]">{name}</code>
+        {badge && <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700">{badge}</span>}
       </h2>
       {children}
     </section>
@@ -37,16 +37,16 @@ function HookSection({ id, name, badge, children }: { id: string; name: string; 
 }
 function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
+    <div className="overflow-hidden rounded-xl border border-black/10">
       <table className="w-full text-sm">
-        <thead><tr className="border-b border-white/10 bg-white/5">
-          {headers.map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{h}</th>)}
+        <thead><tr className="border-b border-black/10 bg-black/[0.03]">
+          {headers.map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">{h}</th>)}
         </tr></thead>
         <tbody className="divide-y divide-white/5">
           {rows.map(row => (
-            <tr key={row[0]} className="hover:bg-white/5">
+            <tr key={row[0]} className="hover:bg-black/[0.03]">
               {row.map((cell, i) => (
-                <td key={i} className={`px-4 py-2.5 text-xs ${i === 0 ? 'font-mono font-semibold text-white' : i === 1 ? 'text-gray-400' : 'text-gray-500'}`}>{cell}</td>
+                <td key={i} className={`px-4 py-2.5 text-xs ${i === 0 ? 'font-mono font-semibold text-[#0e0f0c]' : i === 1 ? 'text-[#454745]' : 'text-[#454745]'}`}>{cell}</td>
               ))}
             </tr>
           ))}
@@ -61,12 +61,12 @@ export default function ReactPage() {
     <div className="space-y-6">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-0.5 text-xs font-medium text-pink-400">@flupy/react</span>
-          <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400">✓ Complete</span>
+          <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-0.5 text-xs font-medium text-[#163300]">@flupy/react</span>
+          <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700">✓ Complete</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@flupy/react</h1>
-        <p className="text-lg text-gray-400">
-          React SDK built on <code className="text-white">@flupy/browser</code>. Provides a context
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">@flupy/react</h1>
+        <p className="text-lg text-[#454745]">
+          React SDK built on <code className="text-[#0e0f0c]">@flupy/browser</code>. Provides a context
           provider and four domain hooks for the full Fluppy payment lifecycle.
         </p>
       </div>
@@ -80,9 +80,9 @@ export default function ReactPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         {[['~14 KB', 'ESM bundle'], ['~14 KB', 'CJS bundle'], ['~14 KB', 'TypeScript declarations']].map(([size, label]) => (
-          <div key={label} className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
-            <div className="text-lg font-bold text-white">{size}</div>
-            <div className="text-xs text-gray-500">{label}</div>
+          <div key={label} className="rounded-xl border border-black/10 bg-black/[0.03] p-3 text-center">
+            <div className="text-lg font-bold text-[#0e0f0c]">{size}</div>
+            <div className="text-xs text-[#454745]">{label}</div>
           </div>
         ))}
       </div>
@@ -97,19 +97,19 @@ export default function ReactPage() {
           ['useFluppyWallet',     'Freighter wallet connection state (SSR-safe, dynamic import)'],
           ['useFluppyHistory',    'localStorage-persisted payment records with bigint serialization'],
         ].map(([name, desc]) => (
-          <div key={name as string} className="rounded-xl border border-white/10 bg-white/5 p-3">
-            <code className="text-xs font-semibold text-pink-400">{name}</code>
-            <p className="mt-1 text-xs text-gray-400">{desc}</p>
+          <div key={name as string} className="rounded-xl border border-black/10 bg-black/[0.03] p-3">
+            <code className="text-xs font-semibold text-[#163300]">{name}</code>
+            <p className="mt-1 text-xs text-[#454745]">{desc}</p>
           </div>
         ))}
       </div>
 
       {/* Provider */}
       <HookSection id="provider" name="FluppyProvider">
-        <p className="mb-4 text-sm text-gray-400">
-          Wrap your application (or a subtree) with <code className="text-white">FluppyProvider</code>.
+        <p className="mb-4 text-sm text-[#454745]">
+          Wrap your application (or a subtree) with <code className="text-[#0e0f0c]">FluppyProvider</code>.
           All Fluppy hooks must be descendants of this provider.
-          Memoize the <code className="text-white">config</code> object to prevent unnecessary re-renders.
+          Memoize the <code className="text-[#0e0f0c]">config</code> object to prevent unnecessary re-renders.
         </p>
         <Table
           headers={['Config field', 'Type', 'Description']}
@@ -137,7 +137,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* useFluppyCredential */}
       <HookSection id="credential" name="useFluppyCredential()">
-        <p className="mb-4 text-sm text-gray-400">
+        <p className="mb-4 text-sm text-[#454745]">
           Manages the full lifecycle of a locally encrypted ZK credential.
           Initial credential check runs in a browser-safe <code>useEffect</code> — SSR renders return{' '}
           <code>status: 'unknown'</code>.
@@ -165,11 +165,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* useFluppyPayment */}
       <HookSection id="payment" name="useFluppyPayment()">
-        <p className="mb-4 text-sm text-gray-400">
+        <p className="mb-4 text-sm text-[#454745]">
           Orchestrates the full ZK payment flow. Reads configuration from{' '}
-          <code className="text-white">FluppyProvider</code>. The{' '}
-          <code className="text-white">secret</code> is passed as a parameter to{' '}
-          <code className="text-white">pay()</code> — it is never stored in React state.
+          <code className="text-[#0e0f0c]">FluppyProvider</code>. The{' '}
+          <code className="text-[#0e0f0c]">secret</code> is passed as a parameter to{' '}
+          <code className="text-[#0e0f0c]">pay()</code> — it is never stored in React state.
         </p>
         <Table
           headers={['State', 'Type', 'Description']}
@@ -205,9 +205,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* useFluppyWallet */}
       <HookSection id="wallet" name="useFluppyWallet()">
-        <p className="mb-4 text-sm text-gray-400">
+        <p className="mb-4 text-sm text-[#454745]">
           Manages Freighter wallet connection state. Uses dynamic import for the Freighter API
-          to avoid bundling it in SSR contexts. <code className="text-white">refresh()</code> is a
+          to avoid bundling it in SSR contexts. <code className="text-[#0e0f0c]">refresh()</code> is a
           no-op on the server.
         </p>
         <Table
@@ -232,9 +232,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {/* useFluppyHistory */}
       <HookSection id="history" name="useFluppyHistory()">
-        <p className="mb-4 text-sm text-gray-400">
-          Persists payment record metadata to <code className="text-white">localStorage</code> using
-          the key <code className="text-white">fluppy:payment-history:v1</code>.
+        <p className="mb-4 text-sm text-[#454745]">
+          Persists payment record metadata to <code className="text-[#0e0f0c]">localStorage</code> using
+          the key <code className="text-[#0e0f0c]">fluppy:payment-history:v1</code>.
           Records are loaded on mount inside a browser-safe <code>useEffect</code> — SSR renders
           return an empty array. Capped at 50 records.
         </p>

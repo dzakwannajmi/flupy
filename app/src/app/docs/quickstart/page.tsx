@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 function SectionHeading({ id, step, children }: { id: string; step: number; children: ReactNode }) {
   return (
-    <h2 id={id} className="mb-3 mt-12 scroll-mt-20 flex items-center gap-3 text-xl font-semibold text-white first:mt-0">
+    <h2 id={id} className="mb-3 mt-12 scroll-mt-20 flex items-center gap-3 text-xl font-semibold text-[#0e0f0c] first:mt-0">
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pink-600 text-xs font-bold">
         {step}
       </span>
@@ -32,13 +32,13 @@ function SectionHeading({ id, step, children }: { id: string; step: number; chil
 
 function CodeBlock({ children, filename }: { children: string; filename?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
+    <div className="overflow-hidden rounded-xl border border-black/10">
       {filename && (
-        <div className="border-b border-white/10 bg-white/5 px-4 py-2">
-          <span className="text-xs font-mono text-gray-500">{filename}</span>
+        <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2">
+          <span className="text-xs font-mono text-[#454745]">{filename}</span>
         </div>
       )}
-      <pre className="overflow-x-auto bg-gray-900 p-4 text-sm text-gray-300">
+      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]">
         <code>{children}</code>
       </pre>
     </div>
@@ -71,9 +71,9 @@ export default function QuickstartPage() {
 
       {/* Header */}
       <div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">Quickstart</h1>
-        <p className="text-lg text-gray-400">
-          This guide shows the full payment flow using <code className="text-white">@flupy/react</code> hooks —
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">Quickstart</h1>
+        <p className="text-lg text-[#454745]">
+          This guide shows the full payment flow using <code className="text-[#0e0f0c]">@flupy/react</code> hooks —
           from wallet connection to a confirmed ZK payment on Stellar Testnet.
         </p>
       </div>
@@ -86,8 +86,8 @@ export default function QuickstartPage() {
       </Note>
 
       {/* ── Flow overview ── */}
-      <div className="rounded-xl border border-white/10 bg-gray-900 p-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-500">Payment Flow</p>
+      <div className="rounded-xl border border-black/10 bg-white p-5">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#454745]">Payment Flow</p>
         <div className="space-y-2 text-sm">
           {[
             ['1', 'Wrap app with FluppyProvider',         'config: stellarConfig + networkPassphrase'],
@@ -101,8 +101,8 @@ export default function QuickstartPage() {
                 {num}
               </span>
               <div>
-                <span className="font-medium text-white">{action}</span>
-                <span className="ml-2 text-gray-500">{detail}</span>
+                <span className="font-medium text-[#0e0f0c]">{action}</span>
+                <span className="ml-2 text-[#454745]">{detail}</span>
               </div>
             </div>
           ))}
@@ -112,8 +112,8 @@ export default function QuickstartPage() {
       {/* ── Step 1: Provider ── */}
       <SectionHeading id="provider" step={1}>Wrap with FluppyProvider</SectionHeading>
 
-      <p className="text-sm text-gray-400">
-        Place <code className="text-white">FluppyProvider</code> near the root of your application.
+      <p className="text-sm text-[#454745]">
+        Place <code className="text-[#0e0f0c]">FluppyProvider</code> near the root of your application.
         All Fluppy hooks must be inside this provider to access the shared SDK configuration.
       </p>
 
@@ -151,9 +151,9 @@ export default function RootLayout({
       {/* ── Step 2: Wallet ── */}
       <SectionHeading id="wallet" step={2}>Connect Freighter Wallet</SectionHeading>
 
-      <p className="text-sm text-gray-400">
-        <code className="text-white">useFluppyWallet</code> manages Freighter connection state.
-        <code className="mx-1 text-white">connect()</code> requests wallet access and returns the
+      <p className="text-sm text-[#454745]">
+        <code className="text-[#0e0f0c]">useFluppyWallet</code> manages Freighter connection state.
+        <code className="mx-1 text-[#0e0f0c]">connect()</code> requests wallet access and returns the
         connected Stellar address. All calls are SSR-safe via dynamic import.
       </p>
 
@@ -189,13 +189,13 @@ export function WalletButton() {
   );
 }`}</CodeBlock>
 
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="overflow-hidden rounded-xl border border-black/10">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Property</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Type</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Description</th>
+            <tr className="border-b border-black/10 bg-black/[0.03]">
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Property</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Type</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Description</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5 text-xs">
@@ -207,10 +207,10 @@ export function WalletButton() {
               ['connect()',        '() => Promise<string>',     'Requests Freighter access, returns address'],
               ['refresh()',        '() => Promise<void>',       'Re-checks Freighter without popup'],
             ].map(([prop, type, desc]) => (
-              <tr key={prop} className="hover:bg-white/5">
-                <td className="px-4 py-2.5 font-mono font-semibold text-white">{prop}</td>
-                <td className="px-4 py-2.5 text-gray-400">{type}</td>
-                <td className="px-4 py-2.5 text-gray-500">{desc}</td>
+              <tr key={prop} className="hover:bg-black/[0.03]">
+                <td className="px-4 py-2.5 font-mono font-semibold text-[#0e0f0c]">{prop}</td>
+                <td className="px-4 py-2.5 text-[#454745]">{type}</td>
+                <td className="px-4 py-2.5 text-[#454745]">{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -220,8 +220,8 @@ export function WalletButton() {
       {/* ── Step 3: Credential ── */}
       <SectionHeading id="credential" step={3}>Create or Unlock Credential</SectionHeading>
 
-      <p className="text-sm text-gray-400">
-        <code className="text-white">useFluppyCredential</code> manages a ZK credential stored
+      <p className="text-sm text-[#454745]">
+        <code className="text-[#0e0f0c]">useFluppyCredential</code> manages a ZK credential stored
         locally in IndexedDB, encrypted with AES-GCM + PBKDF2. The raw secret never leaves the
         browser and is never logged.
       </p>
@@ -276,10 +276,10 @@ export function CredentialSetup() {
       {/* ── Step 4: Payment ── */}
       <SectionHeading id="payment" step={4}>Execute ZK Payment</SectionHeading>
 
-      <p className="text-sm text-gray-400">
-        <code className="text-white">useFluppyPayment</code> orchestrates the full ZK payment flow:
+      <p className="text-sm text-[#454745]">
+        <code className="text-[#0e0f0c]">useFluppyPayment</code> orchestrates the full ZK payment flow:
         Merkle proof → Groth16 proof → Freighter signing → Soroban contract. It reads
-        the SDK configuration from <code className="text-white">FluppyProvider</code>.
+        the SDK configuration from <code className="text-[#0e0f0c]">FluppyProvider</code>.
       </p>
 
       <CodeBlock filename="PaymentForm.tsx">{`'use client';
@@ -338,13 +338,13 @@ export function PaymentForm({ merchantAddress }: { merchantAddress: string }) {
   );
 }`}</CodeBlock>
 
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="overflow-hidden rounded-xl border border-black/10">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">State</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Type</th>
-              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Description</th>
+            <tr className="border-b border-black/10 bg-black/[0.03]">
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">State</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Type</th>
+              <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">Description</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5 text-xs">
@@ -359,10 +359,10 @@ export function PaymentForm({ merchantAddress }: { merchantAddress: string }) {
               ['abort()',       '() => void',                'Cancels in-flight payment, resets to idle'],
               ['reset()',       '() => void',                'Full state reset to idle'],
             ].map(([prop, type, desc]) => (
-              <tr key={prop} className="hover:bg-white/5">
-                <td className="px-4 py-2.5 font-mono font-semibold text-white">{prop}</td>
-                <td className="px-4 py-2.5 text-gray-400">{type}</td>
-                <td className="px-4 py-2.5 text-gray-500">{desc}</td>
+              <tr key={prop} className="hover:bg-black/[0.03]">
+                <td className="px-4 py-2.5 font-mono font-semibold text-[#0e0f0c]">{prop}</td>
+                <td className="px-4 py-2.5 text-[#454745]">{type}</td>
+                <td className="px-4 py-2.5 text-[#454745]">{desc}</td>
               </tr>
             ))}
           </tbody>
@@ -372,12 +372,12 @@ export function PaymentForm({ merchantAddress }: { merchantAddress: string }) {
       {/* ── Step 5: History ── */}
       <SectionHeading id="history" step={5}>Display Payment History</SectionHeading>
 
-      <p className="text-sm text-gray-400">
-        <code className="text-white">useFluppyHistory</code> persists payment records to{' '}
-        <code className="text-white">localStorage</code> under the key{' '}
-        <code className="text-white">fluppy:payment-history:v1</code>. The{' '}
-        <code className="text-white">amount</code> field is serialized as a decimal string
-        internally — the public API always exposes <code className="text-white">bigint</code>.
+      <p className="text-sm text-[#454745]">
+        <code className="text-[#0e0f0c]">useFluppyHistory</code> persists payment records to{' '}
+        <code className="text-[#0e0f0c]">localStorage</code> under the key{' '}
+        <code className="text-[#0e0f0c]">fluppy:payment-history:v1</code>. The{' '}
+        <code className="text-[#0e0f0c]">amount</code> field is serialized as a decimal string
+        internally — the public API always exposes <code className="text-[#0e0f0c]">bigint</code>.
         Records persist across page reloads and are capped at 50 entries.
       </p>
 
@@ -446,9 +446,9 @@ export function PaymentHistory() {
             desc:  'No real funds are at risk on Testnet. Do not use mainnet USDC until a full security audit, multi-party trusted setup, and native BN254 pairing verification are complete.',
           },
         ].map(({ title, desc }) => (
-          <div key={title} className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <p className="mb-1 text-sm font-semibold text-white">{title}</p>
-            <p className="text-sm text-gray-400">{desc}</p>
+          <div key={title} className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+            <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">{title}</p>
+            <p className="text-sm text-[#454745]">{desc}</p>
           </div>
         ))}
       </div>

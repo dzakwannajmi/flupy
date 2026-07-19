@@ -8,13 +8,13 @@ export const metadata: Metadata = {
 };
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
-  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-white first:mt-0">{children}</h2>;
+  return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">{children}</h2>;
 }
 function Code({ children, filename }: { children: string; filename?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
-      {filename && <div className="border-b border-white/10 bg-white/5 px-4 py-2"><span className="font-mono text-xs text-gray-500">{filename}</span></div>}
-      <pre className="overflow-x-auto bg-gray-900 p-4 text-sm text-gray-300"><code>{children}</code></pre>
+    <div className="overflow-hidden rounded-xl border border-black/10">
+      {filename && <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2"><span className="font-mono text-xs text-[#454745]">{filename}</span></div>}
+      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]"><code>{children}</code></pre>
     </div>
   );
 }
@@ -26,16 +26,16 @@ function Warn({ children }: { children: ReactNode }) {
 }
 function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10">
+    <div className="overflow-hidden rounded-xl border border-black/10">
       <table className="w-full text-sm">
-        <thead><tr className="border-b border-white/10 bg-white/5">
-          {headers.map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{h}</th>)}
+        <thead><tr className="border-b border-black/10 bg-black/[0.03]">
+          {headers.map(h => <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#454745]">{h}</th>)}
         </tr></thead>
         <tbody className="divide-y divide-white/5">
           {rows.map(row => (
-            <tr key={row[0]} className="hover:bg-white/5">
+            <tr key={row[0]} className="hover:bg-black/[0.03]">
               {row.map((cell, i) => (
-                <td key={i} className={`px-4 py-2.5 text-xs ${i === 0 ? 'font-mono font-semibold text-white' : i === 1 ? 'text-gray-400' : 'text-gray-500'}`}>{cell}</td>
+                <td key={i} className={`px-4 py-2.5 text-xs ${i === 0 ? 'font-mono font-semibold text-[#0e0f0c]' : i === 1 ? 'text-[#454745]' : 'text-[#454745]'}`}>{cell}</td>
               ))}
             </tr>
           ))}
@@ -50,21 +50,21 @@ export default function BrowserPage() {
     <div className="space-y-6">
       <div>
         <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-2.5 py-0.5 text-xs font-medium text-purple-400">@flupy/browser</span>
-          <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-400">✓ Complete</span>
+          <span className="rounded-full border border-purple-500/30 bg-purple-500/10 px-2.5 py-0.5 text-xs font-medium text-purple-700">@flupy/browser</span>
+          <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700">✓ Complete</span>
         </div>
-        <h1 className="mb-3 text-4xl font-bold tracking-tight text-white">@flupy/browser</h1>
-        <p className="text-lg text-gray-400">
-          Browser runtime SDK built on <code className="text-white">@flupy/core</code>. Provides identity management,
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#0e0f0c]">@flupy/browser</h1>
+        <p className="text-lg text-[#454745]">
+          Browser runtime SDK built on <code className="text-[#0e0f0c]">@flupy/core</code>. Provides identity management,
           Merkle proof client, ZK proof generation, and Stellar/Freighter payment submission.
         </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         {[['~31 KB', 'ESM bundle'], ['~32 KB', 'CJS bundle'], ['~11 KB', 'TypeScript declarations']].map(([size, label]) => (
-          <div key={label} className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
-            <div className="text-lg font-bold text-white">{size}</div>
-            <div className="text-xs text-gray-500">{label}</div>
+          <div key={label} className="rounded-xl border border-black/10 bg-black/[0.03] p-3 text-center">
+            <div className="text-lg font-bold text-[#0e0f0c]">{size}</div>
+            <div className="text-xs text-[#454745]">{label}</div>
           </div>
         ))}
       </div>
@@ -81,14 +81,14 @@ export default function BrowserPage() {
           ['payment.ts',       'pink',   'executeFluppyPayment() high-level orchestrator composing all modules'],
         ].map(([mod, color, desc]) => {
           const colors: Record<string, string> = {
-            purple:'border-purple-500/20 text-purple-400', blue:'border-blue-500/20 text-blue-400',
-            yellow:'border-yellow-500/20 text-yellow-400', red:'border-red-500/20 text-red-400',
-            green:'border-green-500/20 text-green-400',   pink:'border-pink-500/20 text-pink-400',
+            purple:'border-purple-500/20 text-purple-700', blue:'border-blue-500/20 text-blue-700',
+            yellow:'border-yellow-500/20 text-amber-700', red:'border-red-500/20 text-red-700',
+            green:'border-green-500/20 text-emerald-700',   pink:'border-pink-500/20 text-[#163300]',
           };
           return (
-            <div key={mod as string} className={`flex items-start gap-3 rounded-xl border bg-white/5 p-3 ${colors[color as string]}`}>
+            <div key={mod as string} className={`flex items-start gap-3 rounded-xl border bg-black/[0.03] p-3 ${colors[color as string]}`}>
               <code className="mt-0.5 shrink-0 text-xs font-semibold">{mod}</code>
-              <span className="text-xs text-gray-400">{desc}</span>
+              <span className="text-xs text-[#454745]">{desc}</span>
             </div>
           );
         })}
@@ -96,10 +96,10 @@ export default function BrowserPage() {
 
       {/* executeFluppyPayment */}
       <H2 id="orchestrator">executeFluppyPayment()</H2>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-[#454745]">
         The top-level payment orchestrator. Composes all browser SDK modules into a single call.
         The caller is responsible for credential decryption (passing the unlocked{' '}
-        <code className="text-white">secret</code>) and for UI feedback (toast, telemetry, history).
+        <code className="text-[#0e0f0c]">secret</code>) and for UI feedback (toast, telemetry, history).
       </p>
       <Table
         headers={['Input field', 'Type', 'Description']}
@@ -156,10 +156,10 @@ export default function BrowserPage() {
 
       {/* Prover */}
       <H2 id="prover">Prover Module</H2>
-      <p className="text-sm text-gray-400">
-        Wraps <code className="text-white">snarkjs.groth16.fullProve()</code> with generation lock,
+      <p className="text-sm text-[#454745]">
+        Wraps <code className="text-[#0e0f0c]">snarkjs.groth16.fullProve()</code> with generation lock,
         progress callbacks, AbortSignal support, and Soroban wire format encoding.
-        Local verification via <code className="text-white">snarkjs.groth16.verify()</code> is
+        Local verification via <code className="text-[#0e0f0c]">snarkjs.groth16.verify()</code> is
         enforced in development before every transaction submission as a defense-in-depth measure.
       </p>
       <Table
@@ -169,9 +169,9 @@ export default function BrowserPage() {
           ['verifyProofLocally(proof)', 'Promise<boolean>',            'Verifies proof against the loaded verification key using snarkjs.groth16.verify()'],
         ]}
       />
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="mb-2 text-sm font-semibold text-white">Generation lock</p>
-        <p className="text-xs text-gray-400">
+      <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+        <p className="mb-2 text-sm font-semibold text-[#0e0f0c]">Generation lock</p>
+        <p className="text-xs text-[#454745]">
           Only one proof can be generated at a time per browser session.
           Calling <code>generateZkProof()</code> while another is in progress throws immediately.
           Use AbortSignal to cancel an in-flight generation before starting a new one.
@@ -197,17 +197,17 @@ export default function BrowserPage() {
       {/* Stellar */}
       <H2 id="stellar">Stellar & Freighter Module</H2>
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <h3 className="mb-2 text-sm font-semibold text-white">payWithZkGroth16()</h3>
-          <p className="text-xs text-gray-400">
+        <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+          <h3 className="mb-2 text-sm font-semibold text-[#0e0f0c]">payWithZkGroth16()</h3>
+          <p className="text-xs text-[#454745]">
             Builds and submits the <code>execute_payment()</code> Soroban transaction.
             The user <strong>signs via Freighter</strong> and pays the Stellar network fee
             from their own wallet. No relayer, no gas sponsorship.
           </p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <h3 className="mb-2 text-sm font-semibold text-white">getContractMerkleRoot()</h3>
-          <p className="text-xs text-gray-400">
+        <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+          <h3 className="mb-2 text-sm font-semibold text-[#0e0f0c]">getContractMerkleRoot()</h3>
+          <p className="text-xs text-[#454745]">
             Fetches the current Merkle root from the backend API (<code>/api/merkle-root</code>).
             Used by the root sync guard inside <code>executeFluppyPayment()</code> to ensure
             the frontend tree matches the on-chain root before submitting.

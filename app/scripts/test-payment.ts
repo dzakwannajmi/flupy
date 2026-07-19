@@ -2,6 +2,7 @@ import { generateSecret } from '../src/lib/identity';
 import { getMerkleProof } from '../src/lib/merkle';
 import { generateZkProof } from '../src/lib/zkp';
 import { payWithZkGroth16 } from '../src/lib/stellar';
+import { resolveSender } from '@flupy/browser';
 
 import * as snarkjs from 'snarkjs';
 import * as path from 'path';
@@ -43,10 +44,12 @@ async function main() {
     console.log('[Test] ✓ Proof valid');
 
     console.log('[Test] Submitting to Stellar Testnet...');
+    const { address: payerAddress } = await resolveSender();
     const zkProof = await generateZkProof(
       SECRET,
       merkleProof,
       DESTINATION,
+      payerAddress,
       AMOUNT,
     );
     const result = await payWithZkGroth16(

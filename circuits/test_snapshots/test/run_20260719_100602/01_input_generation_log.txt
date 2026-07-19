@@ -1,0 +1,3 @@
+Calculating mathematical parameters for ZK...
+input.json generated successfully!
+Merkle Root:  21159071950028025902947812779917771925320701088615130482217171707451782085615

@@ -54,51 +54,60 @@ template MerklePathVerifier(levels) {
 
 // ─── FluppyPayment ────────────────────────────────────────────────────────────
 //
-// Public signal ordering (MUST match verify.rs IDX_* constants):
+// Public signal ordering (MUST match payment.rs IDX_* constants):
 //   output nullifier      → index 0
 //   output verifiedRoot   → index 1
 //   input  merkleRoot     → index 2
 //   input  recipientHash  → index 3
-//   input  minAmount      → index 4
-//   input  maxAmount      → index 5
+//   input  payerHash      → index 4
+//   input  amount         → index 5
+//   input  chainId        → index 6
 //
 // Domain separation:
 //   nullifier = Poseidon(1, secret, nonce)  — NULLIFIER_TAG = 1
 //   leaf      = Poseidon(2, secret)         — LEAF_TAG      = 2
 //   node      = Poseidon(3, left, right)    — NODE_TAG      = 3
+//
+// Design note — amount and payment policy:
+//   `amount` is a PUBLIC pass-through signal, not a processed value. This
+//   circuit performs NO range checks, NO business-rule validation on amount.
+//   Per SOW constraint ("circuit MUST NOT include payment logic / business
+//   rules"), any policy limit (min/max payment) is enforced by the contract
+//   on the real i128 amount, not in-circuit. Amount is exact-match bound to
+//   the proof via Groth16's public input mechanism (vk_x) — the contract
+//   re-derives and compares it against the actual transfer amount.
 
 template FluppyPayment(levels) {
 
     // ── Private inputs ────────────────────────────────────────────────────────
     signal input secret;
     signal input nonce;
-    signal input amount;
     signal input pathElements[levels];
     signal input pathIndices[levels];
 
     // ── Public inputs ─────────────────────────────────────────────────────────
     signal input merkleRoot;
     signal input recipientHash;
-    signal input minAmount;
-    signal input maxAmount;
+    signal input payerHash;
+    signal input amount;
     signal input chainId;
 
-    // chainId does NOT need internal constraints — it is bound to the proof
-    // automatically via Groth16 public input mechanism.
-    // The contract enforces: chainId === expected_chain_id(env)
+    // merkleRoot, recipientHash, payerHash, amount, and chainId do NOT need
+    // internal processing to be bound to the proof — each is bound
+    // automatically via Groth16's public input mechanism (vk_x). Dummy
+    // quadratic constraints below exist ONLY to prevent the Circom
+    // optimizer from removing an otherwise-unconsumed signal (same
+    // technique Tornado uses for its recipient/fee/relayer public signals).
+    //
+    // The contract re-derives and compares recipientHash, payerHash, and
+    // amount in payment.rs. The contract enforces:
+    //   chainId === expected_chain_id(env)
 
     // ── Public outputs ────────────────────────────────────────────────────────
     signal output nullifier;
     signal output verifiedRoot;
 
-    // ── Constraint 1: Amount bit-length enforcement ───────────────────────────
-    // Forces `amount` to be representable in 64 bits.
-    // Prevents arithmetic overflow in LessEqThan and protects range checks
-    // against malicious witness values beyond u64.
-    component amountBits = Num2Bits(64);
-    amountBits.in <== amount;
-
-    // ── Constraint 2: Nullifier with domain separation ────────────────────────
+    // ── Constraint 1: Nullifier with domain separation ────────────────────────
     // nullifier = Poseidon(NULLIFIER_TAG=1, secret, nonce)
     // Domain tag prevents nullifier from being forged using a Merkle node
     // that happens to hash to the same value via Poseidon(left, right).
@@ -108,7 +117,7 @@ template FluppyPayment(levels) {
     posNullifier.inputs[2] <== nonce;
     nullifier <== posNullifier.out;
 
-    // ── Constraint 3: Membership leaf with domain separation ──────────────────
+    // ── Constraint 2: Membership leaf with domain separation ──────────────────
     // leaf = Poseidon(LEAF_TAG=2, secret)
     // Domain tag prevents leaf from being confused with a nullifier
     // even though both take `secret` as input.
@@ -116,7 +125,7 @@ template FluppyPayment(levels) {
     posLeaf.inputs[0] <== 2;            // LEAF_TAG
     posLeaf.inputs[1] <== secret;
 
-    // ── Constraint 4: Merkle membership proof ─────────────────────────────────
+    // ── Constraint 3: Merkle membership proof ─────────────────────────────────
     component merkle = MerklePathVerifier(levels);
     merkle.leaf <== posLeaf.out;
     for (var i = 0; i < levels; i++) {
@@ -128,26 +137,22 @@ template FluppyPayment(levels) {
     // Root equality — proof fails if path does not reconstruct merkleRoot
     verifiedRoot === merkleRoot;
 
-    // ── Constraint 5: Amount range check ─────────────────────────────────────
-    // minAmount <= amount <= maxAmount
-    // Combined with Num2Bits(64) above, this fully constrains amount.
-    component gtMin = LessEqThan(64);
-    gtMin.in[0] <== minAmount;
-    gtMin.in[1] <== amount;
-    gtMin.out   === 1;
+    // ── Constraint 4: Dummy bindings for pass-through public signals ──────────
+    // These signals carry no circuit-internal meaning; they exist purely to
+    // be bound into the proof so the contract can verify exact-match
+    // equality against the real transaction context.
+    signal recipientHashSq;
+    recipientHashSq <== recipientHash * recipientHash;
 
-    component ltMax = LessEqThan(64);
-    ltMax.in[0] <== amount;
-    ltMax.in[1] <== maxAmount;
-    ltMax.out   === 1;
+    signal payerHashSq;
+    payerHashSq <== payerHash * payerHash;
 
-    // ── Note on recipientHash ─────────────────────────────────────────────────
-    // recipientHash is declared as a public input in `component main`.
-    // It is bound to the proof automatically via the Groth16 public input
-    // mechanism — no explicit signal consumer (`_ <==`) is needed.
-    // The contract re-derives and compares recipientHash in payment.rs.
+    signal amountSq;
+    amountSq <== amount * amount;
+
+    // chainId requires no explicit consumer — see note above.
 }
 
 component main {
-    public [merkleRoot, recipientHash, minAmount, maxAmount, chainId]
+    public [merkleRoot, recipientHash, payerHash, amount, chainId]
 } = FluppyPayment(20);

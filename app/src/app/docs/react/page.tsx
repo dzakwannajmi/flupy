@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { CodeBlock as Code } from "@/components/CodeBlock";
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
@@ -10,14 +11,6 @@ export const metadata: Metadata = {
 
 function H2({ id, children }: { id: string; children: ReactNode }) {
   return <h2 id={id} className="mb-3 mt-10 scroll-mt-20 text-xl font-semibold text-[#0e0f0c] first:mt-0">{children}</h2>;
-}
-function Code({ children, filename }: { children: string; filename?: string }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-black/10">
-      {filename && <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2"><span className="font-mono text-xs text-[#454745]">{filename}</span></div>}
-      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]"><code>{children}</code></pre>
-    </div>
-  );
 }
 function Warn({ children }: { children: ReactNode }) {
   return <div className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-300"><Icon icon="ph:warning" width={18} height={18} className="shrink-0" /><div>{children}</div></div>;

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { CodeBlock as Code } from "@/components/CodeBlock";
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 
@@ -12,14 +13,6 @@ function H2({ id, children }: { id: string; children: ReactNode }) {
 }
 function H3({ children }: { children: ReactNode }) {
   return <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-widest text-[#454745]">{children}</h3>;
-}
-function Code({ children, filename }: { children: string; filename?: string }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-black/10">
-      {filename && <div className="border-b border-black/10 bg-black/[0.03] px-4 py-2"><span className="font-mono text-xs text-[#454745]">{filename}</span></div>}
-      <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]"><code>{children}</code></pre>
-    </div>
-  );
 }
 function Note({ children }: { children: ReactNode }) {
   return <div className="flex gap-3 rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 text-sm text-blue-300"><span className="shrink-0">ℹ</span><div>{children}</div></div>;

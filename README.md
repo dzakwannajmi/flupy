@@ -1,11 +1,10 @@
 <div align="center">
-  <h1>🔐 Flupy</h1>
+  <h1>Flupy</h1>
   <p>Privacy-preserving payment infrastructure on Stellar Soroban.</p>
 
-  <img src="https://img.shields.io/badge/chain-Stellar%20%2F%20Soroban-black.svg" alt="Stellar Soroban">
+  <img src="https://img.shields.io/badge/chain-Stellar%20%2F%20Soroban-black.svg" alt="Stellar">
   <img src="https://img.shields.io/badge/network-testnet-f59e0b.svg" alt="Testnet">
   <img src="https://img.shields.io/badge/ZK-Circom%20%2F%20SnarkJS%20%2F%20Groth16-6366f1.svg" alt="ZK stack">
-  <img src="https://img.shields.io/badge/contract_tests-31%2F31_passing-22c55e.svg" alt="Tests">
 </div>
 
 ---
@@ -126,4 +125,8 @@ pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app
 - Multi-party trusted setup ceremony ahead of any mainnet deployment
 - External security audit
 - Public npm package publication for `@flupy/*`
+- Move Groth16 proof generation into a Web Worker, off the browser main thread
+- Circuit artifact checksum validation (WASM, zkey, verification key)
+- Mobile layout and performance testing
+- Production-hardened API rate limiting
 - Mainnet deployment

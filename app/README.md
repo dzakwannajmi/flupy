@@ -136,7 +136,7 @@ Frontend computes commitment only
 POST /api/merkle-proof/enroll
         │
         ▼
-POST /api/merkle-proof
+GET /api/merkle-proof
         │
         ▼
 GET /api/merkle-root
@@ -329,7 +329,7 @@ Endpoints used:
 
 ```text
 POST /api/merkle-proof/enroll
-POST /api/merkle-proof
+GET /api/merkle-proof
 ```
 
 ---
@@ -515,21 +515,26 @@ This endpoint is used for mock/Testnet onboarding and does not receive raw secre
 
 ---
 
-### `POST /api/merkle-proof`
+### `GET /api/merkle-proof`
 
-Returns a Merkle membership proof for an enrolled commitment.
+Returns the full enrolled leaf set + root -- the same response for every
+caller, regardless of which commitment they hold. The client locates its
+own leaf and computes its Merkle path entirely locally, rather than
+asking the server for a path to a specific commitment.
 
-Response includes:
+Response:
 
 ```json
 {
-  "pathElements": [],
-  "pathIndices": [],
+  "leaves": ["..."],
   "root": "..."
 }
 ```
 
-The returned root is used as the Merkle proof root.
+This design avoids a timing side-channel: a per-commitment lookup would
+let the server infer "this session is about to pay, right now" from
+request timing, and correlate that with the payment transaction landing
+seconds later.
 
 ---
 

@@ -191,8 +191,8 @@ Public signal ordering:
 [1] verifiedRoot
 [2] merkleRoot
 [3] recipientHash
-[4] minAmount
-[5] maxAmount
+[4] payerHash
+[5] amount
 [6] chainId
 ```
 
@@ -591,7 +591,7 @@ bn254_native feature → compiles native backend (compile-clean, pending on-chai
 Current deployed Testnet contract:
 
 ```text
-CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS
+CD3GV6AD3DJKLH3DSLZG4I4KPJV5RUUIC4L7FZN626EHIT4ZBYIQ5PJH
 ```
 
 Current root sync command pattern:
@@ -621,7 +621,7 @@ Example active root:
 
 | Item | Value |
 |---|---|
-| Contract ID | `CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS` |
+| Contract ID | `CD3GV6AD3DJKLH3DSLZG4I4KPJV5RUUIC4L7FZN626EHIT4ZBYIQ5PJH` |
 | Latest Confirmed Tx (SDK hook path) | `bcc57200a6590db53a7cea6fd6aa02911bdd6001f5a7892b77e6451066b38cbe` |
 | Explorer | `https://stellar.expert/explorer/testnet/tx/13367140816011264` |
 | Live App | `https://flupy.vercel.app/app` |

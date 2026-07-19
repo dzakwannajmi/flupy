@@ -38,7 +38,7 @@ fmt:
 deploy: build
 	@echo "🌐 Deploying to Stellar Testnet..."
 	stellar contract deploy \
-		--wasm target/wasm32v1-none/release/fluppy.wasm \
+		--wasm target/wasm32v1-none/release/flupy.wasm \
 		--source-account najmi \
 		--network testnet	
 

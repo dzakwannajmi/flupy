@@ -14,7 +14,7 @@ mod bn254_demo;
 #[cfg(feature = "bn254_native")]
 mod bn254_native;
 
-pub use types::{Proof, PublicInputs, VerifyError, N_PUBLIC};
+pub use types::{Proof, PublicInputs, VerifyError};
 
 use soroban_sdk::Env;
 

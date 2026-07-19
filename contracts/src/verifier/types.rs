@@ -13,10 +13,10 @@ pub enum VerifyError {
 /// Number of public signals in the Groth16 proof.
 /// MUST match the circuit's public input + output count.
 ///
-/// Current value reflects post-chainId migration:
+/// Current value reflects the payer/amount binding migration:
 ///   outputs: nullifier, verifiedRoot                      (2)
-///   inputs:  merkleRoot, recipientHash, minAmount,
-///            maxAmount, chainId                            (5)
+///   inputs:  merkleRoot, recipientHash, payerHash,
+///            amount, chainId                               (5)
 ///   total = 7
 pub const N_PUBLIC: usize = 7;
 
@@ -24,7 +24,9 @@ pub const N_PUBLIC: usize = 7;
 /// pi_a and pi_c are G1 points (64 bytes each).
 /// pi_b is a G2 point (128 bytes).
 pub struct Proof {
+    #[cfg_attr(not(feature = "bn254_native"), allow(dead_code))]
     pub pi_a: BytesN<64>,
+    #[cfg_attr(not(feature = "bn254_native"), allow(dead_code))]
     pub pi_b: BytesN<128>,
     pub pi_c: BytesN<64>,
 }
@@ -38,8 +40,8 @@ pub struct PublicInputs<'a> {
     pub verified_root:  &'a BytesN<32>,
     pub merkle_root:    &'a BytesN<32>,
     pub recipient_hash: &'a BytesN<32>,
-    pub min_amount:     &'a BytesN<32>,
-    pub max_amount:     &'a BytesN<32>,
+    pub payer_hash:     &'a BytesN<32>,
+    pub amount:         &'a BytesN<32>,
     pub chain_id:       &'a BytesN<32>,
 }
 
@@ -52,8 +54,8 @@ impl<'a> PublicInputs<'a> {
             self.verified_root,
             self.merkle_root,
             self.recipient_hash,
-            self.min_amount,
-            self.max_amount,
+            self.payer_hash,
+            self.amount,
             self.chain_id,
         ]
     }

@@ -30,6 +30,7 @@ import {
   encodeG2,
   hexSecretToFieldElement,
   computeRecipientHash,
+  computePayerHash,
   computeChainId,
   type MerkleProof,
   type PaymentProofOutput,
@@ -41,7 +42,6 @@ import {
   validateCircuitArtifacts,
 } from './artifacts';
 
-const MAX_PAYMENT_AMOUNT_STROOPS = BigInt(1000 * 10 ** 7);
 
 export type ProofProgressCallback = (
   stage: string,
@@ -52,6 +52,7 @@ export interface GenerateZkProofInput {
   readonly secret: string;
   readonly merkleProof: MerkleProof;
   readonly recipient: string;
+  readonly payerAddress: string;
   readonly amount: bigint;
   readonly networkPassphrase: string;
   readonly onProgress?: ProofProgressCallback;
@@ -66,8 +67,7 @@ interface CircuitInputs {
   readonly pathIndices: number[];
   readonly merkleRoot: string;
   readonly recipientHash: string;
-  readonly minAmount: string;
-  readonly maxAmount: string;
+  readonly payerHash: string;
   readonly chainId: string;
 }
 
@@ -174,6 +174,7 @@ function buildCircuitInputs(
     secret,
     merkleProof,
     recipient,
+    payerAddress,
     amount,
     networkPassphrase,
   } = input;
@@ -192,8 +193,7 @@ function buildCircuitInputs(
     pathIndices: [...pathIndices],
     merkleRoot: root.toString(),
     recipientHash: computeRecipientHash(recipient),
-    minAmount: '0',
-    maxAmount: MAX_PAYMENT_AMOUNT_STROOPS.toString(),
+    payerHash: computePayerHash(payerAddress),
     chainId: computeChainId(networkPassphrase),
   };
 }

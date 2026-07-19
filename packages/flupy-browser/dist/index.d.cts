@@ -71,6 +71,7 @@ interface GenerateZkProofInput {
     readonly secret: string;
     readonly merkleProof: MerkleProof;
     readonly recipient: string;
+    readonly payerAddress: string;
     readonly amount: bigint;
     readonly networkPassphrase: string;
     readonly onProgress?: ProofProgressCallback;
@@ -173,6 +174,16 @@ interface PaymentResult {
     readonly rawStatus: unknown;
 }
 /**
+ * Resolves the transaction sender address.
+ *
+ * Browser: via Freighter wallet extension (dynamic import to avoid SSR issues)
+ * Node.js: via SENDER_SECRET environment variable (for test scripts)
+ */
+declare function resolveSender(): Promise<{
+    address: string;
+    isBrowser: boolean;
+}>;
+/**
  * Submits a ZK payment transaction to the Fluppy Soroban contract.
  *
  * Invokes: execute_payment(from, to, amount, pi_a, pi_b, pi_c, public_inputs)
@@ -187,7 +198,10 @@ interface PaymentResult {
  * @param proof    - Soroban-encoded Groth16 proof from generateZkProof()
  * @param config   - Optional Stellar/Soroban configuration overrides
  */
-declare function payWithZkGroth16(merchant: string, amount: bigint, proof: PaymentProofOutput, config?: StellarConfig): Promise<unknown>;
+declare function payWithZkGroth16(merchant: string, amount: bigint, proof: PaymentProofOutput, config?: StellarConfig, resolvedSender?: {
+    address: string;
+    isBrowser: boolean;
+}): Promise<unknown>;
 /**
  * Fetches the current Merkle root from the backend API.
  *
@@ -281,4 +295,4 @@ declare function executeFluppyPayment(input: ExecuteFluppyPaymentInput): Promise
 
 declare const FLUPPY_BROWSER_VERSION = "0.1.0";
 
-export { type BrowserMerkleProof, type CircuitArtifactPaths, type CircuitArtifacts, type CreateCredentialResult, type EnrollCommitmentResult, type ExecuteFluppyPaymentInput, type ExecuteFluppyPaymentResult, FLUPPY_BROWSER_VERSION, type FluppyPaymentStep, type FluppyPaymentStepName, type GenerateZkProofInput, type LoadArtifactOptions, type MerkleClientOptions, type PaymentResult, type ProofProgressCallback, RootSyncError, type StellarConfig, clearCircuitArtifactCache, computeCommitment, createCredential, credentialExists, deleteCredential, enrollCommitment, executeFluppyPayment, generateSecret, generateZkProof, getContractMerkleRoot, getDefaultCircuitArtifactPaths, getMerkleProof, loadCircuitArtifacts, loadVerificationKey, payWithZkGroth16, pollTransaction, unlockCredential, validateCircuitArtifacts, verifyProofLocally };
+export { type BrowserMerkleProof, type CircuitArtifactPaths, type CircuitArtifacts, type CreateCredentialResult, type EnrollCommitmentResult, type ExecuteFluppyPaymentInput, type ExecuteFluppyPaymentResult, FLUPPY_BROWSER_VERSION, type FluppyPaymentStep, type FluppyPaymentStepName, type GenerateZkProofInput, type LoadArtifactOptions, type MerkleClientOptions, type PaymentResult, type ProofProgressCallback, RootSyncError, type StellarConfig, clearCircuitArtifactCache, computeCommitment, createCredential, credentialExists, deleteCredential, enrollCommitment, executeFluppyPayment, generateSecret, generateZkProof, getContractMerkleRoot, getDefaultCircuitArtifactPaths, getMerkleProof, loadCircuitArtifacts, loadVerificationKey, payWithZkGroth16, pollTransaction, resolveSender, unlockCredential, validateCircuitArtifacts, verifyProofLocally };

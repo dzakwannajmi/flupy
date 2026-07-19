@@ -66,6 +66,7 @@ export type {
 // Stellar/Freighter payment submission (SDK-1B-6)
 export {
   getContractMerkleRoot,
+  resolveSender,
   payWithZkGroth16,
   pollTransaction,
 } from './stellar';

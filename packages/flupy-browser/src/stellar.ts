@@ -198,7 +198,7 @@ function validateGroth16Proof(proof: PaymentProofOutput): void {
  * Browser: via Freighter wallet extension (dynamic import to avoid SSR issues)
  * Node.js: via SENDER_SECRET environment variable (for test scripts)
  */
-async function resolveSender(): Promise<{ address: string; isBrowser: boolean }> {
+export async function resolveSender(): Promise<{ address: string; isBrowser: boolean }> {
   const isBrowser = typeof window !== 'undefined';
 
   if (isBrowser) {
@@ -375,6 +375,7 @@ export async function payWithZkGroth16(
   amount:   bigint,
   proof:    PaymentProofOutput,
   config?:  StellarConfig,
+  resolvedSender?: { address: string; isBrowser: boolean },
 ): Promise<unknown> {
   const resolved         = resolveConfig(config);
   const contractId       = requireContractId(resolved.contractId);
@@ -386,7 +387,7 @@ export async function payWithZkGroth16(
   // ── Pre-flight validation ──────────────────────────────────────────────────
   validateGroth16Proof(proof);
 
-  const { address: senderAddress, isBrowser } = await resolveSender();
+  const { address: senderAddress, isBrowser } = resolvedSender ?? await resolveSender();
   const accountResponse = await rpcServer.getAccount(senderAddress);
 
   // ── Proof serialisation to ScVal ──────────────────────────────────────────

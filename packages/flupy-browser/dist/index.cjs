@@ -250,7 +250,6 @@ function clearCircuitArtifactCache() {
   verificationKeyCache = null;
   console.info("[artifacts] Cache cleared.");
 }
-var MAX_PAYMENT_AMOUNT_STROOPS = BigInt(1e3 * 10 ** 7);
 var activeGenerationId = null;
 function createGenerationId() {
   const bytes = crypto.getRandomValues(
@@ -321,6 +320,7 @@ function buildCircuitInputs(input) {
     secret,
     merkleProof,
     recipient,
+    payerAddress,
     amount,
     networkPassphrase
   } = input;
@@ -337,8 +337,7 @@ function buildCircuitInputs(input) {
     pathIndices: [...pathIndices],
     merkleRoot: root.toString(),
     recipientHash: core.computeRecipientHash(recipient),
-    minAmount: "0",
-    maxAmount: MAX_PAYMENT_AMOUNT_STROOPS.toString(),
+    payerHash: core.computePayerHash(payerAddress),
     chainId: core.computeChainId(networkPassphrase)
   };
 }
@@ -807,14 +806,14 @@ function readTransactionStatus(txStatus) {
   }
   return status;
 }
-async function payWithZkGroth16(merchant, amount, proof, config) {
+async function payWithZkGroth16(merchant, amount, proof, config, resolvedSender) {
   const resolved = resolveConfig(config);
   const contractId = requireContractId(resolved.contractId);
   const networkPassphrase = resolved.networkPassphrase;
   const rpcServer = new stellarSdk.rpc.Server(resolved.rpcUrl);
   console.log("[stellar] payWithZkGroth16 \u2014 Contract:", contractId.slice(0, 8) + "...");
   validateGroth16Proof(proof);
-  const { address: senderAddress, isBrowser } = await resolveSender();
+  const { address: senderAddress, isBrowser } = resolvedSender ?? await resolveSender();
   const accountResponse = await rpcServer.getAccount(senderAddress);
   const piAScVal = hexToScBytes(proof.pi_a, G1_BYTE_LENGTH);
   const piBScVal = hexToScBytes(proof.pi_b, G2_BYTE_LENGTH);
@@ -939,11 +938,12 @@ function normalizeTxHash(txResult) {
   const candidate = record["txHash"] ?? record["hash"] ?? record["id"];
   return typeof candidate === "string" ? candidate : "";
 }
-function buildProofInput(input, merkleProof) {
+function buildProofInput(input, merkleProof, payerAddress) {
   return {
     secret: input.secret,
     merkleProof,
     recipient: input.merchant,
+    payerAddress,
     amount: input.amount,
     networkPassphrase: input.networkPassphrase,
     ...input.onProofProgress ? { onProgress: input.onProofProgress } : {},
@@ -962,6 +962,7 @@ async function executeFluppyPayment(input) {
   const startMs = Date.now();
   validateSecret2(secret);
   validateMerchant(merchant);
+  const { address: senderAddress, isBrowser } = await resolveSender();
   if (amount <= 0n) {
     throw new Error(
       `[payment] Amount must be positive, received: ${amount}`
@@ -991,7 +992,7 @@ async function executeFluppyPayment(input) {
     );
   }
   emitStep(onStep, "proof:start", startMs);
-  const proofInput = buildProofInput(input, merkleProof);
+  const proofInput = buildProofInput(input, merkleProof, senderAddress);
   const zkProof = await generateZkProof(proofInput);
   emitStep(onStep, "proof:done", startMs);
   if (typeof process !== "undefined" && process.env?.["NODE_ENV"] === "development") {
@@ -1008,7 +1009,8 @@ async function executeFluppyPayment(input) {
     merchant,
     amount,
     zkProof,
-    stellarConfig
+    stellarConfig,
+    { address: senderAddress, isBrowser }
   );
   const txHash = normalizeTxHash(txResult);
   emitStep(onStep, "tx:confirmed", startMs, {
@@ -1043,6 +1045,7 @@ exports.loadCircuitArtifacts = loadCircuitArtifacts;
 exports.loadVerificationKey = loadVerificationKey;
 exports.payWithZkGroth16 = payWithZkGroth16;
 exports.pollTransaction = pollTransaction;
+exports.resolveSender = resolveSender;
 exports.unlockCredential = unlockCredential;
 exports.validateCircuitArtifacts = validateCircuitArtifacts;
 exports.verifyProofLocally = verifyProofLocally;

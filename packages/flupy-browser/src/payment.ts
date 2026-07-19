@@ -43,6 +43,7 @@ import {
 
 import {
   getContractMerkleRoot,
+  resolveSender,
   payWithZkGroth16,
   type StellarConfig,
 } from './stellar';
@@ -153,11 +154,13 @@ function normalizeTxHash(txResult: unknown): string {
 function buildProofInput(
   input: ExecuteFluppyPaymentInput,
   merkleProof: MerkleProof,
+  payerAddress: string,
 ): GenerateZkProofInput {
   return {
     secret: input.secret,
     merkleProof,
     recipient: input.merchant,
+    payerAddress,
     amount: input.amount,
     networkPassphrase: input.networkPassphrase,
     ...(input.onProofProgress
@@ -183,6 +186,7 @@ export async function executeFluppyPayment(
 
   validateSecret(secret);
   validateMerchant(merchant);
+  const { address: senderAddress, isBrowser } = await resolveSender();
 
   if (amount <= 0n) {
     throw new Error(
@@ -229,7 +233,7 @@ export async function executeFluppyPayment(
 
   emitStep(onStep, 'proof:start', startMs);
 
-  const proofInput = buildProofInput(input, merkleProof);
+  const proofInput = buildProofInput(input, merkleProof, senderAddress);
   const zkProof = await generateZkProof(proofInput);
 
   emitStep(onStep, 'proof:done', startMs);
@@ -256,6 +260,7 @@ export async function executeFluppyPayment(
     amount,
     zkProof,
     stellarConfig,
+    { address: senderAddress, isBrowser },
   );
 
   const txHash = normalizeTxHash(txResult);

@@ -34,8 +34,8 @@ const CardNav: React.FC<CardNavProps> = ({
     items,
     className = '',
     ease = 'power3.out',
-    baseColor = 'rgba(30, 27, 36, 0.8)', // Default dark glass
-    menuColor = '#fff',
+    baseColor = '#ffffff', // Default light background
+    menuColor = '#0e0f0c',
 }) => {
     const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -142,7 +142,7 @@ const CardNav: React.FC<CardNavProps> = ({
             <nav
                 ref={navRef}
                 className={`card-nav ${isExpanded ? 'open' : ''} block h-[60px] p-0 rounded-2xl shadow-2xl relative overflow-hidden will-change-[height] border`}
-                style={{ backgroundColor: baseColor, backdropFilter: "blur(16px)", borderColor: "rgba(255,255,255,0.08)" }}
+                style={{ backgroundColor: baseColor, borderColor: "rgba(14, 15, 12, 0.08)" }}
             >
                 <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 pl-[1.1rem] z-[2]">
 
@@ -159,10 +159,10 @@ const CardNav: React.FC<CardNavProps> = ({
                     </div>
 
                     <div className="logo-container flex items-center gap-2.5 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none pointer-events-none">
-                        <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "#FF85BB" }}>
+                        <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "#9fe870" }}>
                             <BsStars className="text-black text-sm" />
                         </div>
-                        <span className="font-bold text-lg text-white tracking-tight">FLUPPY</span>
+                        <span className="font-bold text-lg text-[#0e0f0c] tracking-tight">FLUPPY</span>
                     </div>
 
                     {/* Connect Wallet Button */}
@@ -170,13 +170,11 @@ const CardNav: React.FC<CardNavProps> = ({
                         onClick={onConnectWallet}
                         className="hidden md:inline-flex px-5 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-105 active:scale-95 z-[60] items-center gap-2"
                         style={{
-                            backgroundColor: publicKey ? `rgba(255, 133, 187, 0.15)` : `rgba(255, 255, 255, 0.05)`,
-                            backdropFilter: "blur(12px)",
-                            WebkitBackdropFilter: "blur(12px)",
-                            color: publicKey ? "#FF85BB" : "white",
-                            borderColor: publicKey ? `rgba(255, 133, 187, 0.3)` : `rgba(255, 255, 255, 0.1)`,
+                            backgroundColor: publicKey ? `rgba(159, 232, 112, 0.15)` : `rgba(14, 15, 12, 0.05)`,
+                                                        color: publicKey ? "#163300" : "#0e0f0c",
+                            borderColor: publicKey ? `rgba(22, 51, 0, 0.3)` : `rgba(14, 15, 12, 0.1)`,
                             boxShadow: publicKey
-                                ? "0 0 20px -5px rgba(255, 133, 187, 0.4)"
+                                ? "0 0 20px -5px rgba(159, 232, 112, 0.5)"
                                 : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                         }}
                     >
@@ -198,7 +196,7 @@ const CardNav: React.FC<CardNavProps> = ({
                             key={`${item.label}-${idx}`}
                             className="nav-card select-none relative flex flex-col gap-2 p-[16px_20px] rounded-xl border min-w-0 flex-[1_1_auto] h-auto min-h-[60px] md:h-full md:min-h-0 md:flex-[1_1_0%]"
                             ref={setCardRef(idx)}
-                            style={{ backgroundColor: item.bgColor, color: item.textColor, borderColor: "rgba(255,255,255,0.05)" }}
+                            style={{ backgroundColor: item.bgColor, color: item.textColor, borderColor: "rgba(14, 15, 12, 0.05)" }}
                         >
                             <div className="nav-card-label font-semibold tracking-tight text-[18px] md:text-[20px] mb-2">
                                 {item.label}

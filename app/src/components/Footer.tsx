@@ -4,9 +4,9 @@ import React from "react";
 import { FiGithub, FiGlobe } from "react-icons/fi";
 
 const T = {
-  muted: "#94a3b8",
-  primary: "#FF85BB",
-  border: "rgba(255,255,255,0.08)",
+  muted: "#454745",
+  primary: "#9fe870",
+  border: "rgba(14, 15, 12, 0.08)",
 };
 
 export default function Footer() {
@@ -20,20 +20,20 @@ export default function Footer() {
             <div className="w-5 h-5 rounded-[4px] flex items-center justify-center" style={{ background: T.primary }}>
               <span className="text-black text-[10px] font-black">✦</span>
             </div>
-            <span className="font-bold tracking-widest text-white">FLUPPY</span>
+            <span className="font-bold tracking-widest text-[#0e0f0c]">FLUPPY</span>
           </div>
 
           <div className="flex items-center gap-8 text-sm font-medium">
-            <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#FF85BB]" style={{ color: T.muted }}>
+            <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#163300]" style={{ color: T.muted }}>
               <FiGithub className="text-lg" /> GitHub
             </a>
-            <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#FF85BB]" style={{ color: T.muted }}>
+            <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#163300]" style={{ color: T.muted }}>
               <FiGlobe className="text-lg" /> Explorer
             </a>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs font-mono uppercase tracking-widest" style={{ borderTop: `1px solid ${T.border}`, color: "rgba(255,255,255,0.3)" }}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs font-mono uppercase tracking-widest" style={{ borderTop: `1px solid ${T.border}`, color: "rgba(14, 15, 12, 0.5)" }}>
           <span>© 2026 Fluppy</span>
 
           <div className="flex flex-wrap justify-center gap-3">

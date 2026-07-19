@@ -21,8 +21,6 @@ import { BsStars, BsCalculator } from "react-icons/bs";
 import { isConnected, requestAccess } from "@stellar/freighter-api";
 
 // Import Komponen Custom
-import ColorBends from "../components/ColorBends";
-import DotField from "../components/DotField";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import LogoLoop from "../components/LogoLoop";
@@ -31,14 +29,14 @@ import Link from "next/link";
 
 // ─── Design tokens (SOLID PINK THEME) ─────────────────────────────────────────
 const T = {
-  bg: "#120F17",
-  fg: "#FDFCFD",
-  muted: "#94a3b8",
-  primary: "#FF85BB",
-  dark: "#0A080D",
-  card: "#18151E",
-  border: "rgba(255,255,255,0.08)",
-  glass: "rgba(20, 16, 25, 0.6)",
+  bg: "#ffffff",
+  fg: "#0e0f0c",
+  muted: "#454745",
+  primary: "#9fe870",
+  dark: "#163300",
+  card: "#ffffff",
+  border: "rgba(14, 15, 12, 0.08)",
+  glass: "rgba(255, 255, 255, 0.6)",
 };
 
 // ─── Shared variants ──────────────────────────────────────────────────────────
@@ -109,10 +107,10 @@ function MetricsStrip() {
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-8">
         {metrics.map((m) => (
           <div key={m.label} className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-1">
+            <div className="text-3xl md:text-4xl font-bold text-[#0e0f0c] tracking-tight mb-1">
               {m.value}
             </div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-[#454745]">
               {m.label}
             </div>
           </div>
@@ -149,10 +147,10 @@ function HowItWorksPlain() {
       <div className="max-w-5xl mx-auto">
         <Reveal>
           <SectionLabel>HOW IT WORKS</SectionLabel>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
+          <motion.h2 variants={fadeUp} className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0e0f0c] mb-4">
             Privacy in <HighlightText>three steps.</HighlightText>
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-base text-white/55 max-w-xl mb-14">
+          <motion.p variants={fadeUp} className="text-base text-[#454745] max-w-xl mb-14">
             No crypto-jargon. Here's what actually happens when you send a payment with Fluppy.
           </motion.p>
 
@@ -167,8 +165,8 @@ function HowItWorksPlain() {
                 <div className="text-xs font-mono mb-5" style={{ color: T.primary }}>
                   {s.num}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{s.title}</h3>
-                <p className="text-sm text-white/55 leading-relaxed">{s.desc}</p>
+                <h3 className="text-xl font-bold text-[#0e0f0c] mb-2 tracking-tight">{s.title}</h3>
+                <p className="text-sm text-[#454745] leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -194,17 +192,17 @@ function Architecture() {
       <div className="max-w-6xl mx-auto">
         <Reveal>
           <SectionLabel>ARCHITECTURE</SectionLabel>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-12">
+          <motion.h2 variants={fadeUp} className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0e0f0c] mb-12">
             Four steps <HighlightText>One private payment</HighlightText>
           </motion.h2>
 
           <motion.div variants={stagger(0.1)} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {ARCH_NODES.map((n, i) => (
               <motion.div key={n.label} variants={fadeUp} className="relative">
-                <SolidCard className="p-8 h-full flex flex-col hover:border-[#FF85BB]/40 transition-colors">
+                <SolidCard className="p-8 h-full flex flex-col hover:border-[#9fe870]/40 transition-colors">
                   <div className="text-sm font-mono mb-6" style={{ color: T.primary }}>{n.glyph}</div>
-                  <h3 className="text-lg font-bold text-white mb-2">{n.label}</h3>
-                  <p className="text-sm text-foreground/60 leading-relaxed">{n.sub}</p>
+                  <h3 className="text-lg font-bold text-[#0e0f0c] mb-2">{n.label}</h3>
+                  <p className="text-sm text-[#454745] leading-relaxed">{n.sub}</p>
                 </SolidCard>
 
                 {/* Arrow Connector on Desktop */}
@@ -238,7 +236,7 @@ function Hero() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 mb-9 rounded-full border backdrop-blur-md text-xs text-white/70 hover:text-white hover:border-[#FF85BB]/40 transition-colors"
+          className="inline-flex items-center gap-2.5 px-4 py-1.5 mb-9 rounded-full border text-xs text-[#454745] hover:text-[#0e0f0c] hover:border-[#9fe870]/40 transition-colors"
           style={{ borderColor: T.border, background: T.glass }}
         >
           <span className="relative flex h-2 w-2">
@@ -247,17 +245,17 @@ function Hero() {
           </span>
           <span>Live on Stellar Testnet</span>
           <span className="opacity-40">·</span>
-          <span className="font-mono text-white/50">CAGJ…DIBAS</span>
+          <span className="font-mono text-[#454745]">CAGJ…DIBAS</span>
           <span className="opacity-40">↗</span>
         </motion.a>
 
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="text-5xl sm:text-7xl md:text-[7rem] font-bold tracking-tighter text-white leading-[1.05]">
+        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="text-5xl sm:text-7xl md:text-[7rem] font-bold tracking-tighter text-[#0e0f0c] leading-[1.05]">
           Private Payments,
           <br />
           <HighlightText>Finally.</HighlightText>
         </motion.h1>
 
-        <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.7 }} className="mt-9 text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.7 }} className="mt-9 text-lg md:text-xl text-[#454745] max-w-2xl mx-auto leading-relaxed">
           ZK-powered payments on Stellar Testnet with browser Groth16 proofs, root sync, and atomic 95/5 settlement.
         </motion.p>
 
@@ -265,19 +263,19 @@ function Hero() {
           <a href="#payment-preview" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full text-black font-bold text-sm transition-transform hover:scale-105" style={{ background: T.primary }}>
             Run Live Demo <FiArrowDown className="text-lg" />
           </a>
-          <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border font-bold text-sm text-white transition-colors hover:bg-white/5" style={{ borderColor: T.border }}>
+          <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border font-bold text-sm text-[#0e0f0c] transition-colors hover:bg-black/5" style={{ borderColor: T.border }}>
             <FiGithub className="text-lg" /> View GitHub
           </a>
           <button
             onClick={() => document.getElementById("payment-preview")?.scrollIntoView({ behavior: "smooth" })}
-            className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-sm text-white/80 hover:text-white transition-colors"
+            className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-sm text-[#0e0f0c] hover:text-[#0e0f0c] transition-colors"
           >
             <span className="w-7 h-7 rounded-full border flex items-center justify-center text-[10px]" style={{ borderColor: T.border }}>▶</span>
             Watch Demo
           </button>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85, duration: 0.6 }} className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-xs font-bold uppercase tracking-widest text-white/40">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85, duration: 0.6 }} className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-xs font-bold uppercase tracking-widest text-[#454745]">
           <span>Groth16 Local Verify</span>
           <span className="hidden sm:inline">·</span>
           <span>Poseidon Merkle</span>
@@ -311,7 +309,7 @@ function WhatIsFluppy() {
                 <div className="w-12 h-12 rounded-xl mb-6 flex items-center justify-center" style={{ background: T.primary }}>
                   <BsStars className="text-black text-2xl" />
                 </div>
-                <h2 className="text-3xl font-bold text-white tracking-tight leading-tight">
+                <h2 className="text-3xl font-bold text-[#0e0f0c] tracking-tight leading-tight">
                   Built for the<br /><HighlightText>privacy-first</HighlightText><br />economy
                 </h2>
               </div>
@@ -321,10 +319,10 @@ function WhatIsFluppy() {
             <div className="md:w-2/3 p-10 sm:p-14 flex flex-col justify-center gap-8">
               {FEATURES.map((f, i) => (
                 <div key={f.title} className={`pb-8 ${i !== FEATURES.length - 1 ? 'border-b' : ''}`} style={{ borderColor: T.border }}>
-                  <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-wide flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-[#0e0f0c] mb-2 uppercase tracking-wide flex items-center gap-2">
                     {f.title}
                   </h3>
-                  <p className="text-sm text-foreground/60 leading-relaxed max-w-lg">{f.desc}</p>
+                  <p className="text-sm text-[#454745] leading-relaxed max-w-lg">{f.desc}</p>
                 </div>
               ))}
             </div>
@@ -429,15 +427,15 @@ function DAppPreview() {
       <div className="max-w-6xl mx-auto px-6">
         <Reveal>
           <div className="mb-10 text-center" id="payment">
-            <h2 className="text-4xl font-bold text-white mb-4">Experience the Protocol.</h2>
-            <p className="text-sm text-foreground/60 max-w-lg mx-auto">Try the Zero-Knowledge payment pipeline directly on testnet.</p>
+            <h2 className="text-4xl font-bold text-[#0e0f0c] mb-4">Experience the Protocol.</h2>
+            <p className="text-sm text-[#454745] max-w-lg mx-auto">Try the Zero-Knowledge payment pipeline directly on testnet.</p>
           </div>
 
           <Link href="/app" className="block relative group cursor-pointer rounded-[2rem] overflow-hidden">
 
             {/* Always-visible instruction badge */}
-            <div className="absolute top-6 left-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border text-[10px] font-bold uppercase tracking-wider text-white/80" style={{ background: T.glass, borderColor: T.border }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF85BB] animate-pulse" />
+            <div className="absolute top-6 left-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border text-[10px] font-bold uppercase tracking-wider text-[#0e0f0c]" style={{ background: T.glass, borderColor: T.border }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9fe870] animate-pulse" />
               Hover to launch
             </div>
 
@@ -453,7 +451,7 @@ function DAppPreview() {
             </div>
 
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="flex items-center gap-3 text-2xl md:text-3xl font-bold text-white mb-8">
+              <div className="flex items-center gap-3 text-2xl md:text-3xl font-bold text-[#0e0f0c] mb-8">
                 #1 privacy payments on
                 <div className="icon-mask w40 h-40 md:w-30 md:h-30 bg-white" style={{ maskImage: 'url(/logos/Stellar.svg)', WebkitMaskImage: 'url(/logos/Stellar.svg)' }} />
               </div>
@@ -483,8 +481,8 @@ function FAQItem({ q, a, isOpen, onClick }: { q: string, a: string, isOpen: bool
   return (
     <div className="border-b transition-colors" style={{ borderColor: isOpen ? T.primary : T.border }}>
       <button onClick={onClick} className="w-full flex justify-between items-center py-6 text-left focus:outline-none group">
-        <span className={`text-lg font-bold transition-colors ${isOpen ? 'text-white' : 'text-white/80 group-hover:text-white'}`}>{q}</span>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-white/50 group-hover:text-white">
+        <span className={`text-lg font-bold transition-colors ${isOpen ? 'text-[#0e0f0c]' : 'text-[#0e0f0c] group-hover:text-[#0e0f0c]'}`}>{q}</span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="text-[#454745] group-hover:text-[#0e0f0c]">
           <FiChevronDown size={22} />
         </motion.div>
       </button>
@@ -497,7 +495,7 @@ function FAQItem({ q, a, isOpen, onClick }: { q: string, a: string, isOpen: bool
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="pb-6 text-sm text-foreground/60 leading-relaxed pr-8">
+            <div className="pb-6 text-sm text-[#454745] leading-relaxed pr-8">
               {a}
             </div>
           </motion.div>
@@ -515,7 +513,7 @@ function FAQSection() {
       <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-12">
         <div className="md:w-1/3">
           <SectionLabel>FAQ</SectionLabel>
-          <h2 className="text-4xl font-bold text-white tracking-tight">Questions?<br />Answers</h2>
+          <h2 className="text-4xl font-bold text-[#0e0f0c] tracking-tight">Questions?<br />Answers</h2>
         </div>
         <div className="md:w-2/3">
           {FAQS.map((faq, i) => (
@@ -632,14 +630,6 @@ export default function Page() {
   return (
     <div className="relative min-h-screen antialiased overflow-x-hidden" style={{ background: T.bg, color: T.fg }}>
 
-      {/* HERO BACKGROUND LAYER */}
-      <div className="absolute top-0 left-0 w-full h-[120vh] pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        <div className="absolute inset-0 opacity-40 mix-blend-screen">
-          <ColorBends colors={[T.primary]} rotation={90} speed={0.2} scale={1} frequency={1} warpStrength={1} mouseInfluence={1} noise={0.15} parallax={0.5} iterations={1} intensity={1.5} bandWidth={6} transparent autoRotate={0} />
-        </div>
-        <div className="absolute inset-0 opacity-30"><DotField /></div>
-        <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 0%, transparent 60%, ${T.bg} 100%)` }} />
-      </div>
 
       <div className="relative z-10">
         <Navbar publicKey={publicKey} onConnectWallet={handleConnectWallet} items={navItems} baseColor="rgba(18, 15, 23, 0.4)" />
@@ -679,7 +669,7 @@ export default function Page() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 24 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-full backdrop-blur-xl border text-sm font-medium text-white shadow-2xl"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] px-5 py-3 rounded-full backdrop-blur-xl border text-sm font-medium text-[#0e0f0c] shadow-2xl"
             style={{ background: T.glass, borderColor: T.border }}
           >
             {toast}

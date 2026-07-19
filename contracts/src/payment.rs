@@ -68,15 +68,14 @@ pub fn execute_payment(
     let chain_id_signal = public_inputs.get(IDX_CHAIN_ID).unwrap();
 
     // ── 5. Merkle root integrity ────────────────────────────────────────────
-    // The proof's merkleRoot signal must match the root stored in contract state.
-    // Prevents proof re-use against a stale or different whitelist.
-    let stored_root: BytesN<32> = env
-        .storage()
-        .instance()
-        .get(&DataKey::MerkleRoot)
-        .ok_or(FluppyError::NotInitialized)?;
-
-    if proof_root != stored_root {
+    // The proof's merkleRoot signal must match ANY root within the last
+    // ROOT_HISTORY_SIZE anchored roots (ring buffer), not just the most
+    // recent one. Closes the proof-in-flight-vs-new-root race: a proof
+    // fetched against root N remains valid even if the automated sync
+    // job anchors root N+1 while the user is still generating the proof.
+    // Prevents proof re-use against a whitelist snapshot outside the
+    // acceptance window.
+    if !crate::root_is_known(&env, &proof_root) {
         return Err(FluppyError::RootMismatch);
     }
 

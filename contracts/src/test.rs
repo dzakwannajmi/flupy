@@ -416,34 +416,63 @@ fn test_custom_fee_applied_correctly() {
 }
 
 #[test]
-fn test_root_update_blocks_old_root_proofs() {
+fn test_root_within_history_window_still_accepted() {
+    // Root history ring buffer: closes the proof-in-flight-vs-new-root
+    // race. A proof against a root that was replaced by a NEWER root
+    // must still succeed, as long as it's within ROOT_HISTORY_SIZE.
     let f = setup();
     let new_root = BytesN::from_array(&f.env, &[0x02; 32]);
     f.client.set_merkle_root(&f.admin, &new_root);
 
     let payer = Address::generate(&f.env);
     let merchant = Address::generate(&f.env);
-    f.usdc_sa.mint(&payer, &PAYMENT);
+    f.usdc_sa.mint(&payer, &(PAYMENT * 2));
 
-    // Proof with OLD root — must now be rejected
+    // Proof with the OLD (pre-update) root — must still succeed, it's
+    // within the history window.
     let n1 = BytesN::from_array(&f.env, &[0x0B; 32]);
     let (a1, b1, c1, i1) =
         make_proof(&f.env, &n1, &f.root, &payer, &merchant, PAYMENT);
-    let result = f
-        .client
-        .try_execute_payment(&payer, &merchant, &PAYMENT, &a1, &b1, &c1, &i1);
-    assert!(
-        result.is_err(),
-        "Old root proof must be rejected after root update"
-    );
+    f.client
+        .execute_payment(&payer, &merchant, &PAYMENT, &a1, &b1, &c1, &i1);
+    assert_eq!(f.usdc.balance(&merchant), 95_000_000);
 
-    // Proof with NEW root — must succeed
+    // Proof with the NEW root — must also succeed.
     let n2 = BytesN::from_array(&f.env, &[0x0C; 32]);
     let (a2, b2, c2, i2) =
         make_proof(&f.env, &n2, &new_root, &payer, &merchant, PAYMENT);
     f.client
         .execute_payment(&payer, &merchant, &PAYMENT, &a2, &b2, &c2, &i2);
-    assert_eq!(f.usdc.balance(&merchant), 95_000_000);
+    assert_eq!(f.usdc.balance(&merchant), 190_000_000);
+}
+
+#[test]
+fn test_root_outside_history_window_rejected() {
+    // Push ROOT_HISTORY_SIZE (30) more roots past the original — the
+    // ring buffer fully wraps, so the original setup() root must no
+    // longer be accepted.
+    let f = setup();
+
+    for i in 0u8..30 {
+        let root = BytesN::from_array(&f.env, &[0x10 + i; 32]);
+        f.client.set_merkle_root(&f.admin, &root);
+    }
+
+    let payer = Address::generate(&f.env);
+    let merchant = Address::generate(&f.env);
+    f.usdc_sa.mint(&payer, &PAYMENT);
+
+    let nullifier = BytesN::from_array(&f.env, &[0x0D; 32]);
+    let (pi_a, pi_b, pi_c, inputs) =
+        make_proof(&f.env, &nullifier, &f.root, &payer, &merchant, PAYMENT);
+
+    let result = f
+        .client
+        .try_execute_payment(&payer, &merchant, &PAYMENT, &pi_a, &pi_b, &pi_c, &inputs);
+    assert!(
+        result.is_err(),
+        "Root outside the history window must be rejected"
+    );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

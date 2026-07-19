@@ -17,6 +17,16 @@
 //! Rationale: RootOperator key compromise is bounded to whitelist-integrity
 //! bypass or root-anchoring DoS — it can never move funds (Flupy is
 //! non-custodial) or change Admin/fee/pause state.
+//!
+//! ## Root history ring buffer
+//! Because the Merkle root is now anchored by an automated sync job that
+//! can run every few minutes, a proof generated against root N can land
+//! on-chain after root N+1 has already been anchored (proof-in-flight
+//! race). Rather than requiring an exact match to the single latest
+//! root, the contract accepts a proof against ANY root within the last
+//! ROOT_HISTORY_SIZE anchored roots — turning what would otherwise be a
+//! hard correctness failure into a soft UX nicety (the proof still
+//! succeeds; only a root far outside the window is rejected).
 
 #![no_std]
 
@@ -58,6 +68,10 @@ pub struct OperatorRotated {
     pub new_operator: Address,
 }
 
+/// Number of historical roots retained for proof acceptance.
+/// See "Root history ring buffer" note above.
+pub(crate) const ROOT_HISTORY_SIZE: u32 = 30;
+
 #[contracttype]
 #[derive(Clone, Debug)]
 pub enum DataKey {
@@ -75,8 +89,15 @@ pub enum DataKey {
     FeePercent,
     /// Circuit-breaker flag. `true` = all payments blocked.
     IsPaused,
-    /// Authorised Merkle root (BytesN<32>).
+    /// Most recently anchored Merkle root (BytesN<32>). Kept for
+    /// get_merkle_root() callers that want "the current canonical root"
+    /// (e.g. the sync job's idempotency check) — NOT used directly for
+    /// payment validation anymore; see RootAt / root_is_known().
     MerkleRoot,
+    /// Ring buffer write pointer (0..ROOT_HISTORY_SIZE).
+    RootHistoryIndex,
+    /// Ring buffer slot: root anchored at ring position `u32`.
+    RootAt(u32),
     /// Spent nullifier registry — keyed by nullifier field element.
     /// Stored in temporary storage. Presence = nullifier is spent.
     Nullifier(BytesN<32>),
@@ -124,6 +145,7 @@ impl FluppyContract {
         env.storage()
             .instance()
             .set(&DataKey::MerkleRoot, &merkle_root);
+        push_root_history(&env, &merkle_root);
 
         // Extend instance TTL: min 90 days, target 300 days
         env.storage().instance().extend_ttl(518_400, 2_592_000);
@@ -171,6 +193,9 @@ impl FluppyContract {
 
     /// Update the authorised Merkle root (new whitelist snapshot).
     /// Callable by Admin (manual override) OR RootOperator (automated sync).
+    ///
+    /// The new root is pushed into the root history ring buffer rather
+    /// than replacing a single stored value — see module-level doc.
     pub fn set_merkle_root(
         env: Env,
         caller: Address,
@@ -182,6 +207,7 @@ impl FluppyContract {
         env.storage()
             .instance()
             .set(&DataKey::MerkleRoot, &new_root);
+        push_root_history(&env, &new_root);
 
         MerkleRootUpdated { new_root }.publish(&env);
 
@@ -235,8 +261,17 @@ impl FluppyContract {
             .unwrap_or(false)
     }
 
+    /// Returns the most recently anchored root. For payment validation,
+    /// use is_known_root() instead — a payment MAY be valid against an
+    /// older root still within the history window.
     pub fn get_merkle_root(env: Env) -> Option<BytesN<32>> {
         env.storage().instance().get(&DataKey::MerkleRoot)
+    }
+
+    /// Returns true if `root` is any of the last ROOT_HISTORY_SIZE roots
+    /// anchored via set_merkle_root() (including the current one).
+    pub fn is_known_root(env: Env, root: BytesN<32>) -> bool {
+        root_is_known(&env, &root)
     }
 
     pub fn get_root_operator(env: Env) -> Option<Address> {
@@ -258,6 +293,7 @@ impl FluppyContract {
 // payment.rs calls these as:
 //   crate::check_not_paused(&env)?;
 //   crate::require_admin(&env, &caller)?;
+//   crate::root_is_known(&env, &proof_root);
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Returns Err(ContractPaused) if the circuit-breaker is active.
@@ -315,4 +351,35 @@ pub(crate) fn require_admin_or_operator(
         return Err(FluppyError::NotAdmin);
     }
     Ok(())
+}
+
+/// Pushes `new_root` into the next ring buffer slot, advancing the write
+/// pointer. The very first call (no RootHistoryIndex set yet) writes to
+/// slot 0; subsequent calls advance modulo ROOT_HISTORY_SIZE.
+pub(crate) fn push_root_history(env: &Env, new_root: &BytesN<32>) {
+    let current_idx: Option<u32> = env.storage().instance().get(&DataKey::RootHistoryIndex);
+
+    let next = match current_idx {
+        Some(idx) => (idx + 1) % ROOT_HISTORY_SIZE,
+        None => 0,
+    };
+
+    env.storage().instance().set(&DataKey::RootAt(next), new_root);
+    env.storage()
+        .instance()
+        .set(&DataKey::RootHistoryIndex, &next);
+}
+
+/// Returns true if `root` matches any entry currently in the ring buffer.
+pub(crate) fn root_is_known(env: &Env, root: &BytesN<32>) -> bool {
+    for i in 0..ROOT_HISTORY_SIZE {
+        let stored: Option<BytesN<32>> = env.storage().instance().get(&DataKey::RootAt(i));
+
+        if let Some(r) = stored {
+            if &r == root {
+                return true;
+            }
+        }
+    }
+    false
 }

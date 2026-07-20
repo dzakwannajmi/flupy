@@ -1,0 +1,136 @@
+import { CodeBlock as Code } from "@/components/CodeBlock";
+import Link from "next/link";
+import {
+  PageBadges,
+  BundleStats,
+  ModuleMap,
+  BindingCards,
+  EncodingTerminal,
+  Note,
+} from "./_visuals";
+
+export const metadata = {
+  title: "@flupy/core",
+  description: "API reference for @flupy/core — Fluppy protocol primitives.",
+};
+
+
+# @flupy/core
+
+Protocol-level primitives shared by <code>@flupy/browser</code> and <code>@flupy/react</code>. Pure TypeScript — no browser APIs, no React, no wallet dependency.
+
+<h2 id="modules">Module Map</h2>
+
+<ModuleMap />
+
+<h2 id="exports">Key Exports</h2>
+
+### Error classes
+
+<table>
+<thead>
+<tr><th>Export</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>FluppyError</code></td><td>class</td><td>Base error class with code, userMessage, and action fields</td></tr>
+<tr><td><code>FluppyProofError</code></td><td>class</td><td>Extends FluppyError — proof generation or verification failure</td></tr>
+<tr><td><code>FluppyNetworkError</code></td><td>class</td><td>Extends FluppyError — RPC or API network failure</td></tr>
+<tr><td><code>FluppyWalletError</code></td><td>class</td><td>Extends FluppyError — Freighter wallet rejection or not found</td></tr>
+<tr><td><code>FluppyRootMismatchError</code></td><td>class</td><td>Extends FluppyError — on-chain root differs from frontend root</td></tr>
+<tr><td><code>FluppyArtifactError</code></td><td>class</td><td>Extends FluppyError — WASM/ZKey load or integrity failure</td></tr>
+<tr><td><code>parseFluppyError(err)</code></td><td>function</td><td>Maps any thrown value to a structured FluppyError</td></tr>
+</tbody>
+</table>
+
+### Types
+
+<table>
+<thead>
+<tr><th>Export</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>PaymentProofOutput</code></td><td>interface</td><td>Soroban-encoded proof: pi_a (128 hex), pi_b (256 hex), pi_c (128 hex), publicSignals (7 × 64 hex)</td></tr>
+<tr><td><code>MerkleProof</code></td><td>interface</td><td>pathElements: bigint[], pathIndices: number[], root: bigint</td></tr>
+<tr><td><code>ProofProgress</code></td><td>interface</td><td>stage: string, pct: number — emitted during proof generation</td></tr>
+<tr><td><code>FluppyCoreConfig</code></td><td>interface</td><td>contractId, networkPassphrase, rpcUrl</td></tr>
+<tr><td><code>PaymentResult</code></td><td>interface</td><td>txHash, explorerUrl, status</td></tr>
+</tbody>
+</table>
+
+### Constants
+
+<table>
+<thead>
+<tr><th>Export</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>BN254_R</code></td><td>bigint</td><td>BN254 scalar field order — all circuit inputs must be &lt; this value</td></tr>
+<tr><td><code>CIRCUIT_DEPTH</code></td><td>number</td><td>20 — Merkle tree depth supporting up to 2^20 enrolled commitments</td></tr>
+<tr><td><code>N_PUBLIC</code></td><td>number</td><td>7 — number of public signals (nullifier, verifiedRoot, merkleRoot, recipientHash, payerHash, amount, chainId)</td></tr>
+<tr><td><code>POSEIDON_TAGS</code></td><td>object</td><td>NULLIFIER=1, LEAF=2, NODE=3 — domain separation constants, MUST match circuit</td></tr>
+<tr><td><code>DEFAULT_MAX_AMOUNT</code></td><td>bigint</td><td>Default upper bound for payment amount (1000 USDC in stroops)</td></tr>
+<tr><td><code>usdcToStroops()</code></td><td>function</td><td>Converts human-readable USDC string to stroops bigint</td></tr>
+</tbody>
+</table>
+
+### Utilities
+
+<table>
+<thead>
+<tr><th>Export</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>computeRecipientHash(address)</code></td><td>function</td><td>XDR-encodes a Stellar address, SHA-256 hashes it, zeroes MSB for BN254 safety</td></tr>
+<tr><td><code>computeChainId(passphrase)</code></td><td>function</td><td>SHA-256 hashes the network passphrase, zeroes MSB — binds proof to one network</td></tr>
+<tr><td><code>encodeG1(point)</code></td><td>function</td><td>Encodes BN254 G1 affine point to 64-byte big-endian hex for Soroban Bytes</td></tr>
+<tr><td><code>encodeG2(point)</code></td><td>function</td><td>Encodes BN254 G2 affine point to 128-byte big-endian hex for Soroban Bytes</td></tr>
+<tr><td><code>decimalToBe32Hex(decimal)</code></td><td>function</td><td>Converts a decimal string bigint to 32-byte big-endian hex (public signal encoding)</td></tr>
+<tr><td><code>hexSecretToFieldElement(hex)</code></td><td>function</td><td>Reduces a 256-bit hex secret to a BN254 scalar field element (mod BN254_R)</td></tr>
+</tbody>
+</table>
+
+<h2 id="encoding">Proof Encoding</h2>
+
+SnarkJS outputs Groth16 proof points as decimal strings. Soroban contracts expect fixed-size byte arrays (<code>BytesN&lt;64&gt;</code>, <code>BytesN&lt;128&gt;</code>, <code>BytesN&lt;32&gt;</code>). The encoding helpers in <code>@flupy/core</code> handle this conversion:
+
+<EncodingTerminal />
+
+<h2 id="bindings">Recipient Hash & Chain ID</h2>
+
+<BindingCards />
+
+<h2 id="usage">Usage (Monorepo)</h2>
+
+<Note>
+  Packages are internal workspace packages. See <Link href="/docs/installation" className="underline">Installation</Link> for setup.
+  Do not use public npm package installation yet — packages are not yet published to npm.
+</Note>
+
+<div className="not-typeset">
+<Code filename="example.ts">{`import {
+	computeRecipientHash,
+	computeChainId,
+	encodeG1,
+	encodeG2,
+	decimalToBe32Hex,
+	usdcToStroops,
+	parseFluppyError,
+	type PaymentProofOutput,
+	type MerkleProof,
+} from '@flupy/core';
+
+// Compute BN254-safe inputs
+const recipientHash = computeRecipientHash('GDLST72T...');
+const chainId       = computeChainId('Test SDF Network ; September 2015');
+
+// Convert amount
+const stroops = usdcToStroops('1.50'); // → 15_000_000n
+
+// Error handling
+try {
+	// ... payment logic
+} catch (err) {
+	const parsed = parseFluppyError(err);
+	console.error(parsed.code, parsed.userMessage); // safe to log
+}`}</Code>
+</div>

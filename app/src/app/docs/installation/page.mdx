@@ -1,0 +1,159 @@
+import { CodeBlock } from "@/components/CodeBlock";
+import { InstallNote } from "./_visuals";
+
+export const metadata = {
+  title: "Installation",
+  description: "Set up the Fluppy SDK monorepo locally: clone, install dependencies, configure environment, and build all packages.",
+};
+
+# Installation
+
+Fluppy SDK is currently distributed as an internal pnpm monorepo workspace. This guide covers local development setup.
+
+<InstallNote type="info">
+  Fluppy packages (<code>@flupy/core</code>, <code>@flupy/browser</code>, <code>@flupy/react</code>) are <strong>internal workspace packages</strong> and are not yet published to npm. Public npm publication is planned after external security audit and multi-party trusted setup ceremony.
+</InstallNote>
+
+<h2 id="prerequisites">1. Prerequisites</h2>
+
+<table>
+<thead>
+<tr><th>Tool</th><th>Version</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Node.js</code></td><td>≥ 18.0.0</td><td>JavaScript runtime for Next.js and SDK builds</td></tr>
+<tr><td><code>pnpm</code></td><td>≥ 8.0.0</td><td>Monorepo package manager (workspace protocol)</td></tr>
+<tr><td><code>Rust + Cargo</code></td><td>stable</td><td>Soroban smart contract compilation to WASM</td></tr>
+<tr><td><code>Stellar CLI</code></td><td>≥ 22.x</td><td>Contract deployment and invocation</td></tr>
+<tr><td><code>Freighter</code></td><td>Latest</td><td>Stellar wallet browser extension for signing</td></tr>
+</tbody>
+</table>
+
+<CodeBlock>{`# Install pnpm (if not already installed)
+npm install -g pnpm
+
+# Add Rust WASM target for Soroban contract compilation
+rustup target add wasm32-unknown-unknown
+
+# Install Stellar CLI
+# See: https://developers.stellar.org/docs/tools/developer-tools/stellar-cli
+cargo install --locked stellar-cli --features opt`}</CodeBlock>
+
+<h2 id="clone">2. Clone Repository</h2>
+
+<CodeBlock>{`git clone https://github.com/dzakwannajmi/Fluppy.git
+cd fluppy`}</CodeBlock>
+
+The repository uses a pnpm workspace monorepo. The root <code>pnpm-workspace.yaml</code> declares three workspace packages plus the Next.js app.
+
+<CodeBlock filename="pnpm-workspace.yaml">{`packages:
+  - 'app'
+  - 'packages/*'`}</CodeBlock>
+
+<h2 id="install">3. Install Dependencies</h2>
+
+<CodeBlock>{`# From the repository root — installs all workspace dependencies
+pnpm install`}</CodeBlock>
+
+This links all workspace packages via symlinks. You will see <code>node_modules/@flupy/core</code> inside <code>packages/fluppy-browser</code> and <code>app</code> as workspace symlinks.
+
+<h2 id="configure">4. Configure Environment</h2>
+
+<CodeBlock>{`cp app/.env.example app/.env.local`}</CodeBlock>
+
+Edit <code>app/.env.local</code> with the following Testnet values:
+
+<CodeBlock filename="app/.env.local">{`# Soroban contract — deployed on Stellar Testnet
+NEXT_PUBLIC_CONTRACT_ID=CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS
+
+# Soroban RPC endpoint
+NEXT_PUBLIC_RPC_URL=https://soroban-testnet.stellar.org:443
+
+# Horizon API (for transaction explorer links)
+NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
+
+# Stellar network passphrase — MUST match the contract's expected chainId
+NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015`}</CodeBlock>
+
+<InstallNote type="warning">
+  <strong>ChainId binding:</strong> The <code>NEXT_PUBLIC_NETWORK_PASSPHRASE</code> value is hashed to produce the <code>chainId</code> public signal in every ZK proof. A mismatch between the frontend value and the contract's expected value will cause all payments to reject with <code>ChainIdMismatch</code>.
+</InstallNote>
+
+<h2 id="build">5. Build SDK Packages</h2>
+
+Build all SDK packages in dependency order. The Next.js app consumes them via workspace symlinks.
+
+<CodeBlock>{`# Build @flupy/core (zero dependencies — always first)
+pnpm build:core
+
+# Build @flupy/browser (depends on @flupy/core)
+pnpm build:browser
+
+# Build @flupy/react (depends on @flupy/browser + @flupy/core)
+pnpm build:react
+
+# Typecheck React SDK
+pnpm --filter @flupy/react typecheck
+
+# Build the Next.js app
+pnpm build:app`}</CodeBlock>
+
+All five commands should complete with no errors. Expected SDK bundle sizes after build:
+
+<table>
+<thead>
+<tr><th>Package</th><th>ESM</th><th>CJS</th><th>DTS</th></tr>
+</thead>
+<tbody>
+<tr><td><code>@flupy/core</code></td><td>~10 KB</td><td>~11 KB</td><td>~9 KB</td></tr>
+<tr><td><code>@flupy/browser</code></td><td>~31 KB</td><td>~32 KB</td><td>~11 KB</td></tr>
+<tr><td><code>@flupy/react</code></td><td>~14 KB</td><td>~14 KB</td><td>~14 KB</td></tr>
+</tbody>
+</table>
+
+<h2 id="run">6. Run the App Locally</h2>
+
+<CodeBlock>{`cd app
+pnpm dev
+# Open http://localhost:3000`}</CodeBlock>
+
+<h2 id="workspace">7. Workspace Dependency Model</h2>
+
+Packages reference each other via the pnpm workspace protocol:
+
+<CodeBlock filename="packages/fluppy-browser/package.json">{`{
+  "dependencies": {
+    "@flupy/core": "workspace:*"
+  }
+}`}</CodeBlock>
+
+<CodeBlock filename="app/package.json">{`{
+  "dependencies": {
+    "@flupy/browser": "workspace:*",
+    "@flupy/core": "workspace:*",
+    "@flupy/react": "workspace:*"
+  }
+}`}</CodeBlock>
+
+The <code>workspace:*</code> protocol resolves to the local package path at install time. Running <code>pnpm install</code> from the root creates the necessary symlinks automatically.
+
+<h2 id="future-npm">8. Future npm Installation</h2>
+
+<InstallNote type="future">
+  <strong>Not available today.</strong> The following shows how installation will work after packages are published to npm. Publication is planned after external security audit and multi-party trusted setup ceremony — both required before mainnet readiness.
+</InstallNote>
+
+### Future npm install (preview only)
+
+<CodeBlock>{`# Future package-manager command after package publication.
+# DO NOT use this command today — packages are not yet published.
+
+pnpm add @flupy/core @flupy/browser @flupy/react`}</CodeBlock>
+
+<CodeBlock filename="tsconfig.json (future)">{`{
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "moduleResolution": "bundler"
+  }
+}`}</CodeBlock>

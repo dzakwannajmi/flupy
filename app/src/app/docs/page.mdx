@@ -1,0 +1,46 @@
+import {
+  LiveBadge,
+  CtaButtons,
+  PackageCards,
+  FlowDiagram,
+  QuickLinksGrid,
+  TrustStats,
+  IncludedChecklist,
+} from "./_overview-visuals";
+
+export const metadata = {
+  title: "Overview",
+  description: "Flupy is a privacy-preserving ZK payment protocol on Stellar Soroban with a three-layer modular SDK.",
+};
+
+<LiveBadge />
+
+# Flupy SDK Documentation
+
+Flupy is an open-source, privacy-preserving payment protocol on <span className="not-typeset text-[#0e0f0c]">Stellar Soroban</span>. It combines <span className="not-typeset text-[#0e0f0c]">Groth16 ZK membership proofs</span> with <span className="not-typeset text-[#0e0f0c]">atomic 95/5 USDC settlement</span> — built as a three-layer modular SDK.
+
+<CtaButtons />
+
+## SDK Architecture
+
+Three composable packages — each layer depends on the one below it.
+
+<PackageCards />
+
+## How It Works
+
+<FlowDiagram />
+
+## Explore the Docs
+
+<QuickLinksGrid />
+
+## Trust & Verification
+
+Every package builds and typechecks clean. Payment flow confirmed end-to-end on Stellar Testnet.
+
+<TrustStats />
+
+## What's Included
+
+<IncludedChecklist />

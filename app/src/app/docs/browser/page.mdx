@@ -1,0 +1,145 @@
+import Link from "next/link";
+import { CodeBlock as Code } from "@/components/CodeBlock";
+import { Note, Warn, Badge, BundleStats, ModuleMap, CardGrid } from "@/components/docs-mdx";
+import { ApiTable, GenerationLock } from "./_visuals";
+
+export const metadata = {
+  title: "@flupy/browser",
+  description: "API reference for @flupy/browser — Fluppy browser SDK.",
+};
+
+<Badge color="purple">@flupy/browser</Badge> <Badge color="green">✓ Complete</Badge>
+
+# @flupy/browser
+
+Browser runtime SDK built on <code>@flupy/core</code>. Provides identity management, Merkle proof client, ZK proof generation, and Stellar/Freighter payment submission.
+
+<BundleStats stats={[["~31 KB", "ESM bundle"], ["~32 KB", "CJS bundle"], ["~11 KB", "TypeScript declarations"]]} />
+
+<h2 id="modules">Module Map</h2>
+
+<ModuleMap modules={[
+  ["merkle-client.ts", "purple", "Computes commitment locally, enrolls to backend, fetches Merkle proof path"],
+  ["artifacts.ts", "blue", "Loads and caches WASM witness generator and ZKey proving key from CDN/public dir"],
+  ["prover.ts", "yellow", "generateZkProof() via snarkjs.groth16.fullProve(), verifyProofLocally()"],
+  ["identity.ts", "red", "AES-GCM credential (IndexedDB + PBKDF2): create, unlock, delete"],
+  ["stellar.ts", "green", "Freighter signing, Soroban contract invocation, transaction polling"],
+  ["payment.ts", "pink", "executeFluppyPayment() high-level orchestrator composing all modules"],
+]} />
+
+<h2 id="orchestrator">executeFluppyPayment()</h2>
+
+The top-level payment orchestrator. Composes all browser SDK modules into a single call. The caller is responsible for credential decryption (passing the unlocked <code>secret</code>) and for UI feedback (toast, telemetry, history).
+
+<ApiTable headers={["Input field", "Type", "Description"]} rows={[
+  ["secret", "string", "64-char hex secret from unlockCredential() — passed through, never stored"],
+  ["merchant", "string", "Merchant Stellar address (G... format)"],
+  ["amount", "bigint", "Payment amount in stroops (1 USDC = 10_000_000n)"],
+  ["networkPassphrase", "string", "Stellar network passphrase — used to compute chainId signal"],
+  ["stellarConfig", "StellarConfig", "contractId, rpcUrl, networkPassphrase"],
+  ["merkleOptions?", "MerkleClientOptions", "Optional: override Merkle API base URL"],
+  ["signal?", "AbortSignal", "Optional: cancel in-flight payment"],
+  ["onStep?", "(step) => void", "Optional: receives named steps (merkle:request, proof:done, tx:submit, ...)"],
+  ["onProofProgress?", "(stage, pct) => void", "Optional: receives proof generation progress (0–100)"],
+]} />
+
+<ApiTable headers={["Output field", "Type", "Description"]} rows={[
+  ["txHash", "string", "Stellar transaction hash of the confirmed payment"],
+  ["proof", "PaymentProofOutput", "The Groth16 proof in Soroban wire format"],
+  ["merkleRoot", "bigint", "The Merkle root used for this proof"],
+  ["txResult", "unknown", "Raw Soroban RPC transaction status object"],
+]} />
+
+<Note>
+  <strong>RootSyncError</strong>: if the frontend Merkle tree root does not match the on-chain contract root, <code>executeFluppyPayment()</code> throws a <code>RootSyncError</code> with <code>frontendRootHex</code> and <code>contractRootHex</code> fields. This is usually transient — an automated sync job anchors new roots every ~10 minutes, and the contract accepts proofs against any of the last 30 anchored roots. See <Link href="/docs/troubleshooting" className="underline">Troubleshooting</Link>.
+</Note>
+
+<h2 id="identity">Identity Module</h2>
+
+<Warn>
+  <strong>Security model:</strong> The raw secret is derived locally and stored only in encrypted form (AES-GCM, PBKDF2) in IndexedDB. It is never transmitted to any server. Only the <em>commitment</em> — <code>Poseidon(LEAF_TAG, secret)</code> — is sent to the backend Merkle API. The password is used only to derive the AES decryption key and is never stored or logged.
+</Warn>
+
+<ApiTable headers={["Function", "Returns", "Description"]} rows={[
+  ["generateSecret()", "string", "Generates a 32-byte CSPRNG secret as a 64-char hex string"],
+  ["credentialExists()", "Promise<boolean>", "Returns true if an encrypted credential exists in IndexedDB"],
+  ["createCredential(password)", "Promise<{ secret: string }>", "Encrypts and stores a new credential; returns the secret ONCE"],
+  ["unlockCredential(password)", "Promise<string>", "Decrypts and returns the raw secret (never logged internally)"],
+  ["deleteCredential()", "Promise<void>", "Permanently removes the credential from IndexedDB"],
+]} />
+
+<h2 id="prover">Prover Module</h2>
+
+Wraps <code>snarkjs.groth16.fullProve()</code> with generation lock, progress callbacks, AbortSignal support, and Soroban wire format encoding. Local verification via <code>snarkjs.groth16.verify()</code> is enforced in development before every transaction submission as a defense-in-depth measure.
+
+<ApiTable headers={["Function", "Returns", "Description"]} rows={[
+  ["generateZkProof(input)", "Promise<PaymentProofOutput>", "Full Groth16 proof generation — validates, builds circuit inputs, runs fullProve, encodes"],
+  ["verifyProofLocally(proof)", "Promise<boolean>", "Verifies proof against the loaded verification key using snarkjs.groth16.verify()"],
+]} />
+
+<GenerationLock />
+
+<h2 id="merkle">Merkle Client Module</h2>
+
+<ApiTable headers={["Function", "Returns", "Description"]} rows={[
+  ["computeCommitment(secret)", "Promise<bigint>", "Computes Poseidon(LEAF_TAG=2, secret) locally — never sends raw secret"],
+  ["enrollCommitment(secret)", "Promise<EnrollResult>", "POSTs commitment hash to /api/merkle-proof/enroll"],
+  ["getMerkleProof(secret)", "Promise<MerkleProof>", "GETs the full enrolled leaf set, computes pathElements/pathIndices locally (privacy: server never learns which commitment is being proven)"],
+]} />
+
+<Note>
+  The backend Merkle API uses a sparse Merkle tree with pre-computed zero hashes. After the first build (cold cache ~0.7s), subsequent proof requests are served from an in-memory singleton cache in ~14ms.
+</Note>
+
+<h2 id="stellar">Stellar &amp; Freighter Module</h2>
+
+<CardGrid cards={[
+  { title: "payWithZkGroth16()", desc: <>Builds and submits the <code>execute_payment()</code> Soroban transaction. The user <strong>signs via Freighter</strong> and pays the Stellar network fee from their own wallet. No relayer, no gas sponsorship.</> },
+  { title: "getContractMerkleRoot()", desc: <>Fetches the current Merkle root from the backend API (<code>/api/merkle-root</code>). Used by the root sync guard inside <code>executeFluppyPayment()</code> to ensure the frontend tree matches the on-chain root before submitting.</> },
+]} />
+
+<h2 id="usage">Usage Example</h2>
+
+<Note>
+  See <Link href="/docs/installation" className="underline">Installation</Link> for monorepo setup. Do not use public npm package installation yet — packages are not yet published.
+</Note>
+
+<Code filename="payment-example.ts">{`import {
+	executeFluppyPayment,
+	unlockCredential,
+	RootSyncError,
+	type StellarConfig,
+} from '@flupy/browser';
+
+const config: StellarConfig = {
+	contractId:        process.env.NEXT_PUBLIC_CONTRACT_ID!,
+	rpcUrl:            process.env.NEXT_PUBLIC_RPC_URL!,
+	networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE!,
+};
+
+async function pay(password: string, merchant: string, amount: bigint) {
+	// Step 1: Decrypt credential (browser only)
+	const secret = await unlockCredential(password);
+
+	// Step 2: Orchestrate full payment (secret passed through, not stored)
+	try {
+		const result = await executeFluppyPayment({
+			secret,
+			merchant,
+			amount,
+			networkPassphrase: config.networkPassphrase!,
+			stellarConfig:     config,
+			onStep:         (step) => console.log('[step]', step.name),
+			onProofProgress:(stage, pct) => console.log('[proof]', stage, pct),
+		});
+
+		return result.txHash;
+
+	} catch (err) {
+		if (err instanceof RootSyncError) {
+			// Usually transient — resolves on the next automated sync cycle
+			console.error('Root mismatch. Frontend:', err.frontendRootHex);
+		}
+		throw err;
+	}
+}`}</Code>

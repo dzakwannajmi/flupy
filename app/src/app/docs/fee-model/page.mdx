@@ -1,0 +1,77 @@
+import { Note, Caution } from "@/components/docs-mdx";
+import { FlowSummary, SplitStats, DescList, FutureCards, DoDontGrid } from "./_visuals";
+
+export const metadata = {
+  title: "Fee Model",
+  description: "Fluppy fee model — user-signed Freighter transaction, 95/5 atomic split, no production relayer.",
+};
+
+# Fee Model
+
+Who pays what in a Fluppy payment — from the user wallet fee to the on-chain 95/5 split.
+
+<FlowSummary />
+
+<h2 id="split">The 95/5 Atomic Split</h2>
+
+When a user submits a ZK payment, the Soroban contract atomically bifurcates the amount in a single ledger operation. This is not configurable after deployment.
+
+<SplitStats />
+
+<Note>
+  The protocol fee is taken <strong>from within the payment amount</strong>, not as an additional charge on top of it. If a user pays 10 USDC, the merchant receives 9.5 USDC and the treasury receives 0.5 USDC — the user is not charged 10.5 USDC.
+</Note>
+
+<h2 id="example">Example Calculation</h2>
+
+<table>
+<thead>
+<tr><th>Payment amount</th><th>Merchant receives</th><th>Treasury receives</th><th>Network fee</th></tr>
+</thead>
+<tbody>
+<tr><td>1 USDC</td><td>0.95 USDC</td><td>0.05 USDC</td><td>Paid by user via Freighter (varies ~0.001 XLM)</td></tr>
+<tr><td>5 USDC</td><td>4.75 USDC</td><td>0.25 USDC</td><td>Paid by user via Freighter</td></tr>
+<tr><td>10 USDC</td><td>9.50 USDC</td><td>0.50 USDC</td><td>Paid by user via Freighter</td></tr>
+<tr><td>100 USDC</td><td>95.00 USDC</td><td>5.00 USDC</td><td>Paid by user via Freighter</td></tr>
+</tbody>
+</table>
+
+<h2 id="network-fee">Stellar Network Fee</h2>
+
+Soroban transactions require a base reserve and a fee paid in XLM. In the current MVP:
+
+<DescList rows={[
+  ["Source of fee", "User's Freighter-connected wallet — not Fluppy, not the developer"],
+  ["Fee currency", "XLM (Stellar's native token) — separate from the USDC payment amount"],
+  ["Fee visibility", "Freighter shows the fee to the user before they sign — transparent"],
+  ["Fee sponsorship", "No production relayer or gas sponsorship in current Testnet MVP"],
+  ["Typical cost", "Varies with ledger congestion — usually very small (~0.001–0.01 XLM)"],
+]} />
+
+<h2 id="not-included">What Fluppy Does NOT Currently Do</h2>
+
+<table>
+<thead>
+<tr><th>Feature</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td>Production transaction relayer</td><td>Not implemented — future phase only</td></tr>
+<tr><td>Gas / network fee sponsorship</td><td>Not implemented — user pays directly</td></tr>
+<tr><td>API key billing system</td><td>Not implemented — future merchant integration layer</td></tr>
+<tr><td>Mainnet transaction fees</td><td>No mainnet deployment yet</td></tr>
+<tr><td>Merchant subscription or plans</td><td>Not implemented — future phase</td></tr>
+<tr><td>Developer fee accounting</td><td>Not implemented — protocol fee goes to treasury only</td></tr>
+</tbody>
+</table>
+
+<h2 id="future">Future Fee-Related Phases</h2>
+
+<FutureCards />
+
+<h2 id="guidance">Developer Guidance</h2>
+
+<Caution>
+  Do not advertise Fluppy as a gasless payment system in the current MVP. Users pay the Stellar network fee directly through Freighter. This is by design — it keeps the protocol non-custodial and trust-minimized.
+</Caution>
+
+<DoDontGrid />

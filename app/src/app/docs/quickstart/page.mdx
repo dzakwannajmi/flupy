@@ -1,0 +1,297 @@
+import { CodeBlock } from "@/components/CodeBlock";
+import { Note, Warn, StepFlow, StepHeading } from "@/components/docs-mdx";
+
+export const metadata = {
+  title: "Quickstart",
+  description: "Get your first ZK payment running with Fluppy React SDK — FluppyProvider, useFluppyWallet, useFluppyCredential, useFluppyPayment, useFluppyHistory.",
+};
+
+# Quickstart
+
+This guide shows the full payment flow using <code>@flupy/react</code> hooks — from wallet connection to a confirmed ZK payment on Stellar Testnet.
+
+<Note>
+  <strong>SDK status:</strong> <code>@flupy/react</code> is complete as an SDK layer. These examples show how developers integrate the SDK. Full migration of the existing Fluppy app to these hooks is a separate next phase.
+</Note>
+
+<StepFlow items={[
+  ["1", "Wrap app with FluppyProvider", "config: stellarConfig + networkPassphrase"],
+  ["2", "Connect Freighter wallet", "useFluppyWallet → connect()"],
+  ["3", "Create or unlock ZK credential", "useFluppyCredential → create() / unlock()"],
+  ["4", "Execute ZK payment", "useFluppyPayment → pay({ secret, merchant, amount })"],
+  ["5", "Store payment record locally", "useFluppyHistory → add(record)"],
+]} />
+
+<StepHeading id="provider" step={1}>Wrap with FluppyProvider</StepHeading>
+
+Place <code>FluppyProvider</code> near the root of your application. All Fluppy hooks must be inside this provider to access the shared SDK configuration.
+
+<CodeBlock filename="app/layout.tsx">{`import { FluppyProvider } from '@flupy/react';
+import type { FluppyReactConfig } from '@flupy/react';
+import { useMemo } from 'react';
+
+// Memoize config to prevent unnecessary re-renders
+const fluppyConfig: FluppyReactConfig = {
+  stellarConfig: {
+    contractId:        process.env.NEXT_PUBLIC_CONTRACT_ID!,
+    rpcUrl:            process.env.NEXT_PUBLIC_RPC_URL!,
+    networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE!,
+  },
+  networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE!,
+  // merkleOptions is optional — defaults to /api/merkle-proof
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <FluppyProvider config={fluppyConfig}>
+          {children}
+        </FluppyProvider>
+      </body>
+    </html>
+  );
+}`}</CodeBlock>
+
+<StepHeading id="wallet" step={2}>Connect Freighter Wallet</StepHeading>
+
+<code>useFluppyWallet</code> manages Freighter connection state. <code>connect()</code> requests wallet access and returns the connected Stellar address. All calls are SSR-safe via dynamic import.
+
+<CodeBlock filename="WalletButton.tsx">{`'use client';
+
+import { useFluppyWallet } from '@flupy/react';
+
+export function WalletButton() {
+  const {
+    address,
+    isConnected,
+    isConnecting,
+    connectionStatus,
+    error,
+    connect,
+  } = useFluppyWallet();
+
+  if (isConnected && address) {
+    return (
+      <div>
+        <span>Connected: {address.slice(0, 6)}...{address.slice(-4)}</span>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={connect}
+      disabled={isConnecting}
+    >
+      {isConnecting ? 'Connecting...' : 'Connect Freighter'}
+    </button>
+  );
+}`}</CodeBlock>
+
+<table>
+<thead>
+<tr><th>Property</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>address</code></td><td>string | null</td><td>Connected wallet address, or null</td></tr>
+<tr><td><code>isConnected</code></td><td>boolean</td><td>True when status is connected</td></tr>
+<tr><td><code>isConnecting</code></td><td>boolean</td><td>True during requestAccess()</td></tr>
+<tr><td><code>connectionStatus</code></td><td>WalletConnectionStatus</td><td>disconnected | connecting | connected | error</td></tr>
+<tr><td><code>connect()</code></td><td>() =&gt; Promise&lt;string&gt;</td><td>Requests Freighter access, returns address</td></tr>
+<tr><td><code>refresh()</code></td><td>() =&gt; Promise&lt;void&gt;</td><td>Re-checks Freighter without popup</td></tr>
+</tbody>
+</table>
+
+<StepHeading id="credential" step={3}>Create or Unlock Credential</StepHeading>
+
+<code>useFluppyCredential</code> manages a ZK credential stored locally in IndexedDB, encrypted with AES-GCM + PBKDF2. The raw secret never leaves the browser and is never logged.
+
+<CodeBlock filename="CredentialSetup.tsx">{`'use client';
+
+import { useFluppyCredential } from '@flupy/react';
+
+export function CredentialSetup() {
+  const {
+    status,
+    exists,
+    isLoading,
+    error,
+    create,
+    unlock,
+  } = useFluppyCredential();
+
+  // Create a new credential
+  async function handleCreate(password: string) {
+    const { secret } = await create(password);
+
+    // ⚠ Show the secret to the user EXACTLY ONCE as a backup phrase.
+    // After this function returns, the secret cannot be recovered without the password.
+    displayBackupPhrase(secret);  // your UI responsibility
+  }
+
+  // Unlock an existing credential
+  async function handleUnlock(password: string): Promise<string> {
+    // Returns the raw secret — pass it to useFluppyPayment.pay()
+    // Do NOT log the secret. Do NOT store it in React state.
+    return await unlock(password);
+  }
+
+  // Render based on status
+  if (status === 'unknown') return <p>Checking credential...</p>;
+  if (status === 'not_found') {
+    return <button onClick={() => handleCreate('user-password')}>Create credential</button>;
+  }
+  return <p>Credential ready. Unlock to pay.</p>;
+}`}</CodeBlock>
+
+<Warn>
+  <strong>Security:</strong> The secret returned by <code>unlock(password)</code> must be passed directly to <code>pay(&#123; secret, ... &#125;)</code>. Never log it, never store it in <code>useState</code>, and never send it to a server. Only the <strong>commitment hash</strong> (<code>Poseidon(LEAF_TAG, secret)</code>) is transmitted to the backend API.
+</Warn>
+
+<StepHeading id="payment" step={4}>Execute ZK Payment</StepHeading>
+
+<code>useFluppyPayment</code> orchestrates the full ZK payment flow: Merkle proof → Groth16 proof → Freighter signing → Soroban contract. It reads the SDK configuration from <code>FluppyProvider</code>.
+
+<CodeBlock filename="PaymentForm.tsx">{`'use client';
+
+import { useFluppyCredential, useFluppyPayment, useFluppyHistory } from '@flupy/react';
+
+export function PaymentForm({ merchantAddress }: { merchantAddress: string }) {
+  const cred    = useFluppyCredential();
+  const payment = useFluppyPayment();
+  const history = useFluppyHistory();
+
+  async function handlePay(password: string) {
+    // Step 1: Unlock credential — get secret in memory only
+    const secret = await cred.unlock(password);
+
+    // Step 2: Execute ZK payment — secret is passed through, never stored
+    const result = await payment.pay({
+      secret,
+      merchant: merchantAddress,
+      amount:   10_000_000n,  // 1 USDC in stroops (1 USDC = 10_000_000)
+    });
+
+    // Step 3: Record in local history
+    history.add({
+      txHash:      result.txHash,
+      amount:      10_000_000n,
+      merchant:    merchantAddress,
+      timestamp:   Date.now(),
+      status:      'success',
+      explorerUrl: \`https://stellar.expert/explorer/testnet/tx/\${result.txHash}\`,
+    });
+  }
+
+  return (
+    <div>
+      {payment.status === 'pending' && (
+        <div>
+          <p>Step: {payment.currentStep}</p>
+          <p>Progress: {payment.progressPct ?? 0}%</p>
+          <p>Stage: {payment.progressStage}</p>
+        </div>
+      )}
+      {payment.txHash && (
+        <p>Confirmed: {payment.txHash}</p>
+      )}
+      {payment.error && (
+        <p>Error: {payment.error.message}</p>
+      )}
+      <button
+        onClick={() => handlePay('user-password')}
+        disabled={payment.isLoading}
+      >
+        {payment.isLoading ? 'Processing...' : 'Pay 1 USDC'}
+      </button>
+    </div>
+  );
+}`}</CodeBlock>
+
+<table>
+<thead>
+<tr><th>State</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>status</code></td><td>PaymentStatus</td><td>idle | pending | success | failed</td></tr>
+<tr><td><code>progressPct</code></td><td>number | null</td><td>0–100 during proof generation</td></tr>
+<tr><td><code>progressStage</code></td><td>string | null</td><td>Current proof stage label</td></tr>
+<tr><td><code>currentStep</code></td><td>FluppyPaymentStepName</td><td>merkle:request | proof:start | tx:submit | ...</td></tr>
+<tr><td><code>txHash</code></td><td>string | null</td><td>Transaction hash on success</td></tr>
+<tr><td><code>error</code></td><td>Error | null</td><td>Structured error on failure</td></tr>
+<tr><td><code>pay(input)</code></td><td>Promise&lt;Result&gt;</td><td>Initiates payment; throws on failure</td></tr>
+<tr><td><code>abort()</code></td><td>() =&gt; void</td><td>Cancels in-flight payment, resets to idle</td></tr>
+<tr><td><code>reset()</code></td><td>() =&gt; void</td><td>Full state reset to idle</td></tr>
+</tbody>
+</table>
+
+<StepHeading id="history" step={5}>Display Payment History</StepHeading>
+
+<code>useFluppyHistory</code> persists payment records to <code>localStorage</code> under the key <code>fluppy:payment-history:v1</code>. The <code>amount</code> field is serialized as a decimal string internally — the public API always exposes <code>bigint</code>. Records persist across page reloads and are capped at 50 entries.
+
+<CodeBlock filename="PaymentHistory.tsx">{`'use client';
+
+import { useFluppyHistory } from '@flupy/react';
+
+export function PaymentHistory() {
+  const { records, clear } = useFluppyHistory();
+
+  if (records.length === 0) return <p>No payments yet.</p>;
+
+  return (
+    <div>
+      <ul>
+        {records.map((record) => (
+          <li key={record.txHash}>
+            <span>{record.status}</span>
+            <span>
+              {(Number(record.amount) / 10_000_000).toFixed(2)} USDC
+            </span>
+            
+              href={record.explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {record.txHash.slice(0, 8)}...
+            </a>
+          </li>
+        ))}
+      </ul>
+      <button onClick={clear}>Clear history</button>
+    </div>
+  );
+}`}</CodeBlock>
+
+<Note>
+  <strong>Privacy:</strong> localStorage only stores public transaction metadata — txHash, amount, merchant address, timestamp, and status. No secrets, passwords, ZK proof inputs, or private keys are ever written to localStorage.
+</Note>
+
+<StepHeading id="security" step={6}>Security Reminders</StepHeading>
+
+<div className="not-typeset space-y-3">
+  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+    <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">Never log the secret</p>
+    <p className="text-sm text-[#454745]">The 64-char hex secret from unlock() must be passed directly to pay(). Logging it to console or sending it to an API breaks the privacy model.</p>
+  </div>
+  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+    <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">Never store the secret in React state</p>
+    <p className="text-sm text-[#454745]">useState persists across renders. Pass the secret directly from unlock() to pay() in the same async function. Do not store it in a ref or global variable either.</p>
+  </div>
+  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+    <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">User signs and pays network fee via Freighter</p>
+    <p className="text-sm text-[#454745]">There is no production relayer in the current MVP. The user approves and signs the Soroban transaction directly through the Freighter browser extension.</p>
+  </div>
+  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+    <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">Protocol fee is taken from the payment amount</p>
+    <p className="text-sm text-[#454745]">The Soroban contract autonomously splits the payment: 95% to the merchant, 5% to the protocol treasury. This is not an additional charge — it comes from the amount you pass to pay().</p>
+  </div>
+  <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
+    <p className="mb-1 text-sm font-semibold text-[#0e0f0c]">This is a Testnet MVP</p>
+    <p className="text-sm text-[#454745]">No real funds are at risk on Testnet. Do not use mainnet USDC until a full security audit, multi-party trusted setup, and native BN254 pairing verification are complete.</p>
+  </div>
+</div>

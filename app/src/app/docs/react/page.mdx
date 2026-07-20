@@ -1,0 +1,258 @@
+import Link from "next/link";
+import { CodeBlock as Code } from "@/components/CodeBlock";
+import { Note, Warn, Badge, BundleStats, HookHeading } from "@/components/docs-mdx";
+
+export const metadata = {
+  title: "@flupy/react",
+  description: "API reference for @flupy/react — Fluppy React SDK hooks and provider.",
+};
+
+<Badge color="green">@flupy/react</Badge> <Badge color="green">✓ Complete</Badge>
+
+# @flupy/react
+
+React SDK built on <code>@flupy/browser</code>. Provides a context provider and four domain hooks for the full Fluppy payment lifecycle.
+
+<Note>
+  <strong>Status:</strong> <code>@flupy/react</code> is complete as an SDK layer. Full migration of the existing Fluppy app to these hooks is a planned next phase. These hooks are ready to be consumed by any React 18+ application with <code>FluppyProvider</code> at the root.
+</Note>
+
+<BundleStats stats={[["~14 KB", "ESM bundle"], ["~14 KB", "CJS bundle"], ["~14 KB", "TypeScript declarations"]]} />
+
+<h2 id="hooks">Available Hooks</h2>
+
+<div className="not-typeset grid gap-2 sm:grid-cols-2">
+  {[
+    ["FluppyProvider", "Context provider — wraps a React subtree with Fluppy config"],
+    ["useFluppyCredential", "Credential lifecycle: create, unlock, delete, status"],
+    ["useFluppyPayment", "Full ZK payment flow with abort, progress, and step tracking"],
+    ["useFluppyWallet", "Freighter wallet connection state (SSR-safe, dynamic import)"],
+    ["useFluppyHistory", "localStorage-persisted payment records with bigint serialization"],
+  ].map(([name, desc]) => (
+    <div key={name} className="rounded-xl border border-black/10 bg-black/[0.03] p-3">
+      <code className="text-xs font-semibold text-[#163300]">{name}</code>
+      <p className="mt-1 text-xs text-[#454745]">{desc}</p>
+    </div>
+  ))}
+</div>
+
+<HookHeading id="provider" name="FluppyProvider" />
+
+Wrap your application (or a subtree) with <code>FluppyProvider</code>. All Fluppy hooks must be descendants of this provider. Memoize the <code>config</code> object to prevent unnecessary re-renders.
+
+<table>
+<thead>
+<tr><th>Config field</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>stellarConfig</code></td><td>StellarConfig</td><td>contractId, rpcUrl, networkPassphrase — Soroban connection config</td></tr>
+<tr><td><code>networkPassphrase</code></td><td>string</td><td>Stellar network passphrase — MUST match the contract's expected chainId</td></tr>
+<tr><td><code>merkleOptions?</code></td><td>MerkleClientOptions</td><td>Optional: apiBaseUrl override for the Merkle proof backend</td></tr>
+</tbody>
+</table>
+
+<Code filename="layout.tsx">{`import { FluppyProvider } from '@flupy/react';
+
+const config = {
+	stellarConfig: {
+		contractId:        process.env.NEXT_PUBLIC_CONTRACT_ID!,
+		rpcUrl:            process.env.NEXT_PUBLIC_RPC_URL!,
+		networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE!,
+	},
+	networkPassphrase: process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE!,
+};
+
+export default function Layout({ children }: { children: ReactNode }) {
+	return <FluppyProvider config={config}>{children}</FluppyProvider>;
+}`}</Code>
+
+<HookHeading id="credential" name="useFluppyCredential()" />
+
+Manages the full lifecycle of a locally encrypted ZK credential. Initial credential check runs in a browser-safe <code>useEffect</code> — SSR renders return <code>status: 'unknown'</code>.
+
+<Warn>
+  The <code>secret</code> returned by <code>create()</code> and <code>unlock()</code> must never be logged, never stored in <code>useState</code>, and never sent to any server. Pass it directly to <code>useFluppyPayment().pay()</code> in the same async function.
+</Warn>
+
+<table>
+<thead>
+<tr><th>Property</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>status</code></td><td>CredentialStatus</td><td>unknown | exists | not_found</td></tr>
+<tr><td><code>exists</code></td><td>boolean | null</td><td>true/false when status is known; null while unknown</td></tr>
+<tr><td><code>isLoading</code></td><td>boolean</td><td>True during any async credential operation</td></tr>
+<tr><td><code>error</code></td><td>Error | null</td><td>Last thrown error; null if none</td></tr>
+<tr><td><code>create(pw)</code></td><td>(string) → Promise&lt;{'{'}secret{'}'}&gt;</td><td>Creates and encrypts a new credential; returns secret ONCE</td></tr>
+<tr><td><code>unlock(pw)</code></td><td>(string) → Promise&lt;string&gt;</td><td>Decrypts and returns raw secret — never logged internally</td></tr>
+<tr><td><code>remove()</code></td><td>() → Promise&lt;void&gt;</td><td>Permanently deletes credential from IndexedDB</td></tr>
+<tr><td><code>refresh()</code></td><td>() → Promise&lt;void&gt;</td><td>Re-checks credential existence</td></tr>
+<tr><td><code>resetError()</code></td><td>() → void</td><td>Clears current error without changing status</td></tr>
+</tbody>
+</table>
+
+<HookHeading id="payment" name="useFluppyPayment()" />
+
+Orchestrates the full ZK payment flow. Reads configuration from <code>FluppyProvider</code>. The <code>secret</code> is passed as a parameter to <code>pay()</code> — it is never stored in React state.
+
+<table>
+<thead>
+<tr><th>State</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>status</code></td><td>PaymentStatus</td><td>idle | pending | success | failed</td></tr>
+<tr><td><code>isLoading</code></td><td>boolean</td><td>True during proof generation or transaction submission</td></tr>
+<tr><td><code>error</code></td><td>Error | null</td><td>Last thrown error; null if none</td></tr>
+<tr><td><code>txHash</code></td><td>string | null</td><td>Transaction hash on success; null otherwise</td></tr>
+<tr><td><code>progressStage</code></td><td>string | null</td><td>Current proof generation stage label (e.g. "Computing witness")</td></tr>
+<tr><td><code>progressPct</code></td><td>number | null</td><td>0–100 during proof generation</td></tr>
+<tr><td><code>currentStep</code></td><td>FluppyPaymentStepName | null</td><td>Named orchestrator step: merkle:request | proof:start | tx:submit | tx:confirmed | ...</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pay(input)</code></td><td>Promise&lt;ExecuteFluppyPaymentResult&gt;</td><td>Initiates payment; throws on failure — caller handles UI feedback</td></tr>
+<tr><td><code>abort()</code></td><td>void</td><td>Cancels in-flight payment, resets status to idle</td></tr>
+<tr><td><code>reset()</code></td><td>void</td><td>Full state reset: clears status, error, txHash, progress</td></tr>
+<tr><td><code>resetError()</code></td><td>void</td><td>Clears error only — preserves txHash and status</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr><th>pay() input</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>secret</code></td><td>string</td><td>64-char hex from useFluppyCredential.unlock() — NOT stored in state</td></tr>
+<tr><td><code>merchant</code></td><td>string</td><td>Merchant Stellar address (G... format)</td></tr>
+<tr><td><code>amount</code></td><td>bigint</td><td>Payment amount in stroops (1 USDC = 10_000_000n)</td></tr>
+<tr><td><code>signal?</code></td><td>AbortSignal</td><td>Optional external abort signal composed with the hook's own controller</td></tr>
+</tbody>
+</table>
+
+<HookHeading id="wallet" name="useFluppyWallet()" />
+
+Manages Freighter wallet connection state. Uses dynamic import for the Freighter API to avoid bundling it in SSR contexts. <code>refresh()</code> is a no-op on the server.
+
+<table>
+<thead>
+<tr><th>Property</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>address</code></td><td>string | null</td><td>Connected Stellar address; null if not connected</td></tr>
+<tr><td><code>connectionStatus</code></td><td>WalletConnectionStatus</td><td>disconnected | connecting | connected | error</td></tr>
+<tr><td><code>isConnected</code></td><td>boolean</td><td>Derived: true when status is connected</td></tr>
+<tr><td><code>isConnecting</code></td><td>boolean</td><td>Derived: true when status is connecting</td></tr>
+<tr><td><code>error</code></td><td>Error | null</td><td>Last error from connect(); null if none</td></tr>
+<tr><td><code>connect()</code></td><td>() → Promise&lt;string&gt;</td><td>Calls Freighter requestAccess(), returns address; throws on rejection</td></tr>
+<tr><td><code>refresh()</code></td><td>() → Promise&lt;void&gt;</td><td>Re-checks Freighter isConnected(); no-op on SSR</td></tr>
+<tr><td><code>resetError()</code></td><td>() → void</td><td>Clears error only</td></tr>
+</tbody>
+</table>
+
+<Note>
+  The user <strong>signs the Soroban transaction directly via Freighter</strong> and pays the Stellar network fee from their own wallet. There is no production relayer and no gas sponsorship in the current Testnet MVP.
+</Note>
+
+<HookHeading id="history" name="useFluppyHistory()" />
+
+Persists payment record metadata to <code>localStorage</code> using the key <code>fluppy:payment-history:v1</code>. Records are loaded on mount inside a browser-safe <code>useEffect</code> — SSR renders return an empty array. Capped at 50 records.
+
+<Note>
+  <code>amount</code> is a <code>bigint</code> in the public API but serialized as a decimal string in localStorage (JSON cannot encode bigint natively). Deserialization is handled automatically — callers always receive <code>bigint</code>. No secrets, passwords, ZK proof internals, or private keys are stored.
+</Note>
+
+<table>
+<thead>
+<tr><th>Method</th><th>Signature</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>add(record)</code></td><td>(FluppyPaymentRecord) → void</td><td>Prepends record; deduplicates by txHash; persists</td></tr>
+<tr><td><code>update(txHash, patch)</code></td><td>(string, Partial) → void</td><td>Updates matching record fields; persists</td></tr>
+<tr><td><code>remove(txHash)</code></td><td>(string) → void</td><td>Removes record by txHash; persists</td></tr>
+<tr><td><code>clear()</code></td><td>() → void</td><td>Clears all records from state and localStorage</td></tr>
+<tr><td><code>refresh()</code></td><td>() → void</td><td>Reloads records from localStorage</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr><th>FluppyPaymentRecord field</th><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>txHash</code></td><td>string</td><td>Stellar transaction hash</td></tr>
+<tr><td><code>amount</code></td><td>bigint</td><td>Payment amount in stroops</td></tr>
+<tr><td><code>merchant</code></td><td>string</td><td>Merchant Stellar address</td></tr>
+<tr><td><code>timestamp</code></td><td>number</td><td>Unix timestamp in milliseconds</td></tr>
+<tr><td><code>status</code></td><td>'pending' | 'success' | 'failed'</td><td>Payment outcome</td></tr>
+<tr><td><code>explorerUrl?</code></td><td>string</td><td>Optional Stellar Expert explorer URL</td></tr>
+</tbody>
+</table>
+
+<h2 id="example">Combined Example</h2>
+
+<Note>
+  See <Link href="/docs/installation" className="underline">Installation</Link> for monorepo setup. Do not use public npm package installation yet — packages are not yet published.
+</Note>
+
+<Code filename="PaymentCard.tsx">{`'use client';
+
+import {
+	useFluppyCredential,
+	useFluppyPayment,
+	useFluppyHistory,
+	useFluppyWallet,
+} from '@flupy/react';
+
+export function PaymentCard({ merchant }: { merchant: string }) {
+	const wallet  = useFluppyWallet();
+	const cred    = useFluppyCredential();
+	const payment = useFluppyPayment();
+	const history = useFluppyHistory();
+
+	async function handlePay(password: string) {
+		if (!wallet.isConnected) await wallet.connect();
+
+		// unlock() returns secret in memory only — NOT stored in state
+		const secret = await cred.unlock(password);
+
+		const result = await payment.pay({
+			secret,
+			merchant,
+			amount: 10_000_000n, // 1 USDC
+		});
+
+		// Store metadata — NOT secret, NOT proof internals
+		history.add({
+			txHash:      result.txHash,
+			amount:      10_000_000n,
+			merchant,
+			timestamp:   Date.now(),
+			status:      'success',
+			explorerUrl: \`https://stellar.expert/explorer/testnet/tx/\${result.txHash}\`,
+		});
+	}
+
+	return (
+		<div>
+			{payment.status === 'pending' && (
+				<div>
+					<div>{payment.currentStep}</div>
+					<div>{payment.progressPct ?? 0}% — {payment.progressStage}</div>
+				</div>
+			)}
+			{payment.status === 'success' && <p>✓ {payment.txHash}</p>}
+			{payment.error && <p>Error: {payment.error.message}</p>}
+			<button
+				onClick={() => handlePay(passwordFromSecureInput)}
+				disabled={payment.isLoading}
+			>
+				Pay 1 USDC
+			</button>
+		</div>
+	);
+}`}</Code>

@@ -1,0 +1,122 @@
+import { Badge, Note, Caution } from "@/components/docs-mdx";
+import { SecurityGrid, VisibilityBadge, CredentialStack, MerkleSecurityList, ThreeCol, RoleCards, ChainIdBox, VerifierBoxes } from "./_visuals";
+
+export const metadata = {
+  title: "Security Model",
+  description: "Flupy security model — ZK proofs, credential storage, nullifier protection, payer/amount binding, root history, and automated sync.",
+};
+
+<Badge color="yellow">Testnet MVP — No security audit yet</Badge>
+
+# Security Model
+
+How Flupy protects user identity and prevents payment replay — from browser credential storage through to on-chain nullifier, payer, and amount binding.
+
+<Caution>
+  Flupy is a <strong>Testnet MVP</strong>. No external security audit has been completed. No real funds should be used until a full audit, multi-party trusted setup ceremony, and native BN254 on-chain verification are in place.
+</Caution>
+
+<h2 id="overview">Security Overview</h2>
+
+<SecurityGrid />
+
+<h2 id="privacy">What Is Private vs Public</h2>
+
+<table>
+<thead>
+<tr><th>Data</th><th>Description</th><th>Visibility</th></tr>
+</thead>
+<tbody>
+<tr><td><code>raw secret</code></td><td>64-char hex credential — browser memory only</td><td><VisibilityBadge status="private" /></td></tr>
+<tr><td><code>password</code></td><td>PBKDF2 input — never stored or transmitted</td><td><VisibilityBadge status="private" /></td></tr>
+<tr><td><code>ZK witness</code></td><td>Merkle path + circuit inputs — local computation only</td><td><VisibilityBadge status="private" /></td></tr>
+<tr><td><code>commitment</code></td><td>Poseidon(LEAF_TAG, secret) — sent to Merkle backend only</td><td><VisibilityBadge status="private" /></td></tr>
+<tr><td><code>nullifier</code></td><td>Poseidon(NULLIFIER_TAG, secret, nonce) — stored on-chain</td><td><VisibilityBadge status="onchain" /></td></tr>
+<tr><td><code>merkleRoot</code></td><td>Poseidon tree root — one of the last 30 anchored roots</td><td><VisibilityBadge status="onchain" /></td></tr>
+<tr><td><code>recipientHash</code></td><td>BN254-safe hash of merchant address — public signal</td><td><VisibilityBadge status="onchain" /></td></tr>
+<tr><td><code>payerHash</code></td><td>BN254-safe hash of the submitting wallet — public signal</td><td><VisibilityBadge status="onchain" /></td></tr>
+<tr><td><code>amount</code></td><td>Payment amount as a raw field element — public signal</td><td><VisibilityBadge status="onchain" /></td></tr>
+<tr><td><code>chainId</code></td><td>Network passphrase hash — public signal</td><td><VisibilityBadge status="onchain" /></td></tr>
+<tr><td><code>txHash</code></td><td>Stellar transaction hash — public ledger</td><td><VisibilityBadge status="public" /></td></tr>
+<tr><td>merchant address</td><td>Stellar G-address of merchant — public</td><td><VisibilityBadge status="public" /></td></tr>
+<tr><td>payment amount</td><td>Amount in stroops — visible in contract event</td><td><VisibilityBadge status="public" /></td></tr>
+</tbody>
+</table>
+
+<Note>
+  Flupy's privacy guarantee is <strong>on-ledger privacy</strong> — the chain cannot link a payment to an identity. It is not privacy-from-operator: because enrollment goes through a server endpoint, the server does know the mapping between a commitment and whoever submitted it. Enrollment itself never touches the chain, so this mapping is never published anywhere else.
+</Note>
+
+<h2 id="credential">Credential Storage</h2>
+
+<CredentialStack />
+
+<Note>
+  The iteration count is stored inside each credential blob. This allows safe migration of iteration parameters in future SDK versions without breaking existing credentials.
+</Note>
+
+<h2 id="merkle">Merkle Proof Security</h2>
+
+<MerkleSecurityList />
+
+<h2 id="binding">Payer &amp; Amount Binding</h2>
+
+A proof binds to the exact <strong>merchant</strong>, <strong>payer</strong>, and <strong>amount</strong> it was generated for. The contract re-derives each value from the real transaction arguments and rejects the payment if any of them don't match — a captured proof cannot be replayed with a different recipient, a different wallet, or a different amount.
+
+<ThreeCol items={[
+  ["Recipient binding", "recipientHash = hash(merchant). Prevents a proof from being redirected to a different merchant."],
+  ["Payer binding", "payerHash = hash(sender). Prevents a broadcast-but-unconfirmed proof from being resubmitted by a different wallet, which would otherwise burn the original sender's nullifier at no cost to the attacker."],
+  ["Amount binding", "amount is a public signal, bound exactly. The circuit performs no range checks — any spending-policy limits belong in the application, not the circuit."],
+]} />
+
+<h2 id="root-operator">Root Operator &amp; Automated Sync</h2>
+
+The Merkle root is anchored on-chain by an automated job, not a manually-invoked admin command. The contract separates two roles:
+
+<RoleCards />
+
+A GitHub Actions job calls the sync endpoint every ~10 minutes. It compares the on-chain root against the current commitment store, and submits a new root — signed by the RootOperator key — only when they differ. The endpoint is protected by a shared secret, a distributed lock (so overlapping runs don't race each other), and an idempotency check (a free on-chain read before every write) so a no-op cycle costs nothing.
+
+<h2 id="root-history">Root History Window</h2>
+
+The contract keeps the last <strong>30 anchored roots</strong>, not just the latest one. A proof is accepted if its root matches any entry in that window. This closes a race that would otherwise occur with frequent syncing: a user fetches a proof against root N, the sync job anchors root N+1 while they're still generating the proof, and the payment would previously fail outright with a hard <code>RootMismatch</code> error. Now it still succeeds, as long as the sync job hasn't cycled past 30 roots in the meantime.
+
+<h2 id="nullifier">Nullifier Replay Protection</h2>
+
+Each ZK payment proof includes a <strong>nullifier</strong>: <code>Poseidon(NULLIFIER_TAG=1, secret, nonce)</code> — a random one-time value derived from the secret and a CSPRNG nonce.
+
+<ThreeCol items={[
+  ["First payment", "Nullifier stored in contract temporary storage (TTL ~30 days)"],
+  ["Duplicate attempt", "Contract rejects with NullifierSpent error (#4)"],
+  ["New payment", "New CSPRNG nonce → new nullifier → new valid proof"],
+]} />
+
+<h2 id="chainid">ChainId Binding</h2>
+
+Every ZK proof includes a <code>chainId</code> public signal derived from the Stellar network passphrase:
+
+<ChainIdBox />
+
+<Note>
+  A proof generated on Testnet will always fail on Mainnet (and vice versa) because the chainId differs. This prevents cross-network proof replay attacks.
+</Note>
+
+<h2 id="verifier">On-Chain Verifier Strategy</h2>
+
+<VerifierBoxes />
+
+<h2 id="limitations">Current Limitations</h2>
+
+<table>
+<thead>
+<tr><th>Limitation</th><th>Mitigation</th><th>Planned Resolution</th></tr>
+</thead>
+<tbody>
+<tr><td>Single-contributor trusted setup</td><td>Testnet only — no real funds</td><td>Multi-party ceremony before mainnet</td></tr>
+<tr><td>Demo-mode on-chain verifier</td><td>Client-side snarkjs.verify() enforced</td><td>Native BN254 when SDK supports it</td></tr>
+<tr><td>No external security audit</td><td>Comprehensive internal test coverage</td><td>SCF Soroban Audit Bank after MVP</td></tr>
+<tr><td>No production relayer</td><td>User-signed Freighter (transparent)</td><td>Optional future relayer layer</td></tr>
+<tr><td>Testnet deployment only</td><td>No real value at risk</td><td>After audit + ceremony + native verifier</td></tr>
+<tr><td>Small anonymity set on testnet</td><td>Documented, not engineered around</td><td>Meaningful at production scale with more enrolled users</td></tr>
+</tbody>
+</table>

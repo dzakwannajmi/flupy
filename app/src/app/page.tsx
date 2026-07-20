@@ -468,7 +468,7 @@ export default function Page() {
 
 
       <div className="relative z-10">
-        <Navbar publicKey={publicKey} onConnectWallet={handleConnectWallet} items={navItems} baseColor={T.bg} />
+        <Navbar items={navItems} baseColor={T.bg} />
 
         {/* ── HERO SECTION ── */}
         <Hero />

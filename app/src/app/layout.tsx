@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "react-hot-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,20 @@ export default async function RootLayout({
         <TooltipProvider>
           {children}
         </TooltipProvider>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: "#ffffff",
+              color: "#0e0f0c",
+              border: "1px solid rgba(14, 15, 12, 0.1)",
+              borderRadius: "1rem",
+              fontSize: "13px",
+            },
+            success: { iconTheme: { primary: "#9fe870", secondary: "#163300" } },
+            error: { iconTheme: { primary: "#f87171", secondary: "#ffffff" } },
+          }}
+        />
         <Analytics />
       </body>
     </html>

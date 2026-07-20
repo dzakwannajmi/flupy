@@ -28,5 +28,5 @@ Testers surfaced concrete, actionable issues during this round, including:
 - Interest in mobile and hardware wallet support
 
 This round of feedback is treated as input for iteration, not a final
-audit — see [`../../SECURITY.md`](../../SECURITY.md) for the project's
+audit — see [the Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security) for the project's
 current security posture and known limitations.

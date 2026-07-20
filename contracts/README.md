@@ -1,9 +1,24 @@
-# Flupy Smart Contract — Soroban
+<div align="center">
+  <h1>Flupy Smart Contract</h1>
+  <p>Soroban implementation — Groth16 ZK payment verification and atomic settlement.</p>
+</div>
+
+---
 
 > **Testnet only.** The active verifier backend (`bn254_demo`) validates
 > proof structure and public inputs but does not yet perform a native
 > on-chain BN254 pairing check — see [Verifier Architecture](#verifier-architecture)
-> below and the root [`SECURITY.md`](../SECURITY.md).
+> below and the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security).
+
+## Table of Contents
+
+- [Contract](#contract)
+- [Payment execution flow](#payment-execution-flow)
+- [Roles](#roles)
+- [Root history](#root-history)
+- [Verifier architecture](#verifier-architecture)
+- [Tests](#tests)
+- [Build](#build)
 
 ## Contract
 

@@ -16,6 +16,16 @@ USDC payment atomically on Stellar Soroban — 95% to the merchant, 5% to
 the protocol treasury. Only the payer's identity is private; the
 merchant, amount, and settlement are transparent on-chain, by design.
 
+## Table of Contents
+
+- [How it works](#how-it-works)
+- [Deployed contract (testnet)](#deployed-contract-testnet)
+- [Repository layout](#repository-layout)
+- [Running locally](#running-locally)
+- [Trying the app](#trying-the-app)
+- [Design notes](#design-notes)
+- [Roadmap](#roadmap)
+
 ## How it works
 
 ```mermaid

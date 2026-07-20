@@ -1,11 +1,28 @@
-# Flupy — Frontend Application (`app/`)
+<div align="center">
+  <h1>Flupy Frontend</h1>
+  <p>Next.js app — browser ZK proving, Freighter wallet, payment demo, developer docs.</p>
+</div>
 
-Next.js web interface for the Flupy Protocol: browser-side ZK proof
-generation, Freighter wallet integration, Merkle proof retrieval,
-Soroban transaction submission, and the developer documentation site.
+---
 
-> **Testnet only.** See the root [`SECURITY.md`](../SECURITY.md) for
+Browser-side ZK proof generation, Freighter wallet integration, Merkle
+proof retrieval, Soroban transaction submission, and the developer
+documentation site.
+
+> **Testnet only.** See the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security) for
 > the current verifier and audit status.
+
+## Table of Contents
+
+- [Directory structure](#directory-structure)
+- [Payment flow](#payment-flow)
+- [Tech stack](#tech-stack)
+- [Environment configuration](#environment-configuration)
+- [Local setup](#local-setup)
+- [Key source files](#key-source-files)
+- [Circuit artifacts](#circuit-artifacts)
+- [API routes](#api-routes)
+- [Security architecture](#security-architecture)
 
 ## Directory structure
 
@@ -57,7 +74,7 @@ sequenceDiagram
 
 The proof-fetch step returns the same leaf set to every caller — the
 server never learns which commitment is about to be used for payment.
-See [`SECURITY.md`](../SECURITY.md#merkle-proof-security) for why.
+See the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security#merkle) for why.
 
 ## Tech stack
 
@@ -143,4 +160,4 @@ verification_key.json
 - Transaction history stores metadata only — no secrets, passwords, or
   raw proofs
 
-See [`SECURITY.md`](../SECURITY.md) for the full model.
+See the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security) for the full model.

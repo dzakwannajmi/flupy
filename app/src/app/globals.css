@@ -2,6 +2,39 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./typeset.css";
+
+.typeset-docs {
+  /* Font & color already inherit from --font-heading / --font-mono /
+     --color-* tokens defined above -- only size needs tuning. */
+  --typeset-size: 15px;
+}
+
+/* Elements marked .not-typeset opt out of typeset's styling entirely --
+   including the automatic top-margin ("flow") it puts between elements.
+   Restore just that spacing so custom components (badges, cards, code
+   blocks, etc.) don't sit flush against the heading/paragraph above them. */
+.typeset-docs .not-typeset {
+  margin-block-start: var(--typeset-flow);
+}
+
+/* A .not-typeset element sitting directly under a heading should match
+   typeset's own "headings own the space below them" convention (1em,
+   tighter than the normal flow gap) instead of the generic flow value
+   above -- otherwise spacing under headings looks inconsistent depending
+   on whether the next block happens to be a typeset element or not. */
+.typeset-docs :where(h1, h2, h3, h4, h5, h6) + .not-typeset {
+  margin-block-start: 1em;
+}
+
+/* A .not-typeset element sitting directly under a heading should match
+   typeset's own "headings own the space below them" convention (1em,
+   tighter than the normal flow gap) instead of the generic flow value
+   above -- otherwise spacing under headings looks inconsistent depending
+   on whether the next block happens to be a typeset element or not. */
+.typeset-docs :where(h1, h2, h3, h4, h5, h6) + .not-typeset {
+  margin-block-start: 1em;
+}
 
 @custom-variant dark (&:is(.dark *));
 

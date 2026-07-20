@@ -1,6 +1,8 @@
 import { withSentryConfig } from '@sentry/nextjs';
+import createMDX from '@next/mdx';
 
 const nextConfig = {
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   headers: async () => [
     {
       source: "/(.*)",
@@ -23,7 +25,11 @@ const nextConfig = {
 
 };  
 
-export default withSentryConfig(nextConfig, {
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+});
+
+export default withSentryConfig(withMDX(nextConfig), {
   silent: true,
 
   disableLogger: true,

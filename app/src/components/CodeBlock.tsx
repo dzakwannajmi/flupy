@@ -24,14 +24,17 @@ export function CodeBlock({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-black/10">
+    <div className="not-typeset overflow-hidden rounded-xl border border-black/10">
       {filename && (
         <div className="flex items-center justify-between border-b border-black/10 bg-black/[0.03] px-4 py-2">
           <span className="text-xs font-mono text-[#454745]">{filename}</span>
         </div>
       )}
       <div className="group relative">
-        <pre className="overflow-x-auto bg-white p-4 text-sm text-[#454745]">
+        <pre
+          className="overflow-x-auto bg-white p-4 text-sm text-[#454745]"
+          style={{ tabSize: 4 }}
+        >
           <code>{children}</code>
         </pre>
         <button

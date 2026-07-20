@@ -57,7 +57,7 @@ function TerminalLog({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [logs]);
 
   const hasDone = logs.some(l => l.kind === "success");
@@ -205,7 +205,7 @@ const inputStyle: React.CSSProperties = {
   background: "transparent",
   border: `1px solid ${T.border}`,
   borderRadius: 16,
-  color: "white",
+  color: "#0e0f0c",
   fontSize: 14,
   outline: "none",
   padding: "16px",

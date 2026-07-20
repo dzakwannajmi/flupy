@@ -463,6 +463,36 @@ export async function getContractMerkleRoot(config?: StellarConfig): Promise<str
 }
 
 /**
+ * Checks whether `rootHex` is any of the contract's last 30 anchored
+ * Merkle roots (root history ring buffer), not just the single latest
+ * one. This is the correct check for payment eligibility -- a proof
+ * generated a few minutes ago against a root that's since been
+ * superseded by the automated sync job is still valid on-chain.
+ *
+ * getContractMerkleRoot() (above) still exists for callers that
+ * specifically want "the current latest root" (e.g. the sync job's own
+ * idempotency check), but executeFluppyPayment() uses this instead.
+ */
+export async function checkRootIsKnown(
+  rootHex: string,
+  config?: StellarConfig,
+): Promise<boolean> {
+  const baseUrl = config?.apiBaseUrl ?? '';
+  const response = await fetch(
+    `${baseUrl}/api/merkle-root?root=${encodeURIComponent(rootHex)}`,
+    { method: 'GET' },
+  );
+
+  if (!response.ok) {
+    throw new Error('[stellar] Failed to check root against /api/merkle-root');
+  }
+
+  const data = await response.json() as Record<string, unknown>;
+
+  return Boolean(data['isKnown']);
+}
+
+/**
  * Polls the Soroban RPC server until the transaction is finalised.
  *
  * Statuses:

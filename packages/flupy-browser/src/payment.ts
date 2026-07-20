@@ -42,7 +42,7 @@ import {
 } from './prover';
 
 import {
-  getContractMerkleRoot,
+  checkRootIsKnown,
   resolveSender,
   payWithZkGroth16,
   type StellarConfig,
@@ -213,21 +213,21 @@ export async function executeFluppyPayment(
 
   emitStep(onStep, 'root:sync_check', startMs);
 
-  const contractRoot = await getContractMerkleRoot(
-    stellarConfig,
-  );
-
   const frontendRootHex = merkleProof.root
     .toString(16)
     .padStart(64, '0')
     .toLowerCase();
 
-  const contractRootHex = contractRoot.toLowerCase();
+  // Checks against the contract's root history window (last 30
+  // anchored roots), not just the single latest root -- a proof
+  // generated a few minutes ago, before the most recent automated
+  // sync, is still valid on-chain.
+  const isKnown = await checkRootIsKnown(frontendRootHex, stellarConfig);
 
-  if (contractRootHex !== frontendRootHex) {
+  if (!isKnown) {
     throw new RootSyncError(
       frontendRootHex,
-      contractRootHex,
+      '(not in the contract\'s recent root history)',
     );
   }
 

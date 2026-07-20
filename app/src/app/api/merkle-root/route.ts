@@ -1,96 +1,77 @@
-import { NextResponse } from 'next/server';
-
+import { NextRequest, NextResponse } from 'next/server';
 import {
   Account,
   Contract,
-  Networks,
+  nativeToScVal,
   rpc,
   scValToNative,
   TransactionBuilder,
   xdr,
 } from '@stellar/stellar-sdk';
 
-// ─────────────────────────────────────────────────────────────
-// ENVIRONMENT
-// ─────────────────────────────────────────────────────────────
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-const RPC_URL =
-  process.env.NEXT_PUBLIC_RPC_URL;
+const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
+const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_ID;
+const NETWORK_PASSPHRASE = process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE;
 
-const CONTRACT_ID =
-  process.env.NEXT_PUBLIC_CONTRACT_ID;
+// Dummy account used only for read-only simulateTransaction calls --
+// no signature or funds required, sequence number is irrelevant.
+const DUMMY_ACCOUNT = 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
 
-const NETWORK_PASSPHRASE =
-  process.env.NEXT_PUBLIC_NETWORK_PASSPHRASE;
+function bytesToHex(value: unknown): string {
+  if (value instanceof Uint8Array || Buffer.isBuffer(value)) {
+    return Buffer.from(value).toString('hex').padStart(64, '0');
+  }
 
-if (!RPC_URL) {
-  throw new Error(
-    'NEXT_PUBLIC_RPC_URL is not configured',
-  );
+  throw new Error('[merkle-root] Unexpected contract return type');
 }
 
-if (!CONTRACT_ID) {
-  throw new Error(
-    'NEXT_PUBLIC_CONTRACT_ID is not configured',
-  );
-}
+/**
+ * GET /api/merkle-root
+ *
+ * Two modes:
+ *   ?root=<hex>  -> calls is_known_root(root) on the contract. Returns
+ *                   { isKnown: boolean } -- true if the given root is
+ *                   any of the last 30 anchored roots (root history
+ *                   ring buffer), not just the single latest one.
+ *   (no query)   -> calls get_merkle_root() and returns the single
+ *                   most recent root, for callers that just want "the
+ *                   current root" (e.g. the sync job's idempotency
+ *                   check).
+ */
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  if (!RPC_URL || !CONTRACT_ID || !NETWORK_PASSPHRASE) {
+    return NextResponse.json(
+      { error: 'merkle_root_endpoint_misconfigured' },
+      { status: 500 },
+    );
+  }
 
-if (!NETWORK_PASSPHRASE) {
-  throw new Error(
-    'NEXT_PUBLIC_NETWORK_PASSPHRASE is not configured',
-  );
-}
+  const server = new rpc.Server(RPC_URL);
+  const rootParam = req.nextUrl.searchParams.get('root');
 
-// ─────────────────────────────────────────────────────────────
-// RPC SERVER
-// ─────────────────────────────────────────────────────────────
-
-const server = new rpc.Server(RPC_URL);
-
-// ─────────────────────────────────────────────────────────────
-// GET /api/merkle-root
-// ─────────────────────────────────────────────────────────────
-
-export async function GET() {
   try {
+    const sourceAccount = new Account(DUMMY_ACCOUNT, '0');
+    const contract = new Contract(CONTRACT_ID);
 
-    // ── Dummy read-only source account ───────────────────────
+    const operation = rootParam
+      ? contract.call(
+          'is_known_root',
+          nativeToScVal(Buffer.from(rootParam, 'hex'), { type: 'bytes' }),
+        )
+      : contract.call('get_merkle_root');
 
-    const sourceAccount =
-      new Account(
-        'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF',
-        '0',
-      );
+    const transaction = new TransactionBuilder(sourceAccount, {
+      fee: '100',
+      networkPassphrase: NETWORK_PASSPHRASE,
+    })
+      .addOperation(operation)
+      .setTimeout(30)
+      .build();
 
-    // ── Contract call operation ──────────────────────────────
-
-    const contract = new Contract(CONTRACT_ID!);
-
-    const operation =
-      contract.call(
-        'get_merkle_root',
-      );
-
-    // ── Build read-only simulation transaction ───────────────
-
-    const transaction =
-      new TransactionBuilder(
-        sourceAccount,
-        {
-          fee: '100',
-          networkPassphrase: NETWORK_PASSPHRASE,
-        },
-      )
-        .addOperation(operation)
-        .setTimeout(30)
-        .build();
-
-    // ── Simulate against Soroban RPC ─────────────────────────
-
-    const response =
-      await server.simulateTransaction(
-        transaction,
-      );
+    const response = await server.simulateTransaction(transaction);
 
     if (rpc.Api.isSimulationError(response)) {
       throw new Error(response.error);
@@ -99,51 +80,24 @@ export async function GET() {
     const result = response.result?.retval;
 
     if (!result) {
-      throw new Error(
-        'Contract returned no value for get_merkle_root',
-      );
+      throw new Error('Contract returned no value');
     }
-
-    // ── Convert ScVal → hex string ───────────────────────────
-    //
-    // The contract returns BytesN<32> (raw 32-byte big-endian scalar).
-    // scValToNative() deserialises this as a Buffer / Uint8Array, not a
-    // bigint — so we must branch on the actual runtime type.
-    //
-    // Expected output: 64-character lowercase hex string (zero-padded).
 
     const native = scValToNative(result as xdr.ScVal);
 
-    let root: string;
-
-    if (
-      native instanceof Uint8Array ||
-      Buffer.isBuffer(native)
-    ) {
-      // BytesN<32> path — most common for Fluppy get_merkle_root
-      root = Buffer.from(native)
-        .toString('hex')
-        .padStart(64, '0');
-    } else if (typeof native === 'bigint') {
-      // Fallback: contract returns u256 / i256 scalar
-      root = native
-        .toString(16)
-        .padStart(64, '0');
-    } else {
-      root = String(native);
+    if (rootParam) {
+      return NextResponse.json({ isKnown: Boolean(native) });
     }
 
-    return NextResponse.json(
-      { root },
-      { status: 200 },
-    );
-
+    return NextResponse.json({ root: bytesToHex(native) });
   } catch (err) {
-
-    console.error('[API] merkle-root error:', err);
+    console.error('[/api/merkle-root] error:', err);
 
     return NextResponse.json(
-      { error: 'Failed to fetch contract Merkle root' },
+      {
+        error: 'merkle_root_read_failed',
+        message: err instanceof Error ? err.message : 'unknown',
+      },
       { status: 500 },
     );
   }

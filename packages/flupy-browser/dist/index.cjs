@@ -967,6 +967,18 @@ async function getContractMerkleRoot(config) {
   }
   return String(data["root"]);
 }
+async function checkRootIsKnown(rootHex, config) {
+  const baseUrl = config?.apiBaseUrl ?? "";
+  const response = await fetch(
+    `${baseUrl}/api/merkle-root?root=${encodeURIComponent(rootHex)}`,
+    { method: "GET" }
+  );
+  if (!response.ok) {
+    throw new Error("[stellar] Failed to check root against /api/merkle-root");
+  }
+  const data = await response.json();
+  return Boolean(data["isKnown"]);
+}
 async function pollTransaction(hash, server, rpcUrl) {
   let status = "PENDING";
   let txStatus;
@@ -1083,15 +1095,12 @@ async function executeFluppyPayment(input) {
     root: merkleProof.root.toString().slice(0, 12)
   });
   emitStep(onStep, "root:sync_check", startMs);
-  const contractRoot = await getContractMerkleRoot(
-    stellarConfig
-  );
   const frontendRootHex = merkleProof.root.toString(16).padStart(64, "0").toLowerCase();
-  const contractRootHex = contractRoot.toLowerCase();
-  if (contractRootHex !== frontendRootHex) {
+  const isKnown = await checkRootIsKnown(frontendRootHex, stellarConfig);
+  if (!isKnown) {
     throw new RootSyncError(
       frontendRootHex,
-      contractRootHex
+      "(not in the contract's recent root history)"
     );
   }
   emitStep(onStep, "proof:start", startMs);

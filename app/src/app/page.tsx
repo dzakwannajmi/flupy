@@ -9,8 +9,6 @@ import { isConnected, requestAccess } from "@stellar/freighter-api";
 // Import Komponen Custom
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import LogoLoop from "../components/LogoLoop";
-
 import Link from "next/link";
 
 // ─── Design tokens (SOLID PINK THEME) ─────────────────────────────────────────
@@ -74,35 +72,6 @@ function SolidCard({ children, className = "" }: { children: React.ReactNode; cl
     <div className={`rounded-[2rem] border ${className}`} style={{ background: T.card, borderColor: T.border }}>
       {children}
     </div>
-  );
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-//  METRICS STRIP SECTION (NEW)
-// ═════════════════════════════════════════════════════════════════════════════
-function MetricsStrip() {
-  const metrics = [
-    { value: "5.2s", label: "Avg settlement time" },
-    { value: "31/31", label: "Contract tests passing" },
-    { value: "0", label: "Custodial dependencies" },
-    { value: "MIT", label: "Open-source license" },
-  ];
-
-  return (
-    <section className="relative py-12 px-6 z-10 border-y" style={{ borderColor: T.border }}>
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-8">
-        {metrics.map((m) => (
-          <div key={m.label} className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-[#0e0f0c] tracking-tight mb-1">
-              {m.value}
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-[#454745]">
-              {m.label}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -214,27 +183,6 @@ function Hero() {
     <section className="relative pt-32 md:pt-40 pb-28 px-6">
       <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
 
-        {/* Live status pill */}
-        <motion.a
-          href="https://stellar.expert/explorer/testnet/contract/CAGJIQ4W5Q7ZAYJ2QLH4M4TRIZJHFSDDJZ43PYAR4QEZVP76FTBDIBAS"
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 mb-9 rounded-full border text-xs text-[#454745] hover:text-[#0e0f0c] hover:border-[#9fe870]/40 transition-colors"
-          style={{ borderColor: T.border, background: T.glass }}
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-          </span>
-          <span>Live on Stellar Testnet</span>
-          <span className="opacity-40">·</span>
-          <span className="font-mono text-[#454745]">CAGJ…DIBAS</span>
-          <span className="opacity-40">↗</span>
-        </motion.a>
-
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="text-5xl sm:text-7xl md:text-[7rem] font-bold tracking-tighter text-[#0e0f0c] leading-[1.05]">
           Private Payments,
           <br />
@@ -249,16 +197,6 @@ function Hero() {
           <a href="#payment-preview" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full text-black font-bold text-sm transition-transform hover:scale-105" style={{ background: T.primary }}>
             Run Live Demo <Icon icon="ph:arrow-down" className="text-lg" />
           </a>
-          <a href="https://github.com/dzakwannajmi/flupy" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border font-bold text-sm text-[#0e0f0c] transition-colors hover:bg-black/5" style={{ borderColor: T.border }}>
-            <Icon icon="ph:github-logo" className="text-lg" /> View GitHub
-          </a>
-          <button
-            onClick={() => document.getElementById("payment-preview")?.scrollIntoView({ behavior: "smooth" })}
-            className="flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-sm text-[#0e0f0c] hover:text-[#0e0f0c] transition-colors"
-          >
-            <span className="w-7 h-7 rounded-full border flex items-center justify-center text-[10px]" style={{ borderColor: T.border }}>▶</span>
-            Watch Demo
-          </button>
         </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.85, duration: 0.6 }} className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-xs font-bold uppercase tracking-widest text-[#454745]">
@@ -320,91 +258,6 @@ function WhatIsFlupy() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-//  TECH STACK LOOP SECTION
-// ═════════════════════════════════════════════════════════════════════════════
-const techLogos = [
-  {
-    node: (
-      <div
-        className="icon-mask w-[120px] h-[40px]"
-        style={{
-          maskImage: 'url(/logos/Stellar.svg)',
-          WebkitMaskImage: 'url(/logos/Stellar.svg)'
-        }}
-      />
-    ),
-    title: "Stellar",
-    href: "https://stellar.org"
-  },
-  {
-    node: (
-      <div
-        className="icon-mask w-[120px] h-[60px]"
-        style={{
-          maskImage: 'url(/logos/SCF.svg)',
-          WebkitMaskImage: 'url(/logos/SCF.svg)'
-        }}
-      />
-    ),
-    title: "Stellar Community Fund",
-    href: "https://communityfund.stellar.org/"
-  },
-  {
-    node: (
-      <div
-        className="icon-mask w-[120px] h-[60px]"
-        style={{
-          maskImage: 'url(/logos/Rise-in.avif)',
-          WebkitMaskImage: 'url(/logos/Rise-in.avif)'
-        }}
-      />
-    ),
-    title: "Rise in",
-    href: "https://www.risein.com/"
-  },
-  {
-    node: (
-      <div
-        className="icon-mask w-[120px] h-[60px]"
-        style={{
-          maskImage: 'url(/logos/SDF.avif)',
-          WebkitMaskImage: 'url(/logos/SDF.avif)'
-        }}
-      />
-    ),
-    title: "Stellar Development Foundation",
-    href: "https://www.stellar.org/"
-  },
-
-];
-
-function TechStackLoop() {
-  return (
-    <section className="relative w-full z-10 pt-16 pb-12" style={{ borderTop: `1px solid ${T.border}` }}>
-      <div className="max-w-6xl mx-auto px-6 text-center mb-6">
-        <span className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: T.muted }}>
-          Powered By
-        </span>
-      </div>
-      <div style={{ height: '80px', position: 'relative', overflow: 'hidden' }}>
-        <LogoLoop
-          logos={techLogos}
-          speed={120}
-          direction="left"
-          logoHeight={40}
-          gap={80}
-          hoverSpeed={30}
-          scaleOnHover
-          fadeOut
-          fadeOutColor={T.bg}
-          ariaLabel="Technology Stack"
-        />
-      </div>
-    </section>
-  );
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
 //  DAPP PREVIEW SECTION
 // ═════════════════════════════════════════════════════════════════════════════
 function DAppPreview() {
@@ -421,7 +274,6 @@ function DAppPreview() {
 
             {/* Always-visible instruction badge */}
             <div className="absolute top-6 left-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border text-[10px] font-bold uppercase tracking-wider text-[#0e0f0c]" style={{ background: T.glass, borderColor: T.border }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#9fe870] animate-pulse" />
               Hover to launch
             </div>
 
@@ -438,11 +290,11 @@ function DAppPreview() {
 
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <div className="flex items-center gap-3 text-2xl md:text-3xl font-bold text-[#0e0f0c] mb-8">
-                #1 privacy payments on
+                #1 Private Payments Gateway On
                 <div className="icon-mask w40 h-40 md:w-30 md:h-30 bg-white" style={{ maskImage: 'url(/logos/Stellar.svg)', WebkitMaskImage: 'url(/logos/Stellar.svg)' }} />
               </div>
               <button className="px-8 py-4 bg-white text-black font-bold rounded-2xl flex items-center gap-2 hover:scale-105 transition-transform shadow-2xl">
-                <Icon icon="ph:sparkle-fill" className="text-xl" /> Enter App
+                <Icon icon="ph:arrow-up-right" className="text-xl" /> Enter App
               </button>
             </div>
 
@@ -600,14 +452,12 @@ export default function Page() {
   };
 
   const navItems = [
-    { label: "Protocol", bgColor: T.card, textColor: "#fff", links: [{ label: "How it Works", href: "#features", ariaLabel: "How it Works" }] },
-    { label: "Ecosystem", bgColor: T.card, textColor: "#fff", links: [{ label: "Stellar Testnet", href: "https://stellar.expert", ariaLabel: "Stellar Network" }] },
+    { label: "Protocol", bgColor: T.card, textColor: T.fg, links: [{ label: "How it Works", href: "#features", ariaLabel: "How it Works" }] },
     {
       label: "Developers",
       bgColor: T.card,
-      textColor: "#fff",
+      textColor: T.fg,
       links: [
-        { label: "GitHub Repo", href: "https://github.com/dzakwannajmi/fluppy", ariaLabel: "GitHub Repo" },
         { label: "Developer Docs", href: "/docs", ariaLabel: "Open Flupy developer documentation" },
       ],
     }
@@ -618,13 +468,10 @@ export default function Page() {
 
 
       <div className="relative z-10">
-        <Navbar publicKey={publicKey} onConnectWallet={handleConnectWallet} items={navItems} baseColor="rgba(18, 15, 23, 0.4)" />
+        <Navbar publicKey={publicKey} onConnectWallet={handleConnectWallet} items={navItems} baseColor={T.bg} />
 
         {/* ── HERO SECTION ── */}
         <Hero />
-
-        {/* ── METRICS STRIP (NEW) ── */}
-        <MetricsStrip />
 
         {/* ── PLAIN EXPLAINER (NEW) ── */}
         <HowItWorksPlain />
@@ -640,9 +487,6 @@ export default function Page() {
 
         {/* ── FAQ SECTION ── */}
         <FAQSection />
-
-        {/* ── LOGO LOOP SECTION ── */}
-        <TechStackLoop />
 
         {/* ── FOOTER ── */}
         <Footer />

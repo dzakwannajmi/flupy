@@ -116,6 +116,18 @@ export const useFluppy = () => {
     useRef<AbortController | null>(null);
 
   // ───────────────────────────────────────────────────────────
+  // DISCONNECT WALLET
+  // ───────────────────────────────────────────────────────────
+  // Freighter has no real "disconnect" API -- this just clears local
+  // state so the UI goes back to "Connect Wallet". credentialStatus is
+  // reset too since it reflects the *previous* wallet's credential,
+  // which is meaningless once the user switches accounts.
+  const disconnectWallet = () => {
+    setWalletAddress(null);
+    setCredentialStatus('unknown');
+  };
+
+  // ───────────────────────────────────────────────────────────
   // CLEANUP
   // ───────────────────────────────────────────────────────────
 
@@ -690,7 +702,7 @@ export const useFluppy = () => {
         await pendingTxState.current.catch(() => undefined);
       }
 
-      if (err instanceof RootSyncError) {
+      if (err instanceof RootSyncError && process.env.NODE_ENV === 'development') {
         console.info('[DEV] Latest frontend root hex:', err.frontendRootHex);
         console.info(
           '[DEV] Run root sync:\n' +
@@ -791,6 +803,7 @@ export const useFluppy = () => {
   return {
     walletAddress,
     connectWallet,
+    disconnectWallet,
     credentialStatus,
     checkCredentialStatus,
     setupCredential,

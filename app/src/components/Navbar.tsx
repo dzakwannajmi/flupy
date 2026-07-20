@@ -16,8 +16,6 @@ export type CardNavItem = {
 };
 
 export interface CardNavProps {
-    publicKey: string | null;
-    onConnectWallet: () => void;
     // ─────────────────────────────────────
     items: CardNavItem[];
     className?: string;
@@ -27,8 +25,6 @@ export interface CardNavProps {
 }
 
 const CardNav: React.FC<CardNavProps> = ({
-    publicKey,
-    onConnectWallet,
     items,
     className = '',
     ease = 'power3.out',
@@ -163,28 +159,6 @@ const CardNav: React.FC<CardNavProps> = ({
                         <span className="font-bold text-lg text-[#0e0f0c] tracking-tight">FLUPPY</span>
                     </div>
 
-                    {/* Connect Wallet Button */}
-                    <button
-                        onClick={onConnectWallet}
-                        className="hidden md:inline-flex px-5 py-2 rounded-xl text-sm font-bold border transition-all hover:scale-105 active:scale-95 z-[60] items-center gap-2"
-                        style={{
-                            backgroundColor: publicKey ? `rgba(159, 232, 112, 0.15)` : `rgba(14, 15, 12, 0.05)`,
-                                                        color: publicKey ? "#163300" : "#0e0f0c",
-                            borderColor: publicKey ? `rgba(22, 51, 0, 0.3)` : `rgba(14, 15, 12, 0.1)`,
-                            boxShadow: publicKey
-                                ? "0 0 20px -5px rgba(159, 232, 112, 0.5)"
-                                : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                        }}
-                    >
-                        {publicKey ? (
-                            <>
-                                <Icon icon="ph:key" className="text-lg" />
-                                {`${publicKey.slice(0, 5)}...${publicKey.slice(-4)}`}
-                            </>
-                        ) : (
-                            "Connect Wallet"
-                        )}
-                    </button>
                 </div>
 
                 {/* Expanded Menu Cards */}

@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
 import { isConnected } from "@stellar/freighter-api";
 import Navbar from "../../components/Navbar";
 import { useFluppy } from "../../hooks/useFluppy";
 import { ProofProgressBar } from '../../components/ProofProgressBar';
 import { TxHistoryPanel } from '../../components/TxHistoryPanel';
+import { PaymentStatCards } from '../../components/PaymentStatCards';
+import { PaymentVolumeChart } from '../../components/PaymentVolumeChart';
 import { buildExplorerUrl } from "../../lib/history";
 import { useFluppyCredential, useFluppyHistory, useFluppyPayment, useFluppyWallet, type FluppyPaymentRecord } from "@flupy/react";
 
@@ -21,10 +23,6 @@ const T = {
   card: "#ffffff",
   border: "rgba(14, 15, 12, 0.08)",
 };
-
-// ─── Tipe ────────────────────────────────────────────────────────────────────
-type LogKind = "info" | "success" | "error";
-type LogEntry = { id: number; icon: React.ReactNode; text: string; kind: LogKind };
 
 // ─── SolidCard ───────────────────────────────────────────────────────────────
 function SolidCard({
@@ -40,162 +38,6 @@ function SolidCard({
       style={{ background: T.card, borderColor: T.border }}
     >
       {children}
-    </div>
-  );
-}
-
-// ─── TerminalLog ─────────────────────────────────────────────────────────────
-function TerminalLog({
-  logs,
-  running,
-  txHash,
-}: {
-  logs: LogEntry[];
-  running: boolean;
-  txHash?: string | null;
-}) {
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [logs]);
-
-  const hasDone = logs.some(l => l.kind === "success");
-  const hasError = logs.some(l => l.kind === "error");
-
-  // Helper footer — hindari ternary Fragment bersarang
-  function renderFooter(): React.ReactNode {
-    if (running) {
-      return (
-        <div className="flex items-center gap-3">
-          <motion.span
-            animate={{ opacity: [1, 0.25] }}
-            transition={{ repeat: Infinity, duration: 0.9 }}
-            className="w-2 h-2 rounded-full"
-            style={{ background: T.primary }}
-          />
-          <span className="text-xs font-mono" style={{ color: "rgba(14, 15, 12, 0.5)" }}>
-            executing…
-          </span>
-        </div>
-      );
-    }
-
-    if (hasDone && txHash) {
-      return (
-        <div className="flex items-center gap-3 w-full">
-          <span className="w-2 h-2 rounded-full bg-green-400" />
-          <span className="text-xs font-mono" style={{ color: "rgba(14, 15, 12, 0.5)" }}>
-            exit 0 · verified
-          </span>
-
-          <a
-            href={buildExplorerUrl(txHash)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-auto text-xs underline underline-offset-2 font-mono"
-            style={{ color: T.primary } as React.CSSProperties}
-          >
-            Explorer →
-          </a>
-        </div >
-      );
-    }
-
-    if (hasError) {
-      return (
-        <div className="flex items-center gap-3">
-          <span className="w-2 h-2 rounded-full bg-red-400" />
-          <span className="text-xs font-mono" style={{ color: "rgba(14, 15, 12, 0.5)" }}>
-            exit 1 · check logs
-          </span>
-        </div>
-      );
-    }
-
-    return (
-      <span className="text-xs select-none font-mono" style={{ color: "rgba(14, 15, 12, 0.4)" }}>
-        ready
-      </span>
-    );
-  }
-
-  return (
-    <div
-      className="h-full w-full rounded-[2rem] overflow-hidden flex flex-col relative z-20"
-      style={{
-        background: T.dark,
-        border: `1px solid ${T.border}`,
-        boxShadow: `inset 0 0 40px -20px ${T.primary}20`,
-        minHeight: 450,
-      }}
-    >
-      {/* Header */}
-      <div
-        className="flex items-center gap-2 px-6 py-4"
-        style={{ borderBottom: `1px solid ${T.border}` }}
-      >
-        <span className="w-3 h-3 rounded-full bg-red-500/80" />
-        <span className="w-3 h-3 rounded-full bg-yellow-400/80" />
-        <span className="w-3 h-3 rounded-full bg-green-400/80" />
-        <span
-          className="ml-4 text-xs tracking-widest uppercase font-mono flex items-center gap-2 select-none"
-          style={{ color: "rgba(14, 15, 12, 0.5)" }}
-        >
-          <Icon icon="ph:gear" width={12} height={12} className="animate-[spin_4s_linear_infinite]" />
-          Soroban Shell
-        </span>
-      </div>
-
-      {/* Log area */}
-      <div className="flex-1 px-6 py-6 overflow-y-auto space-y-3 text-sm font-mono">
-        {logs.length === 0 && !running && (
-          <p className="text-xs select-none" style={{ color: "rgba(14, 15, 12, 0.4)" }}>
-            Awaiting execution…
-          </p>
-        )}
-        <AnimatePresence>
-          {logs.map(log => (
-            <motion.div
-              key={log.id}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-start gap-3 leading-relaxed"
-              style={{
-                color:
-                  log.kind === "success"
-                    ? "#4ade80"
-                    : log.kind === "error"
-                      ? "#f87171"
-                      : "rgba(14, 15, 12, 0.8)",
-              }}
-            >
-              <span className="flex-shrink-0 text-base leading-none mt-[2px]">
-                {log.icon}
-              </span>
-              <span>{log.text}</span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {running && (
-          <motion.span
-            animate={{ opacity: [1, 0] }}
-            transition={{ repeat: Infinity, duration: 0.65 }}
-            className="inline-block w-2 h-[18px] align-middle"
-            style={{ background: T.primary, borderRadius: 1 }}
-          />
-        )}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Footer */}
-      <div
-        className="px-6 py-4"
-        style={{ borderTop: `1px solid ${T.border}` }}
-      >
-        {renderFooter()}
-      </div>
     </div>
   );
 }
@@ -217,14 +59,21 @@ const inputStyle: React.CSSProperties = {
 export default function AppPage() {
   const [destination, setDestination] = useState("");
   const [amount, setAmount] = useState("1");
+
+  // ── Estimasi biaya (invoice) ────────────────────────────────────────────
+  // Fee protokol 5% dihitung dari amount USDC yang diketik user. Network fee
+  // di bawah ini ESTIMASI TETAP (bukan hasil simulasi RPC real-time) --
+  // jangan dianggap angka final on-chain.
+  const PROTOCOL_FEE_RATE = 0.05;
+  const ESTIMATED_NETWORK_FEE_XLM = 0.0142081;
+  const estimatedAmount = parseFloat(amount) || 0;
+  const protocolFee = estimatedAmount * PROTOCOL_FEE_RATE;
+  const merchantReceives = estimatedAmount - protocolFee;
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [showSetup, setShowSetup] = useState(false);
   const [setupSecret, setSetupSecret] = useState<string | null>(null);
-  const [localLogs, setLocalLogs] = useState<LogEntry[]>([]);
-
-  const idRef = useRef(0);
 
   // ── Fluppy Hook ────────────────────────────────────────────────────────────
   const {
@@ -234,16 +83,18 @@ export default function AppPage() {
     checkCredentialStatus,
     setupCredential,
     loading,
-    txHash,
     logs: hookLogs,
     proofProgress,
     setTxHash,
     executePayment,
+    disconnectWallet,
   } = useFluppy();
 
   const { add: addToSdkHistory } = useFluppyHistory();
 
   const lastRecordedSdkTxRef = useRef<string | null>(null);
+  // True right after an explicit user-initiated disconnect, so the wallet-restore effect below does not immediately reconnect it.
+  const skipAutoRestoreRef = useRef(false);
 
   // SDK wallet hook — additive, does not replace the existing app wallet flow.
   const sdkWallet = useFluppyWallet();
@@ -252,31 +103,6 @@ export default function AppPage() {
   const sdkCredential = useFluppyCredential();
   const sdkPayment = useFluppyPayment();
 
-  // ── Konversi hookLogs (string[]) → LogEntry[] ──────────────────────────────
-  const hookLogEntries: LogEntry[] = hookLogs.map((text, i) => {
-    const isSuccess = text.includes("✓") || text.includes("SUCCES") || text.includes("SUKSES");
-    const isError = text.includes("❌") || text.includes("FAIL") || text.includes("FAILED");
-
-    const icon = isSuccess
-      ? <Icon icon="ph:check-circle" className="text-green-400" />
-      : isError
-        ? <Icon icon="ph:x-circle" className="text-red-400" />
-        : text.includes("ZKP")
-          ? <Icon icon="ph:lock" className="text-blue-400" />
-          : text.includes("Merkle")
-            ? <Icon icon="ph:calculator" className="text-yellow-400" />
-            : text.includes("Stellar")
-              ? <Icon icon="ph:paper-plane-tilt" className="text-[#163300]" />
-              : text.includes("Finance")
-                ? <Icon icon="ph:currency-dollar" className="text-emerald-400" />
-                : <Icon icon="ph:gear" className="text-gray-400" />;
-
-    const kind: LogKind = isSuccess ? "success" : isError ? "error" : "info";
-
-    return { id: i + 1000, icon, text, kind };
-  });
-
-  const allLogs = [...localLogs, ...hookLogEntries];
   const done = hookLogs.some(l => l.includes("SUKSES"));
 
   // ── Cek credential saat wallet connect ────────────────────────────────────
@@ -323,13 +149,13 @@ export default function AppPage() {
 
 
 
-  // ── Tambah log lokal ──────────────────────────────────────────────────────
-  const addLocalLog = useCallback((icon: React.ReactNode, text: string, kind: LogKind = "info") => {
-    setLocalLogs(p => [...p, { id: ++idRef.current, icon, text, kind }]);
-  }, []);
-
   // ── Connect wallet ────────────────────────────────────────────────────────
   const handleConnectWallet = async () => {
+    if (walletAddress) {
+      skipAutoRestoreRef.current = true;
+      disconnectWallet();
+      return;
+    }
     try {
       const status = await isConnected();
 
@@ -357,11 +183,7 @@ export default function AppPage() {
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
 
-      addLocalLog(
-        <Icon icon="ph:x-circle" className="text-red-400" />,
-        `Wallet error: ${message}`,
-        "error",
-      );
+      toast.error(`Wallet error: ${message}`);
     }
   };
 
@@ -374,22 +196,11 @@ export default function AppPage() {
     try {
       const secret = await setupCredential(newPassword);
       setSetupSecret(secret);
-      addLocalLog(
-        <Icon icon="ph:key" className="text-[#163300]" />,
-        "ZK credential created successfully!",
-        "success",
-      );
-      addLocalLog(
-        <Icon icon="ph:shield-check" className="text-yellow-400" />,
-        "⚠️  Save your backup secret in a safe place!",
-        "info",
-      );
-    } catch (e: any) {
-      addLocalLog(
-        <Icon icon="ph:x-circle" className="text-red-400" />,
-        `Setup failed: ${e.message}`,
-        "error",
-      );
+      toast.success("ZK credential created successfully!");
+      toast("⚠️ Save your backup secret in a safe place!", { icon: "🔑" });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      toast.error(`Setup failed: ${message}`);
     }
   };
 
@@ -397,6 +208,7 @@ export default function AppPage() {
   // Freighter may still be connected while the old in-memory walletAddress was reset.
   useEffect(() => {
     if (walletAddress) return;
+    if (skipAutoRestoreRef.current) return;
 
     let cancelled = false;
 
@@ -468,7 +280,6 @@ export default function AppPage() {
       return;
     }
 
-    setLocalLogs([]);
     setTxHash(null);
 
     const paymentAmount = amount;
@@ -529,21 +340,17 @@ export default function AppPage() {
     try {
       sdkPayment.resetError();
 
-      addLocalLog(
-        <Icon icon="ph:shield-check" className="text-[#163300]" />,
-        "SDK Demo: Unlocking credential for experimental payment...",
-        "info",
-      );
+      toast.loading("Unlocking credential for experimental payment...", {
+        id: "sdk-payment",
+      });
 
       // The secret is kept only in this async function scope.
       // It is not stored in React state and must never be logged.
       const secret = await sdkCredential.unlock(password);
 
-      addLocalLog(
-        <Icon icon="ph:package" className="text-blue-400" />,
-        "SDK Demo: Running useFluppyPayment experimental path...",
-        "info",
-      );
+      toast.loading("Running useFluppyPayment experimental path...", {
+        id: "sdk-payment",
+      });
 
       const result = await sdkPayment.pay({
         secret,
@@ -560,27 +367,22 @@ export default function AppPage() {
           paymentDestination,
         );
 
-        addLocalLog(
-          <Icon icon="ph:check-circle" className="text-green-400" />,
+        toast.success(
           `SDK Demo: Transaction confirmed (${confirmedTxHash.slice(0, 10)}...)`,
-          "success",
+          { id: "sdk-payment" },
         );
       }
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
 
-      addLocalLog(
-        <Icon icon="ph:x-circle" className="text-red-400" />,
-        `SDK Demo failed safely: ${message}`,
-        "error",
-      );
+      toast.error(`SDK Demo failed safely: ${message}`, { id: "sdk-payment" });
     }
   };
 
   const navItems = [{
     label: "Return to Home",
     bgColor: T.card,
-    textColor: "#fff",
+    textColor: T.fg,
     links: [
       { label: "Back", href: "/", ariaLabel: "Home" },
       { label: "Developer Docs", href: "/docs", ariaLabel: "Open Fluppy developer documentation" },
@@ -597,10 +399,8 @@ export default function AppPage() {
     >
       <div className="relative z-10 pt-4">
         <Navbar
-          publicKey={walletAddress}
-          onConnectWallet={handleConnectWallet}
           items={navItems}
-          baseColor="rgba(18, 15, 23, 0.4)"
+          baseColor={T.bg}
         />
 
         <div className="max-w-6xl mx-auto px-6 pt-24 pb-12">
@@ -679,12 +479,51 @@ export default function AppPage() {
             </div>
           )}
 
+          {/* ── Ringkasan payment (4 box + chart) ─────────────────────────── */}
+          <div className="@container/main mb-8 space-y-6">
+            <PaymentStatCards />
+            <PaymentVolumeChart />
+          </div>
+
           {/* ── Main Grid ──────────────────────────────────────────────── */}
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid items-start lg:grid-cols-2 gap-6">
 
             {/* KIRI: FORM */}
-            <SolidCard className="p-8 h-full flex flex-col justify-between">
+            <SolidCard className="p-8 flex flex-col">
               <div className="space-y-6">
+
+                {/* Connect Wallet */}
+                <div>
+                  <label
+                    className="text-xs font-bold uppercase tracking-widest mb-3 block"
+                    style={{ color: T.muted }}
+                  >
+                    Wallet
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleConnectWallet}
+                    className="w-full inline-flex justify-center items-center gap-2 px-5 py-4 rounded-xl text-sm font-bold text-black transition-transform hover:scale-[1.01] active:scale-95 shadow-xl"
+                    style={{ background: T.primary }}
+                  >
+                    {walletAddress ? (
+                      <>
+                        <Icon icon="ph:sign-out" className="text-lg" />
+                        Disconnect Wallet
+                      </>
+                    ) : (
+                      <>
+                        <Icon icon="ph:wallet" className="text-lg" />
+                        Connect Wallet
+                      </>
+                    )}
+                  </button>
+                  {walletAddress && (
+                    <p className="text-xs mt-2 font-mono" style={{ color: T.muted }}>
+                      Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    </p>
+                  )}
+                </div>
 
                 {/* Password credential */}
                 <div>
@@ -771,6 +610,38 @@ export default function AppPage() {
                     />
                   </div>
                 </div>
+
+                {/* Estimasi biaya (invoice) */}
+                {estimatedAmount > 0 && (
+                  <div
+                    className="rounded-xl border p-4 text-sm space-y-2"
+                    style={{ borderColor: T.border, background: "rgba(14, 15, 12, 0.02)" }}
+                  >
+                    <div className="flex justify-between" style={{ color: T.muted }}>
+                      <span>Amount</span>
+                      <span style={{ color: T.fg }}>{estimatedAmount.toFixed(2)} USDC</span>
+                    </div>
+                    <div className="flex justify-between" style={{ color: T.muted }}>
+                      <span>Protocol fee (5%)</span>
+                      <span style={{ color: T.fg }}>- {protocolFee.toFixed(2)} USDC</span>
+                    </div>
+                    <div className="flex justify-between font-semibold" style={{ color: T.fg }}>
+                      <span>Merchant receives</span>
+                      <span>{merchantReceives.toFixed(2)} USDC</span>
+                    </div>
+                    <div
+                      className="flex justify-between pt-2"
+                      style={{ borderTop: `1px solid ${T.border}`, color: T.muted }}
+                    >
+                      <span>Est. network fee</span>
+                      <span style={{ color: T.fg }}>{ESTIMATED_NETWORK_FEE_XLM} XLM</span>
+                    </div>
+                    <div className="flex justify-between font-semibold" style={{ color: T.fg }}>
+                      <span>Total</span>
+                      <span>{estimatedAmount.toFixed(2)} USDC + {ESTIMATED_NETWORK_FEE_XLM} XLM</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Pay Button */}
@@ -875,12 +746,8 @@ export default function AppPage() {
               )}
             </SolidCard>
 
-            {/* KANAN: TERMINAL */}
-            <TerminalLog logs={allLogs} running={loading} txHash={txHash} />
-            {/* Transaction History */}
-            <div className="mt-6">
-              <TxHistoryPanel />
-            </div>
+            {/* KANAN: RIWAYAT TRANSAKSI */}
+            <TxHistoryPanel />
           </div>
         </div>
       </div>

@@ -19,11 +19,7 @@ export interface MerkleProof {
  * The raw secret never leaves the browser.
  */
 export async function addToMockWhitelist(secret: string): Promise<void> {
-  const result = await enrollCommitment(secret);
-
-  console.log(
-    `[Merkle] Commitment enrolled. Whitelist size: ${result.enrolled}`,
-  );
+  await enrollCommitment(secret);
 }
 
 /**

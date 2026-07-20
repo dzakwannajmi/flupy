@@ -27,19 +27,11 @@ export default function Footer() {
             <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#163300]" style={{ color: T.muted }}>
               <Icon icon="ph:github-logo" className="text-lg" /> GitHub
             </a>
-            <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors hover:text-[#163300]" style={{ color: T.muted }}>
-              <Icon icon="ph:globe" className="text-lg" /> Explorer
-            </a>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 text-xs font-mono uppercase tracking-widest" style={{ borderTop: `1px solid ${T.border}`, color: "rgba(14, 15, 12, 0.5)" }}>
-          <span>© 2026 Fluppy</span>
-
-          <div className="flex flex-wrap justify-center gap-3">
-            <span>Stellar</span>
-            <span>SnarkJS</span>
-          </div>
+          <span>© 2026 Flupy</span>
         </div>
 
       </div>

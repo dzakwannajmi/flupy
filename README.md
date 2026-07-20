@@ -2,9 +2,10 @@
   <h1>Flupy</h1>
   <p>Privacy-preserving payment infrastructure on Stellar Soroban.</p>
 
-  <img src="https://img.shields.io/badge/chain-Stellar%20%2F%20Soroban-black.svg" alt="Stellar">
-  <img src="https://img.shields.io/badge/network-testnet-f59e0b.svg" alt="Testnet">
+  <img src="https://img.shields.io/badge/chain-Stellar-black.svg" alt="Stellar">
   <img src="https://img.shields.io/badge/ZK-Circom%20%2F%20SnarkJS%20%2F%20Groth16-6366f1.svg" alt="ZK stack">
+  <a href="PASTE_DEMO_VIDEO_LINK_HERE"><img src="https://img.shields.io/badge/demo-watch%20video-red.svg?logo=youtube&logoColor=white" alt="Watch demo video"></a>
+  <a href="https://flupy-app-dzakwannajmis-projects.vercel.app/"><img src="https://img.shields.io/badge/status-Live%20on%20Testnet-f59e0b.svg" alt="Live on Testnet"></a>
 </div>
 
 ---

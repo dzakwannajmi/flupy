@@ -83,7 +83,7 @@ function SolidCard({ children, className = "" }: { children: React.ReactNode; cl
 function MetricsStrip() {
   const metrics = [
     { value: "5.2s", label: "Avg settlement time" },
-    { value: "22/22", label: "Contract tests passing" },
+    { value: "31/31", label: "Contract tests passing" },
     { value: "0", label: "Custodial dependencies" },
     { value: "MIT", label: "Open-source license" },
   ];
@@ -137,7 +137,7 @@ function HowItWorksPlain() {
             Privacy in <HighlightText>three steps.</HighlightText>
           </motion.h2>
           <motion.p variants={fadeUp} className="text-base text-[#454745] max-w-xl mb-14">
-            No crypto-jargon. Here's what actually happens when you send a payment with Fluppy.
+            No crypto-jargon. Here's what actually happens when you send a payment with Flupy.
           </motion.p>
 
           <motion.div variants={stagger(0.08)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -242,14 +242,14 @@ function Hero() {
         </motion.h1>
 
         <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.7 }} className="mt-9 text-lg md:text-xl text-[#454745] max-w-2xl mx-auto leading-relaxed">
-          ZK-powered payments on Stellar Testnet with browser Groth16 proofs, root sync, and atomic 95/5 settlement.
+          Pay privately on Stellar. Prove you're eligible without revealing who you are — your money moves instantly, your identity doesn't.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }} className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a href="#payment-preview" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full text-black font-bold text-sm transition-transform hover:scale-105" style={{ background: T.primary }}>
             Run Live Demo <Icon icon="ph:arrow-down" className="text-lg" />
           </a>
-          <a href="https://github.com/dzakwannajmi/Fluppy" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border font-bold text-sm text-[#0e0f0c] transition-colors hover:bg-black/5" style={{ borderColor: T.border }}>
+          <a href="https://github.com/dzakwannajmi/flupy" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full border font-bold text-sm text-[#0e0f0c] transition-colors hover:bg-black/5" style={{ borderColor: T.border }}>
             <Icon icon="ph:github-logo" className="text-lg" /> View GitHub
           </a>
           <button
@@ -284,7 +284,7 @@ const FEATURES = [
 
 ];
 
-function WhatIsFluppy() {
+function WhatIsFlupy() {
   return (
     <section id="features" className="relative py-20 px-6 z-10">
       <div className="max-w-6xl mx-auto">
@@ -457,10 +457,10 @@ function DAppPreview() {
 //  FAQ SECTION 
 // ═════════════════════════════════════════════════════════════════════════════
 const FAQS = [
-  { q: "What is Fluppy?", a: "Fluppy is a privacy-first payment gateway built on Stellar Soroban. It lets users prove eligibility with browser-generated Groth16 proofs while keeping raw credentials off-chain." },
-  { q: "How does the 95/5 split work?", a: "Unlike traditional gateways that hold funds, Fluppy uses a Soroban Smart Contract to execute an atomic bifurcation. In a single ledger operation, 95% of the USDC goes to the merchant and 5% goes to the protocol treasury." },
-  { q: "Do I need a specific wallet?", a: "Yes, currently Fluppy is deeply integrated with the Freighter Wallet extension. You must have Freighter installed and set to the Stellar Testnet." },
-  { q: "What is Stellar Protocol 25?", a: "Protocol 25 introduces BN254 host-function support to Soroban. Fluppy is architected for a future native BN254 verifier path once stable SDK support is available; the current Testnet flow enforces browser-side local Groth16 verification before submission." },
+  { q: "What is Flupy?", a: "Flupy is a privacy-first payment gateway built on Stellar Soroban. You prove you are allowed to pay without revealing your identity, using a cryptographic proof generated right in your browser." },
+  { q: "How does the 95/5 split work?", a: "Flupy never holds your funds. A single Stellar transaction sends 95% of your payment straight to the merchant and 5% to the protocol treasury at the same time — there is no in-between step where money sits with Flupy." },
+  { q: "Do I need a specific wallet?", a: "Yes, Flupy currently works with the Freighter wallet extension. Install it and switch it to Stellar Testnet before trying the demo." },
+  { q: "Is my proof actually checked on-chain?", a: "Your browser always verifies the proof locally before submitting it. On-chain, the contract checks the proof structure and every binding (payer, merchant, amount) today; full native pairing verification on-chain is planned — see the Security Model docs for the current status." },
 ];
 
 function FAQItem({ q, a, isOpen, onClick }: { q: string, a: string, isOpen: boolean, onClick: () => void }) {
@@ -608,7 +608,7 @@ export default function Page() {
       textColor: "#fff",
       links: [
         { label: "GitHub Repo", href: "https://github.com/dzakwannajmi/fluppy", ariaLabel: "GitHub Repo" },
-        { label: "Developer Docs", href: "/docs", ariaLabel: "Open Fluppy developer documentation" },
+        { label: "Developer Docs", href: "/docs", ariaLabel: "Open Flupy developer documentation" },
       ],
     }
   ];
@@ -630,7 +630,7 @@ export default function Page() {
         <HowItWorksPlain />
 
         {/* ── FLUPPY SECTION ── */}
-        <WhatIsFluppy />
+        <WhatIsFlupy />
 
         {/* ── ARCHITECTURE SECTION ── */}
         <Architecture />

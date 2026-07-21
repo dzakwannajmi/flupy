@@ -50,7 +50,7 @@ export function BindingCards() {
       <div className="rounded-xl border border-black/10 bg-black/[0.03] p-4">
         <h3 className="mb-2 text-sm font-semibold text-[#0e0f0c]">computeChainId()</h3>
         <p className="text-xs text-[#454745]">
-          SHA-256 hashes the Stellar network passphrase (e.g. "Test SDF Network ; September 2015"),
+          SHA-256 hashes the Stellar network passphrase (e.g. &quot;Test SDF Network ; September 2015&quot;),
           then zeroes the MSB. The result is included as the <code>chainId</code> public signal.
           A proof generated on one network will be rejected on a different network because the
           chainId values differ — preventing cross-network replay attacks.
@@ -64,12 +64,12 @@ export function EncodingTerminal() {
   return (
     <div className="not-typeset overflow-hidden rounded-xl border border-black/10 bg-white p-4 text-xs text-[#454745]">
       <div className="space-y-1 font-mono">
-        <div><span className="text-gray-600">// G1 (pi_a, pi_c): 64 bytes = x_be32 ‖ y_be32</span></div>
-        <div><span className="text-blue-700">encodeG1</span>([x, y, '1']) <span className="text-gray-600">→ 128-char hex string</span></div>
-        <div className="mt-2"><span className="text-gray-600">// G2 (pi_b): 128 bytes = x_c1 ‖ x_c0 ‖ y_c1 ‖ y_c0</span></div>
+        <div><span className="text-gray-600">{'// G1 (pi_a, pi_c): 64 bytes = x_be32 ‖ y_be32'}</span></div>
+        <div><span className="text-blue-700">encodeG1</span>([x, y, &apos;1&apos;]) <span className="text-gray-600">→ 128-char hex string</span></div>
+        <div className="mt-2"><span className="text-gray-600">{'// G2 (pi_b): 128 bytes = x_c1 ‖ x_c0 ‖ y_c1 ‖ y_c0'}</span></div>
         <div><span className="text-blue-700">encodeG2</span>([[x_c1,x_c0],[y_c1,y_c0],…]) <span className="text-gray-600">→ 256-char hex string</span></div>
-        <div className="mt-2"><span className="text-gray-600">// Public signals: 7 × 32 bytes each</span></div>
-        <div><span className="text-blue-700">decimalToBe32Hex</span>('123456…') <span className="text-gray-600">→ 64-char hex string</span></div>
+        <div className="mt-2"><span className="text-gray-600">{'// Public signals: 7 × 32 bytes each'}</span></div>
+        <div><span className="text-blue-700">decimalToBe32Hex</span>(&apos;123456…&apos;) <span className="text-gray-600">→ 64-char hex string</span></div>
       </div>
     </div>
   );

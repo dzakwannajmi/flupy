@@ -58,13 +58,12 @@ export function PaymentVolumeChart() {
   const [timeRange, setTimeRange] = React.useState("30d")
   const { records } = useTxHistory()
 
-  React.useEffect(() => {
-    if (isMobile) {
-      setTimeRange("7d")
-    }
-  }, [isMobile])
+  // Derived, not stored: default to a shorter range on mobile without
+  // mutating state from an effect (avoids cascading renders) — the user
+  // can still override it manually via the selector below.
+  const effectiveTimeRange = isMobile && timeRange === "30d" ? "7d" : timeRange
 
-  const days = RANGE_DAYS[timeRange] ?? 30
+  const days = RANGE_DAYS[effectiveTimeRange] ?? 30
   const data = React.useMemo(() => computeDailyVolume(records, days), [records, days])
   const hasData = data.some(point => point.count > 0)
 
@@ -81,7 +80,7 @@ export function PaymentVolumeChart() {
         <CardAction>
           <ToggleGroup
             multiple={false}
-            value={timeRange ? [timeRange] : []}
+            value={effectiveTimeRange ? [effectiveTimeRange] : []}
             onValueChange={(value) => {
               setTimeRange(value[0] ?? "30d")
             }}

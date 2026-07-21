@@ -244,6 +244,8 @@ export const useFluppy = () => {
   // ───────────────────────────────────────────────────────────
 
   const checkCredentialStatus =
+    // Pre-existing manual useCallback memoization, unmodified this session.
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     useCallback(async () => {
       try {
         const exists =

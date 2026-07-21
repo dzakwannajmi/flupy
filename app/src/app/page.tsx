@@ -106,7 +106,7 @@ function HowItWorksPlain() {
             Privacy in <HighlightText>three steps.</HighlightText>
           </motion.h2>
           <motion.p variants={fadeUp} className="text-base text-[#454745] max-w-xl mb-14">
-            No crypto-jargon. Here's what actually happens when you send a payment with Flupy.
+            No crypto-jargon. Here&apos;s what actually happens when you send a payment with Flupy.
           </motion.p>
 
           <motion.div variants={stagger(0.08)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -190,7 +190,7 @@ function Hero() {
         </motion.h1>
 
         <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.7 }} className="mt-9 text-lg md:text-xl text-[#454745] max-w-2xl mx-auto leading-relaxed">
-          Pay privately on Stellar. Prove you're eligible without revealing who you are — your money moves instantly, your identity doesn't.
+          Pay privately on Stellar. Prove you&apos;re eligible without revealing who you are — your money moves instantly, your identity doesn&apos;t.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }} className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -403,8 +403,9 @@ export default function Page() {
         showToast("Please install Freighter extension!");
         window.open("https://freighter.app", "_blank");
       }
-    } catch (e: any) {
-      addLog(<Icon icon="ph:x-circle" className="text-red-400" />, `Wallet error: ${e.message}`, "error");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      addLog(<Icon icon="ph:x-circle" className="text-red-400" />, `Wallet error: ${message}`, "error");
     }
   };
 
@@ -444,8 +445,9 @@ export default function Page() {
       addLog(<Icon icon="ph:check-circle" className="text-green-500" />, `SUCCESS — Tx: ${dataTx.hash.slice(0, 10)}...`, "success");
 
       setTxHash(dataTx.hash); setDone(true);
-    } catch (err: any) {
-      addLog(<Icon icon="ph:x-circle" className="text-red-400" />, `Transaction failed: ${err.message}`, "error");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      addLog(<Icon icon="ph:x-circle" className="text-red-400" />, `Transaction failed: ${message}`, "error");
     } finally {
       setRunning(false);
     }

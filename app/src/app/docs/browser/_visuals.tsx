@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 
 export function ApiTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (

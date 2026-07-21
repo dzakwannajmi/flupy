@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 
 export function FlowSummary() {
   const rows: [string, string, "required" | "automatic" | "not applicable"][] = [

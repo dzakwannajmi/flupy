@@ -42,11 +42,11 @@ export function CredentialStack() {
   return (
     <div className="not-typeset rounded-xl border border-black/10 bg-white p-5">
       <div className="space-y-2 font-mono text-xs text-[#454745]">
-        <div><span className="text-gray-600">// Browser credential storage stack</span></div>
+        <div><span className="text-gray-600">{'// Browser credential storage stack'}</span></div>
         <div><span className="text-[#0e0f0c]">secret</span> <span className="text-gray-600">→ never stored in plaintext anywhere</span></div>
         <div><span className="text-[#0e0f0c]">password</span> + salt <span className="text-gray-600">→</span> <span className="text-amber-700">PBKDF2-SHA256</span> (100k iter dev / 600k prod) <span className="text-gray-600">→</span> <span className="text-blue-700">AES-256-GCM key</span></div>
         <div><span className="text-blue-700">AES-256-GCM</span>(secret, key, iv) <span className="text-gray-600">→</span> <span className="text-emerald-700">ciphertext in IndexedDB</span></div>
-        <div className="mt-2"><span className="text-gray-600">// IndexedDB schema — nothing sensitive in plaintext</span></div>
+        <div className="mt-2"><span className="text-gray-600">{'// IndexedDB schema — nothing sensitive in plaintext'}</span></div>
         <div>DB: <span className="text-[#0e0f0c]">flupy-identity-v1</span> | store: <span className="text-[#0e0f0c]">credentials</span> | key: <span className="text-[#0e0f0c]">zk-credential</span></div>
         <div className="text-[#454745]">{'{'} version, kdf, iterations, salt(hex), iv(hex), ciphertext(hex) {'}'}</div>
       </div>
@@ -105,7 +105,7 @@ export function ChainIdBox() {
   return (
     <div className="not-typeset rounded-xl border border-black/10 bg-white p-4 font-mono text-xs text-[#454745]">
       <div>chainId = <span className="text-amber-700">SHA256</span>(<span className="text-blue-700">&quot;Test SDF Network ; September 2015&quot;</span>)[MSB=0]</div>
-      <div className="mt-1 text-gray-600">// Testnet and Mainnet produce different values</div>
+      <div className="mt-1 text-gray-600">{'// Testnet and Mainnet produce different values'}</div>
       <div className="mt-1">contract validates: <span className="text-emerald-700">proof.chainId === expected_chain_id(env)</span></div>
     </div>
   );

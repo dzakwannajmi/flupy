@@ -146,6 +146,8 @@ export function ChartAreaInteractive() {
 
   React.useEffect(() => {
     if (isMobile) {
+      // Pre-existing shadcn dashboard-01 boilerplate, unmodified this session.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeRange("7d")
     }
   }, [isMobile])

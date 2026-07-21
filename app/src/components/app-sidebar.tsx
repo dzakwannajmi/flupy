@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Icon } from "@iconify/react"
 
 import { NavMain } from "@/components/nav-main"
@@ -88,7 +89,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:p-1.5!"
-              render={<a href="/" />}
+              render={<Link href="/" />}
             >
               <Icon icon="ph:sparkle-fill" width={20} height={20} className="text-[#163300]" />
               <span className="text-base font-semibold">Flupy Docs</span>

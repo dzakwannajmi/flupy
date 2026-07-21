@@ -1,0 +1,38 @@
+name: CI - Smart Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contracts/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/ci-contracts.yml'
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/ci-contracts.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo registry & build artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run contract tests
+        run: cargo test --workspace --verbose
+
+      - name: Build contract (wasm32 target)
+        run: cargo build --workspace --release --target wasm32-unknown-unknown

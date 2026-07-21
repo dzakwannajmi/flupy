@@ -20,5 +20,6 @@
     "build:react": "pnpm --filter @flupy/react build",
     "typecheck:core": "pnpm --filter @flupy/core typecheck",
     "typecheck:browser": "pnpm --filter @flupy/browser typecheck"
-  }
+  },
+  "packageManager": "pnpm@10.28.0"
 }

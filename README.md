@@ -63,10 +63,10 @@ change fees — kept separate from the `Admin` key that can.
   verifier with pluggable BN254 backend
 - `circuits/` — Circom circuit (Poseidon Merkle membership, payer/recipient/
   amount binding) and SnarkJS trusted setup artifacts
-- `packages/flupy-core` — protocol primitives (constants, encoding, hashing)
-- `packages/flupy-browser` — browser SDK (Merkle client, ZK prover, Stellar/
+- `packages/fluppy-core` — protocol primitives (constants, encoding, hashing)
+- `packages/fluppy-browser` — browser SDK (Merkle client, ZK prover, Stellar/
   Freighter transaction layer)
-- `packages/flupy-react` — React hooks built on `@flupy/browser`
+- `packages/fluppy-react` — React hooks built on `@fluppy/browser`
 - `app/` — Next.js frontend (landing page, payment demo, developer docs)
 - `.github/workflows/` — automated Merkle root sync scheduler
 
@@ -135,7 +135,7 @@ pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app
   test and cost measurement before flipping the default)
 - Multi-party trusted setup ceremony ahead of any mainnet deployment
 - External security audit
-- Public npm package publication for `@flupy/*`
+- Public npm package publication for `@fluppy/*`
 - Move Groth16 proof generation into a Web Worker, off the browser main thread
 - Circuit artifact checksum validation (WASM, zkey, verification key)
 - Mobile layout and performance testing

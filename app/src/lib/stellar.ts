@@ -10,7 +10,7 @@ import {
   payWithZkGroth16 as payWithBrowserZkGroth16,
   pollTransaction,
   type StellarConfig,
-} from '@flupy/browser';
+} from '@fluppy/browser';
 
 import type { PaymentProofOutput } from './zkp';
 

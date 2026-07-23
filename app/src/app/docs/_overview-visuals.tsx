@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 
 const SDK_PACKAGES = [
   {
-    name: "@flupy/core",
+    name: "@fluppy/core",
     status: "Stable",
     size: "10 KB ESM",
     desc: "Protocol primitives: constants, errors, encoding, recipient hash, chain ID, shared types.",
@@ -11,7 +11,7 @@ const SDK_PACKAGES = [
     color: "blue",
   },
   {
-    name: "@flupy/browser",
+    name: "@fluppy/browser",
     status: "Stable",
     size: "31 KB ESM",
     desc: "Browser SDK: Merkle client, artifact loader, ZK prover, identity, Stellar/Freighter, payment orchestrator.",
@@ -19,7 +19,7 @@ const SDK_PACKAGES = [
     color: "purple",
   },
   {
-    name: "@flupy/react",
+    name: "@fluppy/react",
     status: "Stable",
     size: "14 KB ESM",
     desc: "React SDK: FluppyProvider, useFluppyCredential, useFluppyPayment, useFluppyWallet, useFluppyHistory.",
@@ -120,11 +120,11 @@ export function FlowDiagram() {
       <pre className="overflow-x-auto p-5 text-xs leading-relaxed text-[#454745]">
 {`Browser (User)
   │
-  ├─ @flupy/react      → useFluppyCredential: AES-GCM secret (IndexedDB)
-  ├─ @flupy/browser    → computeCommitment → GET /api/merkle-proof
-  ├─ @flupy/browser    → snarkjs.groth16.fullProve() → ZK proof (BN254)
-  ├─ @flupy/browser    → verifyProofLocally() → ✓ VALID
-  └─ @flupy/browser    → Freighter sign → Soroban RPC submit
+  ├─ @fluppy/react      → useFluppyCredential: AES-GCM secret (IndexedDB)
+  ├─ @fluppy/browser    → computeCommitment → GET /api/merkle-proof
+  ├─ @fluppy/browser    → snarkjs.groth16.fullProve() → ZK proof (BN254)
+  ├─ @fluppy/browser    → verifyProofLocally() → ✓ VALID
+  └─ @fluppy/browser    → Freighter sign → Soroban RPC submit
                                     │
                            Soroban Contract
                               │
@@ -186,7 +186,7 @@ export function IncludedChecklist() {
     "Nullifier-based replay protection",
     "Payer + amount + recipient binding",
     "Automated Merkle root sync",
-    "Three-layer modular SDK (@flupy/*)",
+    "Three-layer modular SDK (@fluppy/*)",
   ];
   return (
     <div className="not-typeset rounded-xl border border-[#9fe870]/30 bg-[#9fe870]/10 p-4">

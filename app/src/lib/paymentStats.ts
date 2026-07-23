@@ -10,7 +10,7 @@ import type { TxRecord } from './history';
  * NOTE: this only reflects payments made through the primary payment flow
  * (the one that writes to IndexedDB via lib/history.ts). The experimental
  * SDK payment path stores its own records separately in localStorage
- * (@flupy/react's useFluppyHistory) and is not included here.
+ * (@fluppy/react's useFluppyHistory) and is not included here.
  */
 
 export interface PaymentStats {

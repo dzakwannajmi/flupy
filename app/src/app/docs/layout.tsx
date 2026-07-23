@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: "Flupy SDK Documentation",
   },
   description:
-    "Developer documentation for the Flupy ZK Payment Protocol SDK — @flupy/core, @flupy/browser, @flupy/react.",
+    "Developer documentation for the Flupy ZK Payment Protocol SDK — @fluppy/core, @fluppy/browser, @fluppy/react.",
 };
 
 export default function DocsLayout({ children }: { children: ReactNode }) {

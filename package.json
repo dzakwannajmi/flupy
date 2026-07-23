@@ -1,5 +1,5 @@
 {
-  "name": "flupy-monorepo",
+  "name": "fluppy-monorepo",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -11,15 +11,15 @@
     "pnpm": ">=8.0.0"
   },
   "scripts": {
-    "build:core": "pnpm --filter @flupy/core build",
+    "build:core": "pnpm --filter @fluppy/core build",
     "build:app": "pnpm --filter frontend build",
     "build": "pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app",
-    "typecheck": "pnpm --filter @flupy/core typecheck && pnpm --filter @flupy/browser typecheck && pnpm --filter @flupy/react typecheck",
-    "test": "pnpm --filter @flupy/core test",
-    "build:browser": "pnpm --filter @flupy/browser build",
-    "build:react": "pnpm --filter @flupy/react build",
-    "typecheck:core": "pnpm --filter @flupy/core typecheck",
-    "typecheck:browser": "pnpm --filter @flupy/browser typecheck"
+    "typecheck": "pnpm --filter @fluppy/core typecheck && pnpm --filter @fluppy/browser typecheck && pnpm --filter @fluppy/react typecheck",
+    "test": "pnpm --filter @fluppy/core test",
+    "build:browser": "pnpm --filter @fluppy/browser build",
+    "build:react": "pnpm --filter @fluppy/react build",
+    "typecheck:core": "pnpm --filter @fluppy/core typecheck",
+    "typecheck:browser": "pnpm --filter @fluppy/browser typecheck"
   },
   "packageManager": "pnpm@10.28.0"
 }

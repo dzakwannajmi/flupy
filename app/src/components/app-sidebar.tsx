@@ -35,17 +35,17 @@ const data = {
       icon: <Icon icon="ph:flag" width={18} height={18} />,
     },
     {
-      title: "@flupy/core",
+      title: "@fluppy/core",
       url: "/docs/core",
       icon: <Icon icon="ph:cube" width={18} height={18} />,
     },
     {
-      title: "@flupy/browser",
+      title: "@fluppy/browser",
       url: "/docs/browser",
       icon: <Icon icon="ph:globe" width={18} height={18} />,
     },
     {
-      title: "@flupy/react",
+      title: "@fluppy/react",
       url: "/docs/react",
       icon: <Icon icon="ph:atom" width={18} height={18} />,
     },

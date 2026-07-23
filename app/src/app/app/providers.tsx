@@ -29,7 +29,7 @@ import type { ReactNode } from 'react';
 import {
   FluppyProvider,
   type FluppyReactConfig,
-} from '@flupy/react';
+} from '@fluppy/react';
 
 // ─── Env var validation ───────────────────────────────────────────────────────
 

@@ -239,7 +239,7 @@ pub(crate) fn compute_chain_id_pub(env: &Env) -> BytesN<32> {
 /// Computes a BN254-safe recipient hash from a Stellar address.
 ///
 /// MUST stay identical with computeRecipientHash() in
-/// packages/flupy-core/src/recipient-hash.ts (SHA-256 of address XDR,
+/// packages/fluppy-core/src/recipient-hash.ts (SHA-256 of address XDR,
 /// MSB zeroed to guarantee the result is < BN254_R).
 pub(crate) fn compute_recipient_hash(env: &Env, addr: &Address) -> BytesN<32> {
     let xdr = addr.to_xdr(env);
@@ -260,7 +260,7 @@ pub(crate) fn compute_recipient_hash(env: &Env, addr: &Address) -> BytesN<32> {
 /// for recipientHash.
 ///
 /// MUST stay identical with computePayerHash() in
-/// packages/flupy-core/src/payer-hash.ts (to be added to the SDK).
+/// packages/fluppy-core/src/payer-hash.ts (to be added to the SDK).
 pub(crate) fn compute_payer_hash(env: &Env, addr: &Address) -> BytesN<32> {
     compute_recipient_hash(env, addr)
 }
@@ -272,7 +272,7 @@ pub(crate) fn compute_payer_hash(env: &Env, addr: &Address) -> BytesN<32> {
 /// representation of the same integer).
 ///
 /// MUST stay identical with the amount encoding used when building circuit
-/// inputs in packages/flupy-browser/src/prover.ts. `amount` is validated
+/// inputs in packages/fluppy-browser/src/prover.ts. `amount` is validated
 /// as > 0 before this is called, so the u128 cast is always in range.
 pub(crate) fn amount_to_field_bytes(env: &Env, amount: i128) -> BytesN<32> {
     let amount_u128 = amount as u128;

@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Test @flupy/core
+      - name: Test @fluppy/core
         run: pnpm test
 
       - name: Build SDK packages + frontend app

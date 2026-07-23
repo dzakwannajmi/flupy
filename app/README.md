@@ -82,7 +82,7 @@ See the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.ap
 | --- | --- |
 | Framework | Next.js 16 App Router |
 | ZK proving | Circom + SnarkJS, Groth16 / BN254 |
-| Browser/React SDK | `@flupy/browser`, `@flupy/react` |
+| Browser/React SDK | `@fluppy/browser`, `@fluppy/react` |
 | Identity storage | IndexedDB + PBKDF2 + AES-GCM |
 | Blockchain | `@stellar/stellar-sdk`, `@stellar/freighter-api` |
 | Commitment store | Postgres (Neon) |
@@ -133,7 +133,7 @@ Open `http://localhost:3000/app`.
 Served from `/circuit/v3/`:
 
 ```text
-flupy_payment.wasm
+fluppy.wasm
 circuit_final.zkey.bin
 verification_key.json
 ```

@@ -6,8 +6,8 @@ export {
   deleteCredential,
   generateSecret,
   unlockCredential,
-} from '@flupy/browser';
+} from '@fluppy/browser';
 
 export type {
   CreateCredentialResult,
-} from '@flupy/browser';
+} from '@fluppy/browser';

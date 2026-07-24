@@ -160,7 +160,7 @@ pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app
   transaction). ~31.6M CPU instructions per payment (~32% of the
   network limit).
 - ~~50+ testnet users with real transaction activity~~ -- **shipped.**
-  61 wallet addresses have submitted proof of a real, on-chain
+  62 wallet addresses have submitted proof of a real, on-chain
   payment (wallet address + transaction hash, verifiable on
   [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBILWM2EXW7CQPZBZHGZ6OLLZIST44BAXWM6A2GZLDEYZTMK7EWXFVDA)). See
   [Evidence & screenshots](#evidence--screenshots) above.

@@ -306,7 +306,7 @@ function encodeG1(point) {
 }
 function encodeG2(point) {
   const [x, y] = point;
-  return decimalToBe32Hex(x[0]) + decimalToBe32Hex(x[1]) + decimalToBe32Hex(y[0]) + decimalToBe32Hex(y[1]);
+  return decimalToBe32Hex(x[1]) + decimalToBe32Hex(x[0]) + decimalToBe32Hex(y[1]) + decimalToBe32Hex(y[0]);
 }
 function hexSecretToFieldElement(hexSecret) {
   if (!/^[0-9a-f]{64}$/i.test(hexSecret)) {

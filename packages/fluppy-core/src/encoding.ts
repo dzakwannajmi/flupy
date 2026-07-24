@@ -54,10 +54,10 @@ export function encodeG2(
   const [x, y] = point;
 
   return (
-    decimalToBe32Hex(x[0]) +
     decimalToBe32Hex(x[1]) +
-    decimalToBe32Hex(y[0]) +
-    decimalToBe32Hex(y[1])
+    decimalToBe32Hex(x[0]) +
+    decimalToBe32Hex(y[1]) +
+    decimalToBe32Hex(y[0])
   );
 }
 

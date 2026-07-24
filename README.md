@@ -6,6 +6,7 @@
   <img src="https://img.shields.io/badge/CI-passing-22c55e.svg?logo=github" alt="CI Passing">
   <a href="https://youtu.be/wIu5sNm2p1Y"><img src="https://img.shields.io/badge/demo-watch%20video-red.svg?logo=youtube&logoColor=white" alt="Watch demo video"></a>
   <a href="https://flupy-app-dzakwannajmis-projects.vercel.app/"><img src="https://img.shields.io/badge/status-Live%20on%20Testnet-f59e0b.svg" alt="Live on Testnet"></a>
+  <a href="https://docs.google.com/presentation/d/1sRudkE82IEeWewmp8eX3hw9v-znid8Fv/edit?usp=sharing"><img src="https://img.shields.io/badge/pitch%20deck-view%20slides-8b5cf6.svg?logo=googleslides&logoColor=white" alt="Pitch Deck"></a>
 </div>
 
 ---

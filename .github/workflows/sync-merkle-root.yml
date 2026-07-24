@@ -6,7 +6,7 @@ on:
     # same as Vercel's, but scheduling is best-effort -- GitHub may
     # delay a run under load, which is fine here since sync-root's own
     # idempotency guard makes late/duplicate triggers harmless.
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   # Allows manual triggering from the Actions tab for testing.
   workflow_dispatch:
 

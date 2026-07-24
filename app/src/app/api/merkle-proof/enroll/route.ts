@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { getCommitmentSource } from '../../../../lib/merkle-server/commitment-source';
 import { invalidateTreeCache } from '../../../../lib/merkle-server/tree-cache';
+import { syncMerkleRoot } from '../../../../lib/merkle-server/sync-service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -81,6 +82,7 @@ export async function POST(
 
     if (added) {
       invalidateTreeCache();
+      syncMerkleRoot().catch((err) => { console.error('[enroll] Fire-and-forget root sync failed:', err); });
     }
 
     return NextResponse.json({

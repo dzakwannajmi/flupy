@@ -26,7 +26,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: wasm32-unknown-unknown
+          targets: wasm32v1-none
 
       - name: Cache cargo registry & build artifacts
         uses: Swatinem/rust-cache@v2
@@ -35,4 +35,4 @@ jobs:
         run: cargo test --workspace --verbose
 
       - name: Build contract (wasm32 target)
-        run: cargo build --workspace --release --target wasm32-unknown-unknown
+        run: cargo build --workspace --release --target wasm32v1-none

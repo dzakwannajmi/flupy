@@ -129,6 +129,25 @@ pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app
   slightly older root still succeeds after the automated sync job
   anchors a newer one.
 
+## Evidence & screenshots
+
+- **Live demo video**: see the badge above, or
+  [watch directly on YouTube](https://youtu.be/wIu5sNm2p1Y).
+- **Product UI**: _screenshots pending — desktop and mobile views of
+  the payment flow will be added here._
+- **On-chain transaction activity**: every payment settles atomically
+  and transparently on Stellar Soroban. Rather than a separate
+  analytics dashboard, transaction history is directly verifiable on
+  [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBILWM2EXW7CQPZBZHGZ6OLLZIST44BAXWM6A2GZLDEYZTMK7EWXFVDA) —
+  including the `PaymentExecuted` event, the 95/5 merchant/treasury
+  split, and the native BN254 pairing check for every settled payment.
+- **User testing & feedback**: see
+  [`docs/evidence/user-testing.md`](./docs/evidence/user-testing.md)
+  for the full summary and raw response data from the first round of
+  user testing (14 respondents, July 16-18 2026). A second round is
+  in progress; see [Roadmap](#roadmap) below for current progress
+  toward the 50-user target.
+
 ## Roadmap
 
 - ~~Native on-chain BN254 pairing verification~~ — **shipped.** The
@@ -136,6 +155,11 @@ pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app
   against real proofs (isolated unit test, then a live browser
   transaction). ~31.6M CPU instructions per payment (~32% of the
   network limit).
+- ~~50+ testnet users with real transaction activity~~ -- **shipped.**
+  61 wallet addresses have submitted proof of a real, on-chain
+  payment (wallet address + transaction hash, verifiable on
+  [Stellar Expert](https://stellar.expert/explorer/testnet)). See
+  [Evidence & screenshots](#evidence--screenshots) above.
 - Multi-party trusted setup ceremony ahead of any mainnet deployment
 - External security audit
 - Public npm package publication for `@fluppy/*`

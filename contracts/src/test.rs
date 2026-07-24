@@ -781,19 +781,3 @@ fn test_bn254_native_rejects_tampered_proof() {
 
     let _ = verifier::verify_proof(&env, &proof, &inputs);
 }
-
-#[test]
-fn dump_phase3_hashes() {
-    let env = Env::default();
-    let merchant = Address::from_str(&env, "GAZ7MMG76VMYM2EIZ2UX5OHAJS63I7XODWQMC6ULFNKQ5GPCCAW5TFQW");
-    let payer = Address::from_str(&env, "GDPAPDZWAKBXUPCNMI4YHAZ7DS7UOUTPGXAFDSWZG4URRMWHFSQTDQBM");
-
-    let recipient_hash = crate::payment::compute_recipient_hash(&env, &merchant);
-    let payer_hash = crate::payment::compute_payer_hash(&env, &payer);
-
-    panic!(
-        "recipient_hash={:?} payer_hash={:?}",
-        recipient_hash.to_array(),
-        payer_hash.to_array()
-    );
-}

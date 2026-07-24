@@ -95,7 +95,7 @@ See the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.ap
 Create `app/.env.local`:
 
 ```env
-NEXT_PUBLIC_CONTRACT_ID=CD3GV6AD3DJKLH3DSLZG4I4KPJV5RUUIC4L7FZN626EHIT4ZBYIQ5PJH
+NEXT_PUBLIC_CONTRACT_ID=CBILWM2EXW7CQPZBZHGZ6OLLZIST44BAXWM6A2GZLDEYZTMK7EWXFVDA
 NEXT_PUBLIC_RPC_URL=https://soroban-testnet.stellar.org:443
 NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
 NEXT_PUBLIC_NETWORK_PASSPHRASE=Test SDF Network ; September 2015
@@ -109,6 +109,8 @@ FLUPY_ALLOW_DEMO_ENROLLMENT=     # 'true' to allow enrollment on a testnet demo 
 
 ```bash
 cd app
+cp .env.example .env.local
+# fill in DATABASE_URL, FLUPY_ROOT_OPERATOR_SECRET, and CRON_SECRET
 pnpm install
 pnpm dev
 ```

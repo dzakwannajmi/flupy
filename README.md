@@ -54,7 +54,7 @@ change fees — kept separate from the `Admin` key that can.
 
 | Contract | Address |
 | --- | --- |
-| Flupy | `CD3GV6AD3DJKLH3DSLZG4I4KPJV5RUUIC4L7FZN626EHIT4ZBYIQ5PJH` |
+| Flupy | `CBILWM2EXW7CQPZBZHGZ6OLLZIST44BAXWM6A2GZLDEYZTMK7EWXFVDA` |
 | USDC (testnet SAC) | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` |
 
 ## Repository layout
@@ -130,9 +130,11 @@ pnpm build:core && pnpm build:browser && pnpm build:react && pnpm build:app
 
 ## Roadmap
 
-- Native on-chain BN254 pairing verification (`--features bn254_native`
-  is compile-clean against Protocol 26; pending a real-proof integration
-  test and cost measurement before flipping the default)
+- ~~Native on-chain BN254 pairing verification~~ — **shipped.** The
+  deployed testnet contract runs `bn254_native` by default, validated
+  against real proofs (isolated unit test, then a live browser
+  transaction). ~31.6M CPU instructions per payment (~32% of the
+  network limit).
 - Multi-party trusted setup ceremony ahead of any mainnet deployment
 - External security audit
 - Public npm package publication for `@fluppy/*`

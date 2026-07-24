@@ -5,10 +5,10 @@
 
 ---
 
-> **Testnet only.** The active verifier backend (`bn254_demo`) validates
-> proof structure and public inputs but does not yet perform a native
-> on-chain BN254 pairing check — see [Verifier Architecture](#verifier-architecture)
-> below and the [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security).
+> **Testnet only.** The active deployment runs the native on-chain BN254
+> verifier (`bn254_native`), performing a real Groth16 pairing check —
+> see [Verifier Architecture](#verifier-architecture) below and the
+> [Security Model docs](https://flupy-app-dzakwannajmis-projects.vercel.app/docs/security).
 
 ## Table of Contents
 
@@ -37,9 +37,10 @@ Deployed on testnet:
 
 | Item | Value |
 | --- | --- |
-| Contract | `CD3GV6AD3DJKLH3DSLZG4I4KPJV5RUUIC4L7FZN626EHIT4ZBYIQ5PJH` |
+| Contract | `CBILWM2EXW7CQPZBZHGZ6OLLZIST44BAXWM6A2GZLDEYZTMK7EWXFVDA` |
 | USDC (testnet SAC) | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` |
 | RootOperator | `GDTRD3IJA7NQUCACPV2BA2M7QAB54YOR663DYCJVPZWFVQF5BHCSLBHA` |
+| Wasm hash | `3aa065b280efbbd1d0824d3c25e12ecb767391a6ecbcc18f99e32d646bc89883` |
 
 ## Payment execution flow
 
@@ -101,16 +102,23 @@ verifier/
 ├── mod.rs           # public API, backend dispatch
 ├── types.rs         # Proof, PublicInputs, N_PUBLIC
 ├── vk_constants.rs  # verification key + BN254 constants
-├── bn254_demo.rs    # active testnet backend
-└── bn254_native.rs  # native BN254 pairing backend (compile-clean, not yet default)
+├── bn254_demo.rs    # structure/public-input-only backend (default build, no pairing check)
+└── bn254_native.rs  # native BN254 pairing backend — active on the deployed testnet instance
 ```
 
 `bn254_native.rs` targets the confirmed Protocol 26 host functions
-(`g1_msm`, `g1_add`, `g1_mul`, `pairing_check`) and compiles clean, but
-isn't the default build — activating it (`--features bn254_native`)
-still needs a real-proof integration test and on-chain cost measurement
-first. Client-side `snarkjs.groth16.verify()` runs before every
-submission regardless of backend.
+(`g1_msm`, `g1_add`, `g1_mul`, `pairing_check`) and is the active
+backend on the deployed testnet instance above, built with
+`--features bn254_native`. It was validated against a real,
+independently `snarkjs`-verified proof — first in an isolated unit
+test (`test_bn254_native_accepts_real_verified_proof`), then in a full
+`execute_payment()` transaction submitted from the live browser UI —
+before being deployed. Measured on-chain cost for a full
+`execute_payment()` call (pairing check + nullifier guard + atomic
+USDC split) is **~31.6M CPU instructions**, about 32% of the network's
+100M instruction limit, leaving substantial headroom. Client-side
+`snarkjs.groth16.verify()` still runs before every submission as a
+fast local check, ahead of the authoritative on-chain verification.
 
 ## Tests
 
@@ -126,6 +134,10 @@ bounds, and atomic split precision.
 ## Build
 
 ```bash
+# Default build (bn254_demo -- structure/public-input checks only)
 cargo build --target wasm32v1-none --release
-cargo check --features bn254_native
+
+# Native verifier build (bn254_native -- real Groth16 pairing check,
+# used for the deployed testnet instance above)
+cargo build --target wasm32v1-none --release --features bn254_native
 ```

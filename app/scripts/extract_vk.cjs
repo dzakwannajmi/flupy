@@ -72,15 +72,21 @@ function g1Neg(point) {
 
 /**
  * G2 point → 128 bytes: x_c1_be32 || x_c0_be32 || y_c1_be32 || y_c0_be32
- * SnarkJS stores G2 as [[x_c1, x_c0], [y_c1, y_c0], [z_c1, z_c0]]
- * We output c1 before c0 — matches EIP-197 and Soroban bn254 format.
+ *
+ * SnarkJS stores G2 as [[x_c0, x_c1], [y_c0, y_c1], [z_c0, z_c1]] --
+ * index 0 is c0 (real part), index 1 is c1 (imaginary part). This was
+ * verified empirically 2026-07-23 via an on-curve check in both possible
+ * orderings -- only (real=index0, imag=index1) landed on the BN254 twist
+ * curve. An earlier version of this function had the labels backwards
+ * (called index0 "c1") and therefore emitted c0||c1 instead of the
+ * required c1||c0 -- Soroban/EIP-197 wants the imaginary component first.
  */
 function g2(point) {
   return Buffer.concat([
-    decTo32Bytes(point[0][0]), // x_c1
-    decTo32Bytes(point[0][1]), // x_c0
-    decTo32Bytes(point[1][0]), // y_c1
-    decTo32Bytes(point[1][1]), // y_c0
+    decTo32Bytes(point[0][1]), // x_c1 (imaginary)
+    decTo32Bytes(point[0][0]), // x_c0 (real)
+    decTo32Bytes(point[1][1]), // y_c1 (imaginary)
+    decTo32Bytes(point[1][0]), // y_c0 (real)
   ]);
 }
 
@@ -122,11 +128,13 @@ function roundTripG1(point) {
  */
 function roundTripG2(point) {
   const buf = g2(point);
+  // g2() emits c1||c0||c1||c0 (imaginary before real) -- round-trip must
+  // decode in that same order, matching index [1] first, then [0].
   return (
-    bytesToBigInt(buf.slice(0, 32))   === BigInt(point[0][0]) &&
-    bytesToBigInt(buf.slice(32, 64))  === BigInt(point[0][1]) &&
-    bytesToBigInt(buf.slice(64, 96))  === BigInt(point[1][0]) &&
-    bytesToBigInt(buf.slice(96, 128)) === BigInt(point[1][1])
+    bytesToBigInt(buf.slice(0, 32))   === BigInt(point[0][1]) &&
+    bytesToBigInt(buf.slice(32, 64))  === BigInt(point[0][0]) &&
+    bytesToBigInt(buf.slice(64, 96))  === BigInt(point[1][1]) &&
+    bytesToBigInt(buf.slice(96, 128)) === BigInt(point[1][0])
   );
 }
 
@@ -150,9 +158,37 @@ check(icLength    === nPublic + 1,     `IC.length (${icLength}) == nPublic+1 (${
 
 // ── Extended validation (only with --verify) ─────────────────────────────────
 
+// BN254 twist curve b2 = 3/(9+i) -- public parameter, used to validate G2 points.
+const B2_C0 = 19485874751759354771024239261021720505790618469301721065564631296452457478373n;
+const B2_C1 = 266929791119991161246907387137283842545076965332900288569378510910307636690n;
+
+function fp2Mul(a0, a1, b0, b1) {
+  const c0 = ((a0 * b0 - a1 * b1) % BN254_P + BN254_P) % BN254_P;
+  const c1 = ((a0 * b1 + a1 * b0) % BN254_P + BN254_P) % BN254_P;
+  return [c0, c1];
+}
+
+/** Checks G2 point lies on the BN254 twist: y² ≡ x³ + b2 (mod p), over Fp2. */
+function validateG2OnCurve(point) {
+  const x0 = BigInt(point[0][0]);
+  const x1 = BigInt(point[0][1]);
+  const y0 = BigInt(point[1][0]);
+  const y1 = BigInt(point[1][1]);
+  if (x0 === 0n && x1 === 0n && y0 === 0n && y1 === 0n) return true; // point at infinity
+  const [ySq0, ySq1] = fp2Mul(y0, y1, y0, y1);
+  const [xSq0, xSq1] = fp2Mul(x0, x1, x0, x1);
+  const [xCube0, xCube1] = fp2Mul(xSq0, xSq1, x0, x1);
+  const rhs0 = (xCube0 + B2_C0) % BN254_P;
+  const rhs1 = (xCube1 + B2_C1) % BN254_P;
+  return ySq0 === rhs0 && ySq1 === rhs1;
+}
+
 if (doVerify) {
   process.stderr.write('\n// ── On-curve validation ────────────────────────────────────\n');
   check(validateG1OnCurve(vk.vk_alpha_1), 'vk_alpha_1 on BN254 curve');
+  check(validateG2OnCurve(vk.vk_beta_2), 'vk_beta_2 on BN254 twist curve');
+  check(validateG2OnCurve(vk.vk_gamma_2), 'vk_gamma_2 on BN254 twist curve');
+  check(validateG2OnCurve(vk.vk_delta_2), 'vk_delta_2 on BN254 twist curve');
   vk.IC.forEach((ic, i) => {
     check(validateG1OnCurve(ic), `IC[${i}] on BN254 curve`);
   });
@@ -215,8 +251,8 @@ const labels = [
   'verifiedRoot',
   'merkleRoot',
   'recipientHash',
-  'minAmount',
-  'maxAmount',
+  'payerHash',
+  'amount',
   'chainId',
 ];
 

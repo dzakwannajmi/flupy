@@ -65,3 +65,15 @@ Thumbs.db
 next-env.d.ts
 
 SECURITY.md
+
+# Ad-hoc test fixtures (proofs, public signals) — generated locally, not source of truth
+circuits/input_bn254_native_test.json
+circuits/input_bn254_native_testnet.json
+circuits/input_bn254_native_testnet_merchant2.json
+circuits/proof_bn254_native_test.json
+circuits/proof_testnet.json
+circuits/proof_testnet_m2.json
+circuits/public_bn254_native_test.json
+circuits/public_testnet.json
+circuits/public_testnet_m2.json
+contracts/test_snapshots/

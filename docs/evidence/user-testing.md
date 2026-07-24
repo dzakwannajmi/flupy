@@ -1,20 +1,8 @@
 # User Testing Evidence
 
-14 responses collected via Google Form from testers who evaluated Flupy's
+62 responses collected via Google Form from testers who evaluated Flupy's
 live demo between July 16–18, 2026. Full response data (including
 wallet addresses) is in [`user-testing.csv`](./user-testing.csv).
-
-## Summary
-
-- **14/14** respondents provided a Stellar testnet wallet address
-- **14/14** confirmed trying the live demo
-- Respondent roles: Student, Developer, and Other (general users)
-- Ratings collected on a 1–5 scale for: prior Stellar/Soroban familiarity,
-  prior ZK-proof familiarity, clarity of Flupy's value proposition, demo
-  experience, and trust in a privacy-preserving payment approach
-- **13/14** said they'd be interested in using Flupy as a merchant or user
-  ("Yes definitely" or "Maybe")
-- **11/14** said they'd be interested in contributing to the open-source SDK
 
 ## Notable feedback
 
